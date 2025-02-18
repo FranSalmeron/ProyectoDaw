@@ -1,0 +1,25 @@
+# Node.js
+node_modules/
+
+# Symfony
+/vendor/
+/var/
+
+# Dependencias de Docker (si estás usando Volúmenes en Docker)
+.docker/
+
+# Archivos generados por Symfony o Composer
+composer.lock
+
+# Archivos temporales o de configuración de IDEs
+.idea/
+.vscode/
+
+# Archivos de log
+*.log
+
+# Archivos generados por el compilador de React
+/build/
+
+# Archivos de configuración de Composer
+/composer.phar

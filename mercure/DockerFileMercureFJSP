@@ -1,0 +1,14 @@
+# Usar la imagen oficial de Mercure
+FROM dunglas/mercure:latest
+
+# Copiar el entrypoint
+COPY entrypoint.sh /entrypoint.sh
+
+# Asegurar que el script tenga permisos de ejecución
+RUN chmod +x /entrypoint.sh
+
+# Establecer el entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Exponer el puerto donde Mercure estará disponible
+EXPOSE 80

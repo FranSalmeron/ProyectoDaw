@@ -1,0 +1,100 @@
+version: "3.8"
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: DockerfileFrontendFJSP
+    ports:
+      - "3000:3000"  # Si es necesario para desarrollo, puedes exponer este puerto
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Asegura que los cambios en el frontend sean detectados
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    image: php:8.1-fpm
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: DockerfileBackendFJSP
+    ports:
+      - "8001:8001"  # Puerto para el backend (puedes cambiarlo)
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - database
+    environment:
+      - DATABASE_URL=mysql://salmeron:salmeron@database:3306/Proyecto-FJSP
+    networks:
+      - app-network
+
+  database:
+    image: mysql:8.0
+    container_name: database
+    ports:
+      - "3307:3306"  # Cambia el puerto si es necesario
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: Proyecto-FJSP
+      MYSQL_USER: salmeron
+      MYSQL_PASSWORD: salmeron
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - database_data:/var/lib/mysql
+    networks:
+      - app-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: database
+      PMA_USER: salmeron
+      PMA_PASSWORD: salmeron
+    depends_on:
+      - database
+    networks:
+      - app-network
+
+  mercure:
+    image: dunglas/mercure
+    container_name: mercure
+    build:
+      context: ./mercure
+      dockerfile: DockerfileMercureFJSP
+    ports:
+      - "3001:80"  # Puerto donde estará expuesto Mercure
+    environment:
+      - MERCURE_PUBLISHER_JWT_KEY=your_jwt_key
+      - MERCURE_SUBSCRIBER_JWT_KEY=your_jwt_key
+      - MERCURE_URL=http://mercure:80/.well-known/mercure
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html  # Asegúrate de tener el build de React aquí
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf  # Configuración personalizada de Nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  database_data:
