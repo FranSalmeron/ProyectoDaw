@@ -28,7 +28,6 @@
         "symfony/http-client": "7.2.*",
         "symfony/intl": "7.2.*",
         "symfony/mailer": "7.2.*",
-        "symfony/mercure": "*",
         "symfony/mime": "7.2.*",
         "symfony/monolog-bundle": "^3.10",
         "symfony/notifier": "7.2.*",
@@ -47,7 +46,8 @@
         "symfony/web-link": "7.2.*",
         "symfony/yaml": "7.2.*",
         "twig/extra-bundle": "^2.12|^3.19",
-        "twig/twig": "^2.12|^3.19"
+        "twig/twig": "^2.12|^3.19",
+        "cboden/ratchet": "^0.4.3"  
     },
     "config": {
         "allow-plugins": {

@@ -1,39 +1,53 @@
-FROM php:8.1-fpm
+# Usar una imagen oficial de PHP (con FPM)
+FROM php:8.2-fpm
 
-# Instalar dependencias
+# Instalar las dependencias necesarias
 RUN apt-get update && apt-get install -y \
+    curl \
     git \
     unzip \
-    libicu-dev \
-    libzip-dev \
-    libonig-dev \
-    libxml2-dev \
-    curl \
-    gnupg \
-    lsb-release
-
-# Instalar dependencias PHP
-RUN docker-php-ext-install pdo pdo_mysql zip intl mbstring
-
-# Instalar Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    libpq-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libpng-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Instalar Symfony CLI
 RUN curl -sS https://get.symfony.com/cli/installer | bash
 RUN mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
 
-# Establecer el directorio de trabajo
-WORKDIR /app
+# Crear el directorio de trabajo y asegurarnos de que tenga permisos adecuados
+WORKDIR /var/www/html
+RUN mkdir -p var/cache var/logs && chmod -R 777 var/cache var/logs
 
-# Copiar el proyecto y el entrypoint
-COPY . /app
-COPY entrypoint.sh /entrypoint.sh
+# Copiar el código de tu proyecto a la imagen
+COPY . .
 
-# Hacer que el script de entrada sea ejecutable
-RUN chmod +x /entrypoint.sh
+# Instalar dependencias de Composer
+RUN curl -sS https://getcomposer.org/installer | php
+RUN mv composer.phar /usr/local/bin/composer
 
-# Establecer el entrypoint
-ENTRYPOINT ["/entrypoint.sh"]
+# Establecer la variable de entorno para permitir que Composer se ejecute como superusuario
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# Exponer el puerto de Symfony
+# Instalar Ratchet
+RUN composer require symfony/http-foundation:^6.0
+RUN composer require symfony/routing:^6.0
+RUN composer require cboden/ratchet:^0.4.4 --with-all-dependencies
+RUN composer dump-autoload --optimize
+
+# Instalar dependencias del proyecto
+RUN composer install
+RUN composer install --no-interaction
+RUN composer update --no-interaction
+
+RUN composer update api-platform/api-platform
+RUN composer update
+
+# Exponer el puerto 8001 para Symfony
 EXPOSE 8001
+EXPOSE 8009
+
+RUN chmod +x /var/www/html/entrypoint.sh
+CMD ["/var/www/html/entrypoint.sh"]
+
