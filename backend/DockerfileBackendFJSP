@@ -23,26 +23,18 @@ RUN mkdir -p var/cache var/logs && chmod -R 777 var/cache var/logs
 # Copiar el código de tu proyecto a la imagen
 COPY . .
 
-# Instalar dependencias de Composer
+# Instalar Composer
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /usr/local/bin/composer
 
 # Establecer la variable de entorno para permitir que Composer se ejecute como superusuario
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# Instalar Ratchet
-RUN composer require symfony/http-foundation:^6.0
-RUN composer require symfony/routing:^6.0
-RUN composer require cboden/ratchet:^0.4.4 --with-all-dependencies
-RUN composer dump-autoload --optimize
+# Eliminar composer.lock y vendor para evitar conflictos
+RUN rm -rf composer.lock vendor/
 
-# Instalar dependencias del proyecto
-RUN composer install
-RUN composer install --no-interaction
-RUN composer update --no-interaction
-
-RUN composer update api-platform/api-platform
-RUN composer update
+# Instalar las dependencias de Composer
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Exponer el puerto 8001 para Symfony
 EXPOSE 8001
@@ -50,4 +42,3 @@ EXPOSE 8009
 
 RUN chmod +x /var/www/html/entrypoint.sh
 CMD ["/var/www/html/entrypoint.sh"]
-

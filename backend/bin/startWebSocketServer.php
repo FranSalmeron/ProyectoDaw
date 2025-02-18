@@ -11,7 +11,7 @@ $server = IoServer::factory(
     new WsServer(
         new WebSocketServer()
     ),
-    8009 // Puerto de WebSocket, puedes ajustarlo
+    8009 
 );
 
 echo "Servidor WebSocket en marcha...\n";
