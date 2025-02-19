@@ -7,11 +7,12 @@ WORKDIR /app
 # Copiar solo package.json y package-lock.json primero para aprovechar el cache de Docker
 COPY ./package.json ./package-lock.json /app/
 
+# Copiar el resto de los archivos de la aplicación
+COPY . /app
+
 # Instalar las dependencias de Node.js
 RUN npm install
-
-# Copiar el resto de los archivos de la aplicación
-COPY ./ /app
+RUN npm run build
 
 # Instalar netcat para la comprobación de red
 RUN apk add --no-cache netcat-openbsd

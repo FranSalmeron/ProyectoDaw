@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const SOCKET_URL = import.meta.env.VITE_API__URL;
+const SOCKET_URL = import.meta.env.VITE_API_WS_URL;
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -9,7 +9,7 @@ const Chat = () => {
 
   useEffect(() => {
     // Crear la conexión WebSocket
-    const socketConnection = new WebSocket(`${SOCKET_URL}/chat`);
+    const socketConnection = new WebSocket(`${SOCKET_URL}`);
 
     socketConnection.onopen = () => {
       console.log('Conectado al servidor WebSocket');
