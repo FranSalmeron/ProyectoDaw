@@ -6,9 +6,7 @@ export default defineConfig({
   plugins: [
     react(),],
   server:{
-    host:"0.0.0.0", // configucion para poder trabajar en el entorno de desarrollo real
-    port:3000,
-    // allowedHosts:['frontend']
+    host:"0.0.0.0",
+    allowedHosts:['frontend']
   }
 })
-

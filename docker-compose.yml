@@ -7,9 +7,8 @@ services:
       dockerfile: DockerfileFrontendFJSP
     ports:
       - "3000:3000"  # Si es necesario para desarrollo, puedes exponer este puerto
-      # npm run build &
     command: >
-      npm start
+      npm run build
     environment:
       - CHOKIDAR_USEPOLLING=true # Asegura que los cambios en el frontend sean detectados
     depends_on:
