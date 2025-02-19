@@ -28,4 +28,5 @@ RUN a2enmod rewrite
 WORKDIR /var/www/html
 
 # Exponemos el puerto 80 para el contenedor
-EXPOSE 80
+EXPOSE 8001
+EXPOSE 8081
