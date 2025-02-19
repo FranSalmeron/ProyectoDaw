@@ -24,7 +24,7 @@ services:
       dockerfile: DockerfileBackendFJSP
     ports:
       - "8001:8001"  # Puerto para el backend (puedes cambiarlo)
-      - "8009:8009"  # Puerto WebSocket para Ratchet
+      - "8081:8081"  # Puerto WebSocket para Ratchet
     volumes:
       - ./backend:/app
     depends_on:

@@ -8,7 +8,12 @@ WORKDIR /app
 COPY . /app
 
 # Instalar las dependencias de Node.js
-RUN npm install
+RUN npm install vite@latest
+RUN npm ci
+RUN npm install crypto
+RUN npm install crypto-browserify
+# RUN npm run build
+
 
 # Instalar netcat para la comprobación
 RUN apk add --no-cache netcat-openbsd
