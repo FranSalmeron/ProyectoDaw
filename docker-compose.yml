@@ -29,7 +29,7 @@ services:
       symfony server:start --port=8001 --allow-http --no-tls --allow-all-ip &
       php bin/console gos:websocket:server --port=8081 
     volumes:
-      - ./backend/proyecto:/app
+      - ./backend/proyecto:/var/www/html
     depends_on:
       - database
     environment:
