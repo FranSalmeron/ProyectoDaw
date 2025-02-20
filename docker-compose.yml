@@ -24,15 +24,17 @@ services:
     ports:
       - "8001:8001"  # Puerto para el backend (puedes cambiarlo)
       - "8081:8081"  # Puerto WebSocket para Ratchet
+    restart: always
+    # Luego dentro ejecutar el comando php bin/console gos:websocket:server para iniciar el websocket
     command: >
-      symfony server:start --port=8001 --allow-http --no-tls --allow-all-ip &
-      php bin/console gos:websocket:server
+      sh -c "symfony server:start --no-tls --port=8001 --allow-all-ip & tail -f /dev/null"
     volumes:
       - ./backend/proyecto:/var/www/html
     depends_on:
       - database
     environment:
       - DATABASE_URL=mysql://salmeron:salmeron@database:3306/Proyecto-FJSP
+      - HOST=0.0.0.0
     networks:
       - app-network
 
@@ -83,6 +85,7 @@ services:
 
 networks:
   app-network:
+    name: app-network
     driver: bridge
 
 volumes:

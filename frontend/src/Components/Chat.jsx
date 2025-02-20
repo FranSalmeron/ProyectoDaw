@@ -36,49 +36,73 @@ const Chat = () => {
       }
     };
 
-    socketConnection.onclose = () => {
-      console.log('Conexión cerrada');
+    socketConnection.onclose = (event) => {
+      console.log('Conexión cerrada', event);
+      // Si se cierra la conexión, podrías intentar reconectar aquí.
     };
-
+    
+    socketConnection.onerror = (error) => {
+      console.error('Error en WebSocket:', error);
+    };
+    
     setSocket(socketConnection);
 
-    // Cleanup al cerrar el componente
+    // No cerramos la conexión automáticamente cuando el componente se desmonta
+
     return () => {
-      socketConnection.close();
+      // Este return ahora no cierra la conexión
+      // solo se cierra cuando el usuario hace clic en "Abandonar"
     };
-  }, []);
+  }, []);  // Este useEffect solo se ejecuta una vez cuando el componente se monta
+
+  const userId = 'user-123'; // Reemplaza esto por un identificador único del usuario
 
   const sendMessage = () => {
     if (socket && message) {
       const msg = {
-        type: 'message',
-        from: `Usuario ${Math.floor(Math.random() * 1000)}`,  // Simula un ID de usuario único
-        message, // El contenido del mensaje
+        type: 'message',  // Tipo de mensaje
+        from: userId,     // Usa un identificador de usuario estático
+        message: message, // El contenido del mensaje
       };
-      socket.send(JSON.stringify(msg));
-      setMessage(''); // Limpiar el campo del mensaje
+
+      try {
+        socket.send(JSON.stringify(msg)); // Enviar el mensaje
+        setMessage(''); // Limpiar el campo de mensaje después de enviar
+      } catch (error) {
+        console.error('Error al enviar mensaje:', error);
+      }
     }
   };
+    // Función para cerrar la conexión WebSocket manualmente
+    const disconnect = () => {
+      if (socket) {
+        socket.close(); // Cerrar la conexión WebSocket
+        console.log('Conexión cerrada manualmente');
+      }
+    };
 
-  return (
-    <div>
-      <h1>Chat en Tiempo Real</h1>
+    return (
       <div>
-        {messages.map((msg, index) => (
-          <div key={index}>
-            <strong>{msg.user}: </strong>{msg.content}
-          </div>
-        ))}
-      </div>
-      <input
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Escribe un mensaje"
-      />
-      <button onClick={sendMessage}>Enviar</button>
-    </div>
-  );
-};
+        <h1>Chat en Tiempo Real</h1>
+        <div>
+          {messages.map((msg, index) => (
+            <div key={index}>
+              <strong>{msg.user}: </strong>{msg.content}
+            </div>
+          ))}
+        </div>
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Escribe un mensaje"
+        />
+        <button onClick={sendMessage}>Enviar</button>
 
-export default Chat;
+        {/* Botón para cerrar la conexión WebSocket */}
+        <button onClick={disconnect}>Abandonar chat</button>
+      </div>
+    );
+  };
+
+  export default Chat;

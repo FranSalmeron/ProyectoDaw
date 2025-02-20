@@ -3,6 +3,7 @@ FROM php:8.1-apache
 
 # Instalamos las dependencias necesarias para Symfony
 RUN apt-get update && apt-get install -y \
+    supervisord \
     libzip-dev \
     unzip \
     git \
@@ -30,3 +31,4 @@ WORKDIR /var/www/html
 # Exponemos el puerto 80 para el contenedor
 EXPOSE 8001
 EXPOSE 8081
+
