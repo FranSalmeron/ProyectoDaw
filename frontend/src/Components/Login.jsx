@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const SOCKET_URL = import.meta.env.VITE_API_WS_URL;
+const SOCKET_URL = import.meta.env.VITE_API_URL;
 
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -11,7 +11,7 @@ const Login = ({ onLogin }) => {
     e.preventDefault();
 
     // Hacer la solicitud al backend para obtener el JWT
-    const response = await fetch('http://localhost:8000/api/login', {
+    const response = await fetch(`${SOCKET_URL}/api/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
