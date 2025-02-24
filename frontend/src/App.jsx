@@ -7,6 +7,7 @@ const wsUrl = import.meta.env.VITE_API_WS_URL;
 
 function App() {
 const [message, setMessage] = useState('');
+
 useEffect(() => {
 fetch(`/api/db`)
 .then((res) => res.json())
