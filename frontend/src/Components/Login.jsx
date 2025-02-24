@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';  // Importar Toastify
+import 'react-toastify/dist/ReactToastify.css';  // Importar los estilos
 
 const SOCKET_URL = import.meta.env.VITE_API_URL;
 
@@ -29,29 +31,13 @@ const Login = ({ onLogin }) => {
       // Llamar a onLogin para que el chat pueda usar el JWT
       onLogin(token);
 
-      // Aquí es donde debes realizar la conexión WebSocket, pasándole el JWT como parte de las cabeceras
-      const socket = new WebSocket(`${SOCKET_URL}/chat`, [], {
-        headers: {
-          Authorization: `Bearer ${token}`,  // Enviar el token en las cabeceras
-        },
-      });
-
-      // Usar esta conexión para gestionar los mensajes del chat
-      socket.onmessage = (event) => {
-        console.log(event.data); // Aquí manejas los mensajes recibidos en el WebSocket
-      };
-
-      socket.onerror = (error) => {
-        console.error('WebSocket error:', error);
-      };
-
-      socket.onopen = () => {
-        console.log('Conexión WebSocket establecida');
-      };
+      // Mostrar notificación de login exitoso
+      toast.success('¡Login exitoso!');  // Notificación de éxito
 
     } else {
       const errorData = await response.json();
       setError(errorData.message || 'Error al iniciar sesión');
+      toast.error('Error al iniciar sesión');  // Notificación de error
     }
   };
 
@@ -76,6 +62,9 @@ const Login = ({ onLogin }) => {
         <button type="submit">Iniciar sesión</button>
       </form>
       {error && <p>{error}</p>}
+
+      {/* Contenedor para las notificaciones */}
+      <ToastContainer />
     </div>
   );
 };

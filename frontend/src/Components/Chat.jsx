@@ -1,51 +1,73 @@
 import React, { useEffect, useState } from 'react';
 import Login from './Login';
 
-const SOCKET_URL = import.meta.env.VITE_API_WS_URL;
+const SOCKET_URL_WS = import.meta.env.VITE_API_WS_URL;
+const SOCKET_URL = import.meta.env.VITE_API_URL
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [socket, setSocket] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [loading, setLoading] = useState(true);  // Estado de carga para saber si se está validando el token
+
+  useEffect(() => {
+    const token = localStorage.getItem('jwt');
+    if (token) {
+      validateToken(token);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const validateToken = async (token) => {
+    try {
+      const response = await fetch(`${SOCKET_URL}/api/verify-token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserId(data.userId); // El backend debe devolver el userId si el token es válido
+        handleLogin(token);
+      } else {
+        // Si el token no es válido o ha expirado, borrar el token y redirigir al login
+        localStorage.removeItem('jwt');
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Error al verificar el token:', error);
+      localStorage.removeItem('jwt');
+      setLoading(false);
+    }
+  };
 
   const handleLogin = (token) => {
-    // Decodificar el token (podrías usar jwt-decode para obtener el userId, pero es solo un ejemplo)
     const decoded = JSON.parse(atob(token.split('.')[1]));
     setUserId(decoded.userId);
 
-    // Crear la conexión WebSocket
-    const socketConnection = new WebSocket(`${SOCKET_URL}`);
+    const socketConnection = new WebSocket(`${SOCKET_URL}?token=${token}`);
 
     socketConnection.onopen = () => {
       console.log('Conectado al servidor WebSocket');
-
-      // Enviar el JWT en la cabecera de la solicitud
       socketConnection.send(JSON.stringify({ type: 'authenticate', token }));
     };
 
+
     socketConnection.onmessage = (event) => {
       const newMessage = JSON.parse(event.data);
-      if (newMessage.type === 'message') {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { user: newMessage.from, content: newMessage.message },
-        ]);
-      } else if (newMessage.type === 'system') {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { user: 'Sistema', content: newMessage.message },
-        ]);
-      } else if (newMessage.type === 'welcome') {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { user: 'Sistema', content: newMessage.message },
-        ]);
-      }
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { user: newMessage.from, content: newMessage.message },
+      ]);
     };
 
-    socketConnection.onclose = (event) => {
-      console.log('Conexión cerrada', event);
+    socketConnection.onclose = () => {
+      console.log('Conexión cerrada');
     };
 
     socketConnection.onerror = (error) => {
@@ -58,14 +80,14 @@ const Chat = () => {
   const sendMessage = () => {
     if (socket && message) {
       const msg = {
-        type: 'message',  // Tipo de mensaje
-        from: userId,     // Usa el ID de usuario
-        message: message, // El contenido del mensaje
+        type: 'message',
+        from: userId,
+        message,
       };
 
       try {
-        socket.send(JSON.stringify(msg)); // Enviar el mensaje
-        setMessage(''); // Limpiar el campo de mensaje después de enviar
+        socket.send(JSON.stringify(msg));
+        setMessage('');
       } catch (error) {
         console.error('Error al enviar mensaje:', error);
       }
@@ -74,10 +96,14 @@ const Chat = () => {
 
   const disconnect = () => {
     if (socket) {
-      socket.close(); // Cerrar la conexión WebSocket
+      socket.close();
       console.log('Conexión cerrada manualmente');
     }
   };
+
+  if (loading) {
+    return <div>Validando token...</div>;
+  }
 
   if (!userId) {
     return <Login onLogin={handleLogin} />;
