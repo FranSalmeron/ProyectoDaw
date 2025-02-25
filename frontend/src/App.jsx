@@ -2,9 +2,6 @@ import { useEffect, useState } from 'react';
 import './App.css'
 import Chat from './Components/Chat.jsx';
 
-const apiUrl = import.meta.env.VITE_API_URL;
-const wsUrl = import.meta.env.VITE_API_WS_URL;
-
 function App() {
 const [message, setMessage] = useState('');
 return (

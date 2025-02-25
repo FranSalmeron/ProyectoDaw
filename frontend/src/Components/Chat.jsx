@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Login from './Login';
 
-const SOCKET_URL_WS = import.meta.env.VITE_API_WS_URL;
+const SOCKET_URL_WS = import.meta.env.VITE_API_WS_URL
 const SOCKET_URL = import.meta.env.VITE_API_URL
+let token = null;
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -12,16 +13,16 @@ const Chat = () => {
   const [loading, setLoading] = useState(true);  // Estado de carga para saber si se está validando el token
 
   useEffect(() => {
-    const token = localStorage.getItem('jwt');
+    token = localStorage.getItem('jwt');
     if (token) {
       validateToken(token);
     } else {
       setLoading(false);
     }
   }, []);
-
   const validateToken = async (token) => {
     try {
+      token = localStorage.getItem('jwt');
       const response = await fetch(`${SOCKET_URL}/api/verify-token`, {
         method: 'POST',
         headers: {
@@ -29,13 +30,16 @@ const Chat = () => {
           'Authorization': `Bearer ${token}`,
         },
       });
-
+  
+      // Verificar si la respuesta es un error
       if (response.ok) {
         const data = await response.json();
         setUserId(data.userId); // El backend debe devolver el userId si el token es válido
         handleLogin(token);
       } else {
         // Si el token no es válido o ha expirado, borrar el token y redirigir al login
+        const errorData = await response.json();  // Aquí manejamos el error del backend
+        console.error("Error en la validación del token:", errorData.error);
         localStorage.removeItem('jwt');
         setLoading(false);
       }
@@ -44,13 +48,14 @@ const Chat = () => {
       localStorage.removeItem('jwt');
       setLoading(false);
     }
-  };
+  };  
 
   const handleLogin = (token) => {
     const decoded = JSON.parse(atob(token.split('.')[1]));
     setUserId(decoded.userId);
-
-    const socketConnection = new WebSocket(`${SOCKET_URL}?token=${token}`);
+    token = localStorage.getItem('jwt');
+    
+    const socketConnection = new WebSocket(`${SOCKET_URL_WS}?token=${token}`);
 
     socketConnection.onopen = () => {
       console.log('Conectado al servidor WebSocket');
