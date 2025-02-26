@@ -65,7 +65,6 @@ const Chat = () => {
       };
 
       socketConnection.onmessage = (event) => {
-        console.log("Mensaje recibido:", event.data);
         const receivedMessage = JSON.parse(event.data);
         if (receivedMessage.type === 'message') {
           // Agregar el nuevo mensaje al estado de mensajes
