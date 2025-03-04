@@ -651,7 +651,9 @@
       <argument type="service" id="doctrine"/>
     </service>
     <service id="App\Security\JwtAuthenticationEntryPoint" class="App\Security\JwtAuthenticationEntryPoint" autowire="true" autoconfigure="true"/>
-    <service id="App\Security\JwtUserProvider" class="App\Security\JwtUserProvider" autowire="true" autoconfigure="true"/>
+    <service id="App\Security\JwtUserProvider" class="App\Security\JwtUserProvider" autowire="true" autoconfigure="true">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+    </service>
     <service id="App\Service\JwtAuthService" class="App\Service\JwtAuthService" autowire="true" autoconfigure="true">
       <argument type="service" id="lexik_jwt_authentication.encoder.lcobucci"/>
       <argument type="service" id="doctrine.orm.default_entity_manager"/>
@@ -822,16 +824,7 @@
     <service id="gos_web_socket.registry.origins" class="Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry" public="true">
       <tag name="container.private" package="gos/web-socket-bundle" version="3.9"/>
       <call method="addOrigin">
-        <argument>http://localhost:3000</argument>
-      </call>
-      <call method="addOrigin">
-        <argument>http://localhost</argument>
-      </call>
-      <call method="addOrigin">
-        <argument>http://backend:3000</argument>
-      </call>
-      <call method="addOrigin">
-        <argument>http://backend</argument>
+        <argument>192.168.1.132</argument>
       </call>
     </service>
     <service id="gos_web_socket.registry.pusher" class="Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry" public="true">

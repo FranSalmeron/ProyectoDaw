@@ -2,7 +2,7 @@ gos_web_socket:
     server:
         host: '%env(WEB_SOCKET_HOST)%'  # Dirección IP o host del servidor WebSocket
         port: '%env(WEB_SOCKET_PORT)%'  # Puerto para WebSocket, típicamente 8080
-    origins: '192.168.1.132'
+    origins: ['192.168.1.132']  # Orígenes permitidos para la conexión WebSocket
 
     # Configuración del cliente
     client:

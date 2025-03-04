@@ -29,7 +29,7 @@ services:
     command: >
       sh -c "symfony server:start --no-tls --port=8001 --allow-all-ip & tail -f /dev/null"
     volumes:
-      - ./backend/proyecto:/var/www/html
+      - ./backend:/var/www/html
     depends_on:
       - database
     environment:
