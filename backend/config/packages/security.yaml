@@ -1,0 +1,24 @@
+security:
+    password_hashers:
+        App\Entity\User:
+            algorithm: auto
+    providers:
+        jwt_provider:
+            id: App\Security\JwtUserProvider
+
+    firewalls:
+        # Configuración para la ruta de login (sin autenticación)
+        login:
+            pattern: ^/api/login$
+            security: false  # Esta ruta no requiere autenticación
+        # Configuración para todas las rutas /api (excepto /api/login)
+        main:
+            pattern: ^/api  # Aplica el firewall a todas las rutas que comiencen con /api
+            stateless: true  # Sin estado para la autenticación
+            custom_authenticators:
+                - App\Service\JwtAuthService  # Autenticador personalizado para JWT
+            entry_point: App\Security\JwtAuthenticationEntryPoint  # Manejador de errores de autenticación
+
+    access_control:
+        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }  # Login accesible sin autenticación previa
+        - { path: ^/api, roles: ROLE_USER }  # Resto de rutas requiere autenticación

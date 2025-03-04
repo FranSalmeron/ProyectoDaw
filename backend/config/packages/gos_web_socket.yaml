@@ -1,0 +1,17 @@
+gos_web_socket:
+    server:
+        host: '%env(WEB_SOCKET_HOST)%'  # Dirección IP o host del servidor WebSocket
+        port: '%env(WEB_SOCKET_PORT)%'  # Puerto para WebSocket, típicamente 8080
+    origins: '192.168.1.132'
+
+    # Configuración del cliente
+    client:
+        firewall: 'main'  # Firewall que puede estar en uso para la seguridad de WebSockets
+        session_handler: null  # Si no necesitas usar un session_handler, déjalo como null
+        storage: null  # Puedes usar esto si deseas persistir datos entre sesiones de WebSocket
+
+    # Configuración de otros aspectos del servidor, como ping y autenticación
+    authentication:
+        # Aquí puedes configurar tu autenticación si la necesitas
+        enable_authenticator: false  # Cambia a true si deseas habilitar la autenticación
+        # Otra configuración que desees agregar

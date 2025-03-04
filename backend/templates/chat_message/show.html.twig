@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ChatMessage{% endblock %}
+
+{% block body %}
+    <h1>ChatMessage</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Content</th>
+                <td>{{ chat_message.content }}</td>
+            </tr>
+            <tr>
+                <th>MessageDate</th>
+                <td>{{ chat_message.messageDate ? chat_message.messageDate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_chat_message_index') }}">back to list</a>
+
+    <a href="{{ path('app_chat_message_edit', {'chat': chat_message.chat}) }}">edit</a>
+
+    {{ include('chat_message/_delete_form.html.twig') }}
+{% endblock %}
