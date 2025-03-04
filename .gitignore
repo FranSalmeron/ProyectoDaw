@@ -4,6 +4,9 @@ node_modules/
 # Symfony
 /vendor/
 /var/
+/public/build/
+/public/assets/  # Si estás usando Webpack Encore para assets
+/public/bundles/  # Archivos generados por Symfony (en algunos casos, dependiendo de la configuración)
 
 # Dependencias de Docker (si estás usando Volúmenes en Docker)
 .docker/
@@ -23,3 +26,18 @@ composer.lock
 
 # Archivos de configuración de Composer
 /composer.phar
+
+# Archivos de caché de Symfony (además de /var/)
+var/cache/
+/var/sessions/
+
+# Archivos de configuración de Symfony
+/.env.local
+/.env.*.local
+
+# Carpeta de pruebas unitarias y de integración (si usas PHPUnit)
+tests/_output/
+
+# Otros archivos específicos de Symfony que no quieres seguir
+/.php_cs.cache
+/.php_cs.dist
