@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';  // Importar Toastify
-import 'react-toastify/dist/ReactToastify.css';  // Importar los estilos
+import { toast, ToastContainer } from 'react-toastify';  
+import 'react-toastify/dist/ReactToastify.css'; 
 
 const SOCKET_URL = import.meta.env.VITE_API_URL;
 
@@ -8,7 +8,7 @@ const Login = ({ onLogin, onValidateToken }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);  // Estado para el indicador de carga
+  const [loading, setLoading] = useState(false);  
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -27,20 +27,19 @@ const Login = ({ onLogin, onValidateToken }) => {
       const data = await response.json();
       const token = data.token;
 
-      // Guardar el token en localStorage
       localStorage.setItem('jwt', token);
 
       // Llamar a onLogin para pasar el token y continuar
       onLogin(token);
 
       // Mostrar notificación de login exitoso
-      toast.success('¡Login exitoso!');  // Notificación de éxito
-      setLoading(false);  // Desactivamos el indicador de carga
+      toast.success('¡Login exitoso!');  
+      setLoading(false); 
     } else {
       const errorData = await response.json();
       setError(errorData.message || 'Error al iniciar sesión');
       toast.error('Error al iniciar sesión');  // Notificación de error
-      setLoading(false);  // Desactivamos el indicador de carga
+      setLoading(false); 
     }
   };
 

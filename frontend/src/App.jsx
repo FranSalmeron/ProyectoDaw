@@ -3,10 +3,8 @@ import './App.css'
 import Chat from './Components/Chat.jsx';
 
 function App() {
-const [message, setMessage] = useState('');
 return (
 <>
-<Chat />
 <div>
 <h1>Frontend en React de Francisco José Salmerón Puig</h1>
 <p></p>

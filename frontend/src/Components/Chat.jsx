@@ -12,7 +12,7 @@ const Chat = () => {
   const [loading, setLoading] = useState(true);  // Estado de carga para saber si se está validando el token
 
   useEffect(() => {
-    const token = localStorage.getItem('jwt');  // Obtener el token del localStorage
+    const token = localStorage.getItem('jwt'); 
     if (token) {
       validateToken(token);  // Validar el token cuando se carga el componente
     } else {
@@ -33,7 +33,7 @@ const Chat = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setUserId(data.userId);  // El backend debe devolver el userId si el token es válido
+        setUserId(data.userId); 
         console.log("Token válido, id usuario:", data.userId);
         handleLogin();  // Manejar la conexión al WebSocket y abrir el chat
       } else {
@@ -52,13 +52,8 @@ const Chat = () => {
   // Función para manejar el login y abrir la conexión WebSocket
   const handleLogin = () => {
     try {
-      // Verifica si ya hay una conexión WebSocket abierta y ciérrala si es necesario
-      if (socket) {
-        socket.close();
-      }
-
       // Crea una nueva conexión WebSocket
-      const socketConnection = new WebSocket(SOCKET_URL_WS);  // Asegúrate de que la URL sea la correcta
+      const socketConnection = new WebSocket(SOCKET_URL_WS); 
 
       socketConnection.onopen = () => {
           console.log("Conectado al servidor WebSocket");
@@ -85,9 +80,9 @@ const Chat = () => {
           }
       };
 
-      // Guarda la referencia de la conexión WebSocket
+      
       setSocket(socketConnection);
-      setLoading(false);  // Ya no estamos en carga, el chat debe ser accesible
+      setLoading(false); 
     } catch (error) {
       console.error('Error al manejar el login o la conexión WebSocket', error);
       setLoading(false);  // No importa si falla la conexión, dejamos de cargar
