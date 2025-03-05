@@ -18,25 +18,19 @@ class Review
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: "seller_id", referencedColumnName: "id")]
     private ?User $seller = null;
-
-    // La calificación dada (de 1 a 5, por ejemplo)
     #[ORM\Column(type: "integer")]
     private ?int $rating = null;
 
-    // El contenido de la reseña
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $review = null;
 
-    // Fecha y hora de la reseña
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $reviewDate = null;
 
     public function __construct()
     {
-        $this->reviewDate = new \DateTime();  // Inicializamos la fecha con la fecha y hora actual
+        $this->reviewDate = new \DateTime();  // Inicializamos la fecha con la actual
     }
-
-    // Métodos getter y setter
 
     public function getId(): ?int
     {

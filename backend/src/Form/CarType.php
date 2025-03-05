@@ -29,8 +29,8 @@ class CarType extends AbstractType
             ->add('image')
             ->add('CarSold')
             ->add('User')
-            ->add('latitude')  // Añadido para latitud
-            ->add('longitude') // Añadido para longitud
+            ->add('latitude')  
+            ->add('longitude') 
         ;
     }
 

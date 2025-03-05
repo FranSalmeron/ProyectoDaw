@@ -33,10 +33,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $address = null;  // Campo para la dirección de envío
+    private ?string $address = null; 
 
     #[ORM\Column(length: 20, nullable: true)]
-    private ?string $phone = null;  // Campo para el teléfono
+    private ?string $phone = null; 
 
     #[ORM\OneToMany(targetEntity: Car::class, mappedBy: 'User')]
     private Collection $cars;
@@ -94,7 +94,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
-        // Si almacenas datos sensibles temporales, puedes eliminarlos aquí
+        //Para borrar datos temporales.
     }
 
     public function getName(): ?string
@@ -151,7 +151,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeCar(Car $car): static
     {
         if ($this->cars->removeElement($car)) {
-            // set the owning side to null (unless already changed)
             if ($car->getUser() === $this) {
                 $car->setUser(null);
             }

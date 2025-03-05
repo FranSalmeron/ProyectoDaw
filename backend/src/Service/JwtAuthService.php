@@ -85,19 +85,15 @@ class JwtAuthService extends AbstractAuthenticator
                 ->getRepository(User::class)
                 ->findOneBy(['name' => $username]);
 
-            // Si no se encuentra al usuario, lanzar una excepción
             if (!$user) {
                 throw new AuthenticationException('User not found');
             }
         } catch (\Exception $e) {
-            // Capturar errores generales relacionados con el token
             throw new AuthenticationException('Invalid token or error during verification');
         }
 
-        // Retornar el SelfValidatingPassport sin necesidad de la contraseña
-        // Usar el ID del usuario como identificador único
         return new SelfValidatingPassport(
-            new UserBadge($user->getId()) // Esto es correcto, ya que lo que está en el UserBadge es el userId
+            new UserBadge($user->getId()) 
         );
     }
 
@@ -107,23 +103,19 @@ class JwtAuthService extends AbstractAuthenticator
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        // Devuelve una respuesta JSON con el mensaje de error
         return new JsonResponse(
             ['error' => 'Authentication failed', 'message' => $exception->getMessage()],
-            403 // Código de estado HTTP 403 para "Forbidden"
+            403 
         );
     }
 
     /**
      * Responde al éxito de la autenticación.
      */
-    /**
-     * Responde al éxito de la autenticación.
-     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         // Obtener el ID del usuario desde el Token
-        $userId = $token->getUserIdentifier(); // Esto obtiene el userId de la entidad del usuario (usuario autenticado)
+        $userId = $token->getUserIdentifier();
 
         // Retornar el éxito junto con el ID del usuario
         return new JsonResponse(
@@ -131,7 +123,7 @@ class JwtAuthService extends AbstractAuthenticator
                 'success' => 'Authentication successful',
                 'userId' => $userId  // Aquí devolvemos el userId junto con el mensaje de éxito
             ],
-            200 // Código de estado HTTP 200 para "OK"
+            200 
         );
     }
 }

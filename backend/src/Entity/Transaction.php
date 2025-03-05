@@ -20,10 +20,9 @@ class Transaction
 
     // Relación con el coche comprado
     #[ORM\ManyToOne(targetEntity: Car::class)]
-    #[ORM\JoinColumn(name: "car_id", referencedColumnName: "id")]  // Aseguramos que haga referencia a CarID
+    #[ORM\JoinColumn(name: "car_id", referencedColumnName: "id")]  
     private ?Car $car = null;
 
-    // El precio del coche en el momento de la compra
     #[ORM\Column(type: "decimal", precision: 10, scale: 2)]
     private ?float $price = null;
 
@@ -31,7 +30,6 @@ class Transaction
     #[ORM\Column(type: "string", length: 20)]
     private ?string $status = null;
 
-    // Fecha y hora de la transacción
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $transactionDate = null;
 
@@ -40,7 +38,6 @@ class Transaction
         $this->transactionDate = new \DateTime();
     }
 
-    // Métodos getter y setter
 
     public function getId(): ?int
     {

@@ -8,11 +8,11 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ChatRepository::class)]
 class Chat
 {
-    // Cambiar 'ChatID' por 'id' y hacerlo clave primaria con generación automática
+   
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
-    private ?int $id = null;  // Cambio de ChatID a id
+    private ?int $id = null;  
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: "user1_id", referencedColumnName: "id")]
@@ -48,7 +48,6 @@ class Chat
         return $this;
     }
 
-    // Getter y setter para 'user2'
     public function getUser2(): ?User
     {
         return $this->user2;
@@ -60,7 +59,6 @@ class Chat
         return $this;
     }
 
-    // Getter y setter para 'createdDate'
     public function getCreatedDate(): \DateTimeInterface
     {
         return $this->createdDate;

@@ -67,12 +67,10 @@ class Car
     private ?User $User = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 6, nullable: true)]
-    private ?float $latitude = null;  // Latitud
+    private ?float $latitude = null; 
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 6, nullable: true)]
-    private ?float $longitude = null;  // Longitud
-
-    // Métodos de acceso y mutadores para latitud y longitud
+    private ?float $longitude = null; 
 
     public function getLatitude(): ?float
     {

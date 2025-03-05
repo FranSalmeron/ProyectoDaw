@@ -43,7 +43,7 @@ class ChatHub implements MessageComponentInterface
 
         // Enviar mensaje a todos los clientes
         foreach ($this->clients as $client) {
-            $client->send($msg);  // Enviar a todos los clientes, incluyendo el que envió el mensaje
+            $client->send($msg);  
         }
     }
 

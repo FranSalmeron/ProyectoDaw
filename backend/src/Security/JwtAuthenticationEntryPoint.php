@@ -12,7 +12,6 @@ class JwtAuthenticationEntryPoint implements AuthenticationEntryPointInterface
 {
     public function start(Request $request, AuthenticationException $authException = null): Response
     {
-        // Aquí puedes devolver una respuesta personalizada para los errores de autenticación
         return new Response('Unauthorized', Response::HTTP_UNAUTHORIZED);
     }
 }

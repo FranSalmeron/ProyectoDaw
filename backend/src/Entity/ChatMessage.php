@@ -18,21 +18,17 @@ class ChatMessage
     #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id")]
     private ?User $user = null;
 
-    // El contenido del mensaje
     #[ORM\Column(type: "text")]
     private ?string $content = null;
 
-    // Fecha y hora de creación del mensaje
     #[ORM\Column(type: "datetime")]
     private \DateTimeInterface $messageDate;
 
-    // Constructor para inicializar la fecha de creación automáticamente
+    // Constructor para inicializar la fecha automáticamente
     public function __construct()
     {
         $this->messageDate = new \DateTime();
     }
-
-    // Métodos getter y setter
 
     public function getChat(): ?Chat
     {

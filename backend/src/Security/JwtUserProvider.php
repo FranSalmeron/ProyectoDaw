@@ -22,7 +22,6 @@ class JwtUserProvider implements UserProviderInterface
      */
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
-        // El $identifier aquí sería el userId que viene del JWT
         $user = $this->entityManager->getRepository(User::class)->find($identifier);
 
         if (!$user) {
@@ -33,11 +32,11 @@ class JwtUserProvider implements UserProviderInterface
     }
 
     /**
-     * Obtener el usuario por el username (se puede dejar vacío si no es necesario)
+     * Obtener el usuario por el username 
      */
     public function refreshUser(UserInterface $user)
     {
-        return $user;  // En este caso no necesitamos refrescar al usuario
+        return $user;  
     }
 
     public function supportsClass(string $class): bool
