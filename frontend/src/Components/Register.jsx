@@ -16,8 +16,8 @@ function Register() {
 
     // Función para validar el formato del email
     const validateEmail = (email) => {
-        const regex = /\S+@\S+\.\S+/;
-        return regex.test(email);
+        const emailRegex = /\S+@\S+\.\S+/;
+        return emailRegex.test(email);
     };
 
     const validatePhone = (phoneNumber) => {
@@ -65,7 +65,7 @@ function Register() {
     };
 
     return (
-        <div className="max-w-lg mx-auto bg-black text-white p-8 rounded-lg shadow-lg m-4">
+        <div className="w-9/10 max-w-md mx-auto bg-black text-white p-8 rounded-lg shadow-lg m-5">
         <h2 className="text-3xl font-bold text-center text-white-300 mb-6">Introduce tus datos</h2>
         
         <form onSubmit={handleSubmit}>

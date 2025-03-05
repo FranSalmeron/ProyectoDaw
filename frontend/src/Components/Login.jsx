@@ -4,12 +4,22 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const SOCKET_URL = import.meta.env.VITE_API_URL;
 
-const Login = ({ onLogin, onValidateToken }) => {
+const Login = ({ onLogin, onLoginSuccess }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);  
 
+  // Función para decodificar un token JWT y obtener el payload
+  const decodeJwt = (token) => {
+    const base64Url = token.split('.')[1];  
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); 
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    
+    return JSON.parse(jsonPayload);  // Convertimos el payload a un objeto JSON
+  };
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);  // Activamos el indicador de carga
@@ -27,14 +37,19 @@ const Login = ({ onLogin, onValidateToken }) => {
       const data = await response.json();
       const token = data.token;
 
-      localStorage.setItem('jwt', token);
+      const decodedToken = decodeJwt(token);
+      const userId = decodedToken.userId;
+      const userName = decodedToken.name;
 
-      // Llamar a onLogin para pasar el token y continuar
-      onLogin(token);
+      localStorage.setItem('jwt', token);
+      localStorage.setItem('userName', userName);
+      localStorage.setItem('userId', userId);
 
       // Mostrar notificación de login exitoso
       toast.success('¡Login exitoso!');  
       setLoading(false); 
+      onLogin(username);
+      onLoginSuccess();
     } else {
       const errorData = await response.json();
       setError(errorData.message || 'Error al iniciar sesión');
@@ -44,36 +59,55 @@ const Login = ({ onLogin, onValidateToken }) => {
   };
 
   return (
-    <div>
-      <h1>Iniciar sesión</h1>
-      <form onSubmit={handleLogin}>
-        <input
-          type="text"
-          placeholder="Usuario"
-          value={username}
-          required
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          required
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? 'Cargando...' : 'Iniciar sesión'}
-        </button>
-      </form>
-      {error && <p>{error}</p>}
+    <div className="w-9/10 max-w-md mx-auto bg-black text-white p-8 rounded-lg shadow-lg m-5">
+    <h1 className="text-3xl font-bold text-center text-white-500 mb-6">Iniciar sesión</h1>
+    
+    <form onSubmit={handleLogin}>
+        {/* Usuario */}
+        <div className="mb-4">
+            <label htmlFor="username" className="block text-lg font-medium mb-2">Usuario:</label>
+            <input
+                id="username"
+                type="text"
+                placeholder="Usuario"
+                value={username}
+                required
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+        </div>
 
-      {/* Botón para ingresar al chat */}
-      <button onClick={() => onValidateToken(localStorage.getItem('jwt'))}>
-        Ingresar al chat
-      </button>
+        {/* Contraseña */}
+        <div className="mb-6">
+            <label htmlFor="password" className="block text-lg font-medium mb-2">Contraseña:</label>
+            <input
+                id="password"
+                type="password"
+                placeholder="Contraseña"
+                value={password}
+                required
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+        </div>
 
-      {/* Contenedor para las notificaciones */}
-      <ToastContainer />
+        {/* Botón de submit */}
+        <div className="flex justify-center mb-4">
+            <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-500"
+            >
+                {loading ? 'Cargando...' : 'Iniciar sesión'}
+            </button>
+        </div>
+    </form>
+
+        {/* Mensaje de error */}
+        {error && <p className="text-red-500 text-center">{error}</p>}
+
+        {/* Contenedor para las notificaciones */}
+        <ToastContainer />
     </div>
   );
 };
