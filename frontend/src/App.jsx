@@ -6,7 +6,7 @@ function App() {
 return (
 <>
 <div>
-<h1>Frontend en React de Francisco José Salmerón Puig</h1>
+<h1 class="text-bold text-5xl">Frontend en React de Francisco José Salmerón Puig</h1>
 <p></p>
 <p></p>
 </div>
