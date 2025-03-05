@@ -27,26 +27,32 @@ class UserController extends AbstractController
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     public function new(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
     {
-        $user = new User();
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
-    
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Cifrar la contraseña antes de persistirla
-            $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
-            $user->setPassword($hashedPassword);
-    
-            $entityManager->persist($user);
-            $entityManager->flush();
-    
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+        // Obtener los datos del cuerpo de la solicitud (JSON)
+        $data = json_decode($request->getContent(), true);
+
+        // Validar si los datos existen
+        if (!$data) {
+            return $this->json(['error' => 'Invalid data'], Response::HTTP_BAD_REQUEST);
         }
-    
-        return $this->renderForm('user/new.html.twig', [
-            'user' => $user,
-            'form' => $form,
-        ]);
+
+        
+        $user = new User();
+        $user->setName($data['name']);
+        $user->setEmail($data['email']);
+        $user->setAddress($data['address']);
+        $user->setPhone($data['phone']);
+        $user->setRoles($data['roles']); 
+        $user->setPassword($data['password']);
+
+        $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
+        $user->setPassword($hashedPassword);
+
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->json(['message' => 'User registered successfully'], Response::HTTP_CREATED);
     }
+
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
@@ -77,7 +83,7 @@ class UserController extends AbstractController
     #[Route('/{id}/delete', name: 'app_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();
         }
