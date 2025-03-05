@@ -9,8 +9,8 @@ return (
 <Chat />
 <div>
 <h1>Frontend en React de Francisco José Salmerón Puig</h1>
-<p>Esta aplicación se conecta al backend de Symfony pidiéndole una respuesta</p>
-<p>respuesta del Backend: {message || 'Cargando información...'}</p>
+<p></p>
+<p></p>
 </div>
 </>
 );

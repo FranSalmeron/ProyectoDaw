@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use App\Repository\TransactionRepository;
@@ -21,7 +20,7 @@ class Transaction
 
     // Relación con el coche comprado
     #[ORM\ManyToOne(targetEntity: Car::class)]
-    #[ORM\JoinColumn(name: "car_id", referencedColumnName: "CarID")]
+    #[ORM\JoinColumn(name: "car_id", referencedColumnName: "id")]  // Aseguramos que haga referencia a CarID
     private ?Car $car = null;
 
     // El precio del coche en el momento de la compra

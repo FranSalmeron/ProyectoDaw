@@ -13,7 +13,7 @@ class Car
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
-    private ?int $CarID = null;
+    private ?int $id = null;
     
     #[ORM\Column(length: 100)]
     private ?string $brand = null;
@@ -66,18 +66,41 @@ class Car
     #[ORM\ManyToOne(inversedBy: 'cars')]
     private ?User $User = null;
 
-    // Métodos de acceso y mutadores para CarID y otros campos...
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 6, nullable: true)]
+    private ?float $latitude = null;  // Latitud
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 6, nullable: true)]
+    private ?float $longitude = null;  // Longitud
+
+    // Métodos de acceso y mutadores para latitud y longitud
+
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?float $latitude): static
+    {
+        $this->latitude = $latitude;
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?float $longitude): static
+    {
+        $this->longitude = $longitude;
+        return $this;
+    }
 
     public function getCarID(): ?int
     {
-        return $this->CarID;
+        return $this->id;
     }
 
-    public function setCarID(int $CarID): static
-    {
-        $this->CarID = $CarID;
-        return $this;
-    }
 
     public function getBrand(): ?string
     {
