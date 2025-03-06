@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[Route('/car')]
 class CarController extends AbstractController
@@ -27,19 +28,27 @@ class CarController extends AbstractController
     {
         $car = new Car();
         $form = $this->createForm(CarType::class, $car);
-        $form->handleRequest($request);
+        $form->submit($request->request->all());
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Cargar la imagen si existe
+            $imageFile = $request->files->get('image');  // Obtener el archivo cargado
+            
+            if ($imageFile instanceof UploadedFile) {  // Verificar si es un objeto UploadedFile
+                $destination = $this->getParameter('upload_dir');
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+                $imageFile->move($destination, $newFilename);
+                $car->setImage($newFilename);  // Guardar el nombre del archivo en la base de datos
+            }
+
+            // Guardar los datos del coche
             $entityManager->persist($car);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_car_index', [], Response::HTTP_SEE_OTHER);
+            return $this->json(['message' => 'Coche creado con éxito', 'status' => 'success']);
         }
 
-        return $this->renderForm('car/new.html.twig', [
-            'car' => $car,
-            'form' => $form,
-        ]);
+        return $this->json(['message' => 'Error al procesar el formulario', 'status' => 'error']);
     }
 
     #[Route('/{CarID}', name: 'app_car_show', methods: ['GET'])]

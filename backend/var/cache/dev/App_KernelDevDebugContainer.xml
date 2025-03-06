@@ -94,6 +94,7 @@
     </parameter>
     <parameter key="kernel.charset">UTF-8</parameter>
     <parameter key="kernel.container_class">App_KernelDevDebugContainer</parameter>
+    <parameter key="upload_dir">/var/www/html/public/uploads/images</parameter>
     <parameter key="gos_web_socket.shared_config">true</parameter>
     <parameter key="gos_web_socket.client.storage.ttl">900</parameter>
     <parameter key="gos_web_socket.firewall" type="collection">

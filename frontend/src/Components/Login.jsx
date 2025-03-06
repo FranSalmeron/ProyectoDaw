@@ -59,13 +59,13 @@ const Login = ({ onLogin, onLoginSuccess }) => {
   };
 
   return (
-    <div className="w-9/10 max-w-md mx-auto bg-black text-white p-8 rounded-lg shadow-lg m-5">
-    <h1 className="text-3xl font-bold text-center text-white-500 mb-6">Iniciar sesión</h1>
+    <div class="w-9/10 max-w-md mx-auto bg-black text-white p-8 rounded-lg shadow-lg m-5">
+    <h1 class="text-3xl font-bold text-center text-white-500 mb-6">Iniciar sesión</h1>
     
     <form onSubmit={handleLogin}>
         {/* Usuario */}
-        <div className="mb-4">
-            <label htmlFor="username" className="block text-lg font-medium mb-2">Usuario:</label>
+        <div class="mb-4">
+            <label htmlFor="username" class="block text-lg font-medium mb-2">Usuario:</label>
             <input
                 id="username"
                 type="text"
@@ -73,13 +73,13 @@ const Login = ({ onLogin, onLoginSuccess }) => {
                 value={username}
                 required
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
             />
         </div>
 
         {/* Contraseña */}
-        <div className="mb-6">
-            <label htmlFor="password" className="block text-lg font-medium mb-2">Contraseña:</label>
+        <div class="mb-6">
+            <label htmlFor="password" class="block text-lg font-medium mb-2">Contraseña:</label>
             <input
                 id="password"
                 type="password"
@@ -87,16 +87,16 @@ const Login = ({ onLogin, onLoginSuccess }) => {
                 value={password}
                 required
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
             />
         </div>
 
         {/* Botón de submit */}
-        <div className="flex justify-center mb-4">
+        <div class="flex justify-center mb-4">
             <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-500"
+                class="w-full py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-500"
             >
                 {loading ? 'Cargando...' : 'Iniciar sesión'}
             </button>
@@ -104,7 +104,7 @@ const Login = ({ onLogin, onLoginSuccess }) => {
     </form>
 
         {/* Mensaje de error */}
-        {error && <p className="text-red-500 text-center">{error}</p>}
+        {error && <p class="text-red-500 text-center">{error}</p>}
 
         {/* Contenedor para las notificaciones */}
         <ToastContainer />

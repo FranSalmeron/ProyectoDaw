@@ -6,6 +6,7 @@ use App\Entity\Car;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class CarType extends AbstractType
 {
@@ -26,7 +27,14 @@ class CarType extends AbstractType
             ->add('location')
             ->add('publication_date')
             ->add('CarCondition')
-            ->add('image')
+            ->add('image', FileType::class, [
+                'label' => 'Imagen del coche',
+                'mapped' => false,  // No se mapea directamente al campo 'image' en la entidad
+                'required' => false,
+                'attr' => [
+                    'accept' => 'image/*',  // Solo se aceptan imágenes
+                ],
+            ])
             ->add('CarSold')
             ->add('User')
             ->add('latitude')  

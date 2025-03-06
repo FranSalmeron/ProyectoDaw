@@ -17,12 +17,17 @@ const NavBar = ({ userName, onSelectPage, onLogout }) => {
                     </li>
                     </div>
             ) : (
-                <div class="ml-auto flex items-center space-x-4">
-                    <li class="text-white">Bienvenido, {userName}</li>
+                <>
                     <li>
-                       <button onClick={onLogout} class="text-white">Cerrar sesión</button>
+                        <button onClick={() => onSelectPage('submitCar')} class="text-white">Poner coche a la venta</button>
                     </li>
-                </div>
+                    <div class="ml-auto flex items-center space-x-4">
+                        <li class="text-white">Bienvenido, {userName}</li>
+                        <li>
+                            <button onClick={onLogout} class="text-white">Cerrar sesión</button>
+                        </li>
+                    </div>
+                </>
             )}
         </ul>
     </nav>

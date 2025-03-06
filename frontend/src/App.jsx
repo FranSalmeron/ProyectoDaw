@@ -5,6 +5,7 @@ import NavBar from './Components/NavBar.jsx';
 import Register from './Components/Register.jsx';
 import Login from './Components/Login.jsx';
 import Home from './Components/Home.jsx';
+import SubmitCar from './Components/SubmitCar.jsx';
 
 function App() {
     const [currentPage, setCurrentPage] = useState('home');
@@ -23,14 +24,16 @@ function App() {
     
     const renderPage = () => {
         switch (currentPage) {
-          case 'home':
-            return <Home />;
-          case 'login':
-             return <Login onLogin={handleLogin} onLoginSuccess={() => setCurrentPage('home')} />;
-          case 'register':
-             return <Register />;
-          default:
-             return <Home />;
+            case 'home':
+                return <Home />;
+            case 'login':
+                return <Login onLogin={handleLogin} onLoginSuccess={() => setCurrentPage('home')} />;
+            case 'register':
+                return <Register />;
+            case 'submitCar':
+                return <SubmitCar />
+            default:
+                return <Home />;
         }
       };
     return (
