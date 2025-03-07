@@ -102,7 +102,7 @@ class __TwigTemplate_b00452651dfbcbeee732515821a0082e extends Template
     <table class=\"table\">
         <thead>
             <tr>
-                <th>CarID</th>
+                <th>Id</th>
                 <th>Brand</th>
                 <th>Model</th>
                 <th>Manufacture_year</th>
@@ -111,13 +111,13 @@ class __TwigTemplate_b00452651dfbcbeee732515821a0082e extends Template
                 <th>Color</th>
                 <th>FuelType</th>
                 <th>Transmission</th>
+                <th>Traction</th>
                 <th>Doors</th>
                 <th>Seats</th>
                 <th>Description</th>
-                <th>Location</th>
                 <th>Publication_date</th>
                 <th>CarCondition</th>
-                <th>Image</th>
+                <th>Images</th>
                 <th>CarSold</th>
                 <th>actions</th>
             </tr>
@@ -133,7 +133,7 @@ class __TwigTemplate_b00452651dfbcbeee732515821a0082e extends Template
             yield "            <tr>
                 <td>";
             // line 34
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["car"], "CarID", [], "any", false, false, false, 34), "html", null, true);
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["car"], "id", [], "any", false, false, false, 34), "html", null, true);
             yield "</td>
                 <td>";
             // line 35
@@ -169,19 +169,19 @@ class __TwigTemplate_b00452651dfbcbeee732515821a0082e extends Template
             yield "</td>
                 <td>";
             // line 43
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["car"], "doors", [], "any", false, false, false, 43), "html", null, true);
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["car"], "traction", [], "any", false, false, false, 43), "html", null, true);
             yield "</td>
                 <td>";
             // line 44
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["car"], "seats", [], "any", false, false, false, 44), "html", null, true);
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["car"], "doors", [], "any", false, false, false, 44), "html", null, true);
             yield "</td>
                 <td>";
             // line 45
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["car"], "description", [], "any", false, false, false, 45), "html", null, true);
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["car"], "seats", [], "any", false, false, false, 45), "html", null, true);
             yield "</td>
                 <td>";
             // line 46
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["car"], "location", [], "any", false, false, false, 46), "html", null, true);
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["car"], "description", [], "any", false, false, false, 46), "html", null, true);
             yield "</td>
                 <td>";
             // line 47
@@ -193,7 +193,7 @@ class __TwigTemplate_b00452651dfbcbeee732515821a0082e extends Template
             yield "</td>
                 <td>";
             // line 49
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["car"], "image", [], "any", false, false, false, 49), "html", null, true);
+            yield ((CoreExtension::getAttribute($this->env, $this->source, $context["car"], "images", [], "any", false, false, false, 49)) ? ($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(json_encode(CoreExtension::getAttribute($this->env, $this->source, $context["car"], "images", [], "any", false, false, false, 49)), "html", null, true)) : (""));
             yield "</td>
                 <td>";
             // line 50
@@ -202,11 +202,11 @@ class __TwigTemplate_b00452651dfbcbeee732515821a0082e extends Template
                 <td>
                     <a href=\"";
             // line 52
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_car_show", ["CarID" => CoreExtension::getAttribute($this->env, $this->source, $context["car"], "CarID", [], "any", false, false, false, 52)]), "html", null, true);
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_car_show", ["id" => CoreExtension::getAttribute($this->env, $this->source, $context["car"], "id", [], "any", false, false, false, 52)]), "html", null, true);
             yield "\">show</a>
                     <a href=\"";
             // line 53
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_car_edit", ["CarID" => CoreExtension::getAttribute($this->env, $this->source, $context["car"], "CarID", [], "any", false, false, false, 53)]), "html", null, true);
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_car_edit", ["id" => CoreExtension::getAttribute($this->env, $this->source, $context["car"], "id", [], "any", false, false, false, 53)]), "html", null, true);
             yield "\">edit</a>
                 </td>
             </tr>
@@ -278,7 +278,7 @@ class __TwigTemplate_b00452651dfbcbeee732515821a0082e extends Template
     <table class=\"table\">
         <thead>
             <tr>
-                <th>CarID</th>
+                <th>Id</th>
                 <th>Brand</th>
                 <th>Model</th>
                 <th>Manufacture_year</th>
@@ -287,13 +287,13 @@ class __TwigTemplate_b00452651dfbcbeee732515821a0082e extends Template
                 <th>Color</th>
                 <th>FuelType</th>
                 <th>Transmission</th>
+                <th>Traction</th>
                 <th>Doors</th>
                 <th>Seats</th>
                 <th>Description</th>
-                <th>Location</th>
                 <th>Publication_date</th>
                 <th>CarCondition</th>
-                <th>Image</th>
+                <th>Images</th>
                 <th>CarSold</th>
                 <th>actions</th>
             </tr>
@@ -301,7 +301,7 @@ class __TwigTemplate_b00452651dfbcbeee732515821a0082e extends Template
         <tbody>
         {% for car in cars %}
             <tr>
-                <td>{{ car.CarID }}</td>
+                <td>{{ car.id }}</td>
                 <td>{{ car.brand }}</td>
                 <td>{{ car.model }}</td>
                 <td>{{ car.manufactureYear }}</td>
@@ -310,17 +310,17 @@ class __TwigTemplate_b00452651dfbcbeee732515821a0082e extends Template
                 <td>{{ car.color }}</td>
                 <td>{{ car.fuelType }}</td>
                 <td>{{ car.transmission }}</td>
+                <td>{{ car.traction }}</td>
                 <td>{{ car.doors }}</td>
                 <td>{{ car.seats }}</td>
                 <td>{{ car.description }}</td>
-                <td>{{ car.location }}</td>
                 <td>{{ car.publicationDate ? car.publicationDate|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ car.CarCondition }}</td>
-                <td>{{ car.image }}</td>
+                <td>{{ car.images ? car.images|json_encode : '' }}</td>
                 <td>{{ car.CarSold ? 'Yes' : 'No' }}</td>
                 <td>
-                    <a href=\"{{ path('app_car_show', {'CarID': car.CarID}) }}\">show</a>
-                    <a href=\"{{ path('app_car_edit', {'CarID': car.CarID}) }}\">edit</a>
+                    <a href=\"{{ path('app_car_show', {'id': car.id}) }}\">show</a>
+                    <a href=\"{{ path('app_car_edit', {'id': car.id}) }}\">edit</a>
                 </td>
             </tr>
         {% else %}

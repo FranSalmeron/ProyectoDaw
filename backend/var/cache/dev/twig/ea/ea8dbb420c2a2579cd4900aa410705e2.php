@@ -102,10 +102,10 @@ class __TwigTemplate_8ecf6c8b59abacac20e1b22d5cc8f780 extends Template
     <table class=\"table\">
         <tbody>
             <tr>
-                <th>CarID</th>
+                <th>Id</th>
                 <td>";
         // line 12
-        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, (isset($context["car"]) || array_key_exists("car", $context) ? $context["car"] : (function () { throw new RuntimeError('Variable "car" does not exist.', 12, $this->source); })()), "CarID", [], "any", false, false, false, 12), "html", null, true);
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, (isset($context["car"]) || array_key_exists("car", $context) ? $context["car"] : (function () { throw new RuntimeError('Variable "car" does not exist.', 12, $this->source); })()), "id", [], "any", false, false, false, 12), "html", null, true);
         yield "</td>
             </tr>
             <tr>
@@ -165,31 +165,31 @@ class __TwigTemplate_8ecf6c8b59abacac20e1b22d5cc8f780 extends Template
         yield "</td>
             </tr>
             <tr>
-                <th>Doors</th>
+                <th>Traction</th>
                 <td>";
         // line 48
-        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, (isset($context["car"]) || array_key_exists("car", $context) ? $context["car"] : (function () { throw new RuntimeError('Variable "car" does not exist.', 48, $this->source); })()), "doors", [], "any", false, false, false, 48), "html", null, true);
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, (isset($context["car"]) || array_key_exists("car", $context) ? $context["car"] : (function () { throw new RuntimeError('Variable "car" does not exist.', 48, $this->source); })()), "traction", [], "any", false, false, false, 48), "html", null, true);
+        yield "</td>
+            </tr>
+            <tr>
+                <th>Doors</th>
+                <td>";
+        // line 52
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, (isset($context["car"]) || array_key_exists("car", $context) ? $context["car"] : (function () { throw new RuntimeError('Variable "car" does not exist.', 52, $this->source); })()), "doors", [], "any", false, false, false, 52), "html", null, true);
         yield "</td>
             </tr>
             <tr>
                 <th>Seats</th>
                 <td>";
-        // line 52
-        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, (isset($context["car"]) || array_key_exists("car", $context) ? $context["car"] : (function () { throw new RuntimeError('Variable "car" does not exist.', 52, $this->source); })()), "seats", [], "any", false, false, false, 52), "html", null, true);
+        // line 56
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, (isset($context["car"]) || array_key_exists("car", $context) ? $context["car"] : (function () { throw new RuntimeError('Variable "car" does not exist.', 56, $this->source); })()), "seats", [], "any", false, false, false, 56), "html", null, true);
         yield "</td>
             </tr>
             <tr>
                 <th>Description</th>
                 <td>";
-        // line 56
-        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, (isset($context["car"]) || array_key_exists("car", $context) ? $context["car"] : (function () { throw new RuntimeError('Variable "car" does not exist.', 56, $this->source); })()), "description", [], "any", false, false, false, 56), "html", null, true);
-        yield "</td>
-            </tr>
-            <tr>
-                <th>Location</th>
-                <td>";
         // line 60
-        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, (isset($context["car"]) || array_key_exists("car", $context) ? $context["car"] : (function () { throw new RuntimeError('Variable "car" does not exist.', 60, $this->source); })()), "location", [], "any", false, false, false, 60), "html", null, true);
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, (isset($context["car"]) || array_key_exists("car", $context) ? $context["car"] : (function () { throw new RuntimeError('Variable "car" does not exist.', 60, $this->source); })()), "description", [], "any", false, false, false, 60), "html", null, true);
         yield "</td>
             </tr>
             <tr>
@@ -207,10 +207,10 @@ class __TwigTemplate_8ecf6c8b59abacac20e1b22d5cc8f780 extends Template
         yield "</td>
             </tr>
             <tr>
-                <th>Image</th>
+                <th>Images</th>
                 <td>";
         // line 72
-        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, (isset($context["car"]) || array_key_exists("car", $context) ? $context["car"] : (function () { throw new RuntimeError('Variable "car" does not exist.', 72, $this->source); })()), "image", [], "any", false, false, false, 72), "html", null, true);
+        yield ((CoreExtension::getAttribute($this->env, $this->source, (isset($context["car"]) || array_key_exists("car", $context) ? $context["car"] : (function () { throw new RuntimeError('Variable "car" does not exist.', 72, $this->source); })()), "images", [], "any", false, false, false, 72)) ? ($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(json_encode(CoreExtension::getAttribute($this->env, $this->source, (isset($context["car"]) || array_key_exists("car", $context) ? $context["car"] : (function () { throw new RuntimeError('Variable "car" does not exist.', 72, $this->source); })()), "images", [], "any", false, false, false, 72)), "html", null, true)) : (""));
         yield "</td>
             </tr>
             <tr>
@@ -230,7 +230,7 @@ class __TwigTemplate_8ecf6c8b59abacac20e1b22d5cc8f780 extends Template
 
     <a href=\"";
         // line 83
-        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_car_edit", ["CarID" => CoreExtension::getAttribute($this->env, $this->source, (isset($context["car"]) || array_key_exists("car", $context) ? $context["car"] : (function () { throw new RuntimeError('Variable "car" does not exist.', 83, $this->source); })()), "CarID", [], "any", false, false, false, 83)]), "html", null, true);
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_car_edit", ["id" => CoreExtension::getAttribute($this->env, $this->source, (isset($context["car"]) || array_key_exists("car", $context) ? $context["car"] : (function () { throw new RuntimeError('Variable "car" does not exist.', 83, $this->source); })()), "id", [], "any", false, false, false, 83)]), "html", null, true);
         yield "\">edit</a>
 
     ";
@@ -283,8 +283,8 @@ class __TwigTemplate_8ecf6c8b59abacac20e1b22d5cc8f780 extends Template
     <table class=\"table\">
         <tbody>
             <tr>
-                <th>CarID</th>
-                <td>{{ car.CarID }}</td>
+                <th>Id</th>
+                <td>{{ car.id }}</td>
             </tr>
             <tr>
                 <th>Brand</th>
@@ -319,6 +319,10 @@ class __TwigTemplate_8ecf6c8b59abacac20e1b22d5cc8f780 extends Template
                 <td>{{ car.transmission }}</td>
             </tr>
             <tr>
+                <th>Traction</th>
+                <td>{{ car.traction }}</td>
+            </tr>
+            <tr>
                 <th>Doors</th>
                 <td>{{ car.doors }}</td>
             </tr>
@@ -331,10 +335,6 @@ class __TwigTemplate_8ecf6c8b59abacac20e1b22d5cc8f780 extends Template
                 <td>{{ car.description }}</td>
             </tr>
             <tr>
-                <th>Location</th>
-                <td>{{ car.location }}</td>
-            </tr>
-            <tr>
                 <th>Publication_date</th>
                 <td>{{ car.publicationDate ? car.publicationDate|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
@@ -343,8 +343,8 @@ class __TwigTemplate_8ecf6c8b59abacac20e1b22d5cc8f780 extends Template
                 <td>{{ car.CarCondition }}</td>
             </tr>
             <tr>
-                <th>Image</th>
-                <td>{{ car.image }}</td>
+                <th>Images</th>
+                <td>{{ car.images ? car.images|json_encode : '' }}</td>
             </tr>
             <tr>
                 <th>CarSold</th>
@@ -355,7 +355,7 @@ class __TwigTemplate_8ecf6c8b59abacac20e1b22d5cc8f780 extends Template
 
     <a href=\"{{ path('app_car_index') }}\">back to list</a>
 
-    <a href=\"{{ path('app_car_edit', {'CarID': car.CarID}) }}\">edit</a>
+    <a href=\"{{ path('app_car_edit', {'id': car.id}) }}\">edit</a>
 
     {{ include('car/_delete_form.html.twig') }}
 {% endblock %}

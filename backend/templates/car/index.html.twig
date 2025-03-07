@@ -8,7 +8,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>CarID</th>
+                <th>Id</th>
                 <th>Brand</th>
                 <th>Model</th>
                 <th>Manufacture_year</th>
@@ -17,13 +17,13 @@
                 <th>Color</th>
                 <th>FuelType</th>
                 <th>Transmission</th>
+                <th>Traction</th>
                 <th>Doors</th>
                 <th>Seats</th>
                 <th>Description</th>
-                <th>Location</th>
                 <th>Publication_date</th>
                 <th>CarCondition</th>
-                <th>Image</th>
+                <th>Images</th>
                 <th>CarSold</th>
                 <th>actions</th>
             </tr>
@@ -31,7 +31,7 @@
         <tbody>
         {% for car in cars %}
             <tr>
-                <td>{{ car.CarID }}</td>
+                <td>{{ car.id }}</td>
                 <td>{{ car.brand }}</td>
                 <td>{{ car.model }}</td>
                 <td>{{ car.manufactureYear }}</td>
@@ -40,17 +40,17 @@
                 <td>{{ car.color }}</td>
                 <td>{{ car.fuelType }}</td>
                 <td>{{ car.transmission }}</td>
+                <td>{{ car.traction }}</td>
                 <td>{{ car.doors }}</td>
                 <td>{{ car.seats }}</td>
                 <td>{{ car.description }}</td>
-                <td>{{ car.location }}</td>
                 <td>{{ car.publicationDate ? car.publicationDate|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ car.CarCondition }}</td>
-                <td>{{ car.image }}</td>
+                <td>{{ car.images ? car.images|json_encode : '' }}</td>
                 <td>{{ car.CarSold ? 'Yes' : 'No' }}</td>
                 <td>
-                    <a href="{{ path('app_car_show', {'CarID': car.CarID}) }}">show</a>
-                    <a href="{{ path('app_car_edit', {'CarID': car.CarID}) }}">edit</a>
+                    <a href="{{ path('app_car_show', {'id': car.id}) }}">show</a>
+                    <a href="{{ path('app_car_edit', {'id': car.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}

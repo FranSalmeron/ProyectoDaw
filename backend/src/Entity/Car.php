@@ -9,12 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: CarRepository::class)]
 class Car
 {
-    
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
     private ?int $id = null;
-    
+
     #[ORM\Column(length: 100)]
     private ?string $brand = null;
 
@@ -39,6 +39,10 @@ class Car
     #[ORM\Column(length: 50)]
     private ?string $transmission = null;
 
+    #[ORM\Column(length: 50)]
+    private ?string $traction = null;
+
+
     #[ORM\Column]
     private ?int $doors = null;
 
@@ -48,17 +52,14 @@ class Car
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $location = null;
-
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $publication_date = null;
 
     #[ORM\Column(length: 50)]
     private ?string $CarCondition = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $image = null;
+    #[ORM\Column(type: "json", nullable: true)]
+    private ?array $images = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $CarSold = null;
@@ -66,35 +67,7 @@ class Car
     #[ORM\ManyToOne(inversedBy: 'cars')]
     private ?User $User = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 6, nullable: true)]
-    private ?float $latitude = null; 
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 6, nullable: true)]
-    private ?float $longitude = null; 
-
-    public function getLatitude(): ?float
-    {
-        return $this->latitude;
-    }
-
-    public function setLatitude(?float $latitude): static
-    {
-        $this->latitude = $latitude;
-        return $this;
-    }
-
-    public function getLongitude(): ?float
-    {
-        return $this->longitude;
-    }
-
-    public function setLongitude(?float $longitude): static
-    {
-        $this->longitude = $longitude;
-        return $this;
-    }
-
-    public function getCarID(): ?int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -188,6 +161,17 @@ class Car
         return $this;
     }
 
+    public function getTraction(): ?string
+    {
+        return $this->traction;
+    }
+
+    public function setTraction(string $traction): static
+    {
+        $this->traction = $traction;
+        return $this;
+    }
+
     public function getDoors(): ?int
     {
         return $this->doors;
@@ -221,17 +205,6 @@ class Car
         return $this;
     }
 
-    public function getLocation(): ?string
-    {
-        return $this->location;
-    }
-
-    public function setLocation(string $location): static
-    {
-        $this->location = $location;
-        return $this;
-    }
-
     public function getPublicationDate(): ?\DateTimeInterface
     {
         return $this->publication_date;
@@ -254,14 +227,14 @@ class Car
         return $this;
     }
 
-    public function getImage(): ?string
+    public function getImages(): ?array
     {
-        return $this->image;
+        return $this->images;
     }
 
-    public function setImage(?string $image): static
+    public function setImages(?array $images): static
     {
-        $this->image = $image;
+        $this->images = $images;
         return $this;
     }
 
@@ -288,4 +261,3 @@ class Car
         return $this;
     }
 }
-

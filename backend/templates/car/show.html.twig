@@ -8,8 +8,8 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>CarID</th>
-                <td>{{ car.CarID }}</td>
+                <th>Id</th>
+                <td>{{ car.id }}</td>
             </tr>
             <tr>
                 <th>Brand</th>
@@ -44,6 +44,10 @@
                 <td>{{ car.transmission }}</td>
             </tr>
             <tr>
+                <th>Traction</th>
+                <td>{{ car.traction }}</td>
+            </tr>
+            <tr>
                 <th>Doors</th>
                 <td>{{ car.doors }}</td>
             </tr>
@@ -56,10 +60,6 @@
                 <td>{{ car.description }}</td>
             </tr>
             <tr>
-                <th>Location</th>
-                <td>{{ car.location }}</td>
-            </tr>
-            <tr>
                 <th>Publication_date</th>
                 <td>{{ car.publicationDate ? car.publicationDate|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
@@ -68,8 +68,8 @@
                 <td>{{ car.CarCondition }}</td>
             </tr>
             <tr>
-                <th>Image</th>
-                <td>{{ car.image }}</td>
+                <th>Images</th>
+                <td>{{ car.images ? car.images|json_encode : '' }}</td>
             </tr>
             <tr>
                 <th>CarSold</th>
@@ -80,7 +80,7 @@
 
     <a href="{{ path('app_car_index') }}">back to list</a>
 
-    <a href="{{ path('app_car_edit', {'CarID': car.CarID}) }}">edit</a>
+    <a href="{{ path('app_car_edit', {'id': car.id}) }}">edit</a>
 
     {{ include('car/_delete_form.html.twig') }}
 {% endblock %}

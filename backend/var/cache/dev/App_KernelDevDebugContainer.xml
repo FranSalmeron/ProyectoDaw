@@ -94,7 +94,7 @@
     </parameter>
     <parameter key="kernel.charset">UTF-8</parameter>
     <parameter key="kernel.container_class">App_KernelDevDebugContainer</parameter>
-    <parameter key="upload_dir">/var/www/html/public/uploads/images</parameter>
+    <parameter key="images_directory">/var/www/html/public/uploads/images</parameter>
     <parameter key="gos_web_socket.shared_config">true</parameter>
     <parameter key="gos_web_socket.client.storage.ttl">900</parameter>
     <parameter key="gos_web_socket.firewall" type="collection">
@@ -659,6 +659,7 @@
       <argument type="service" id="lexik_jwt_authentication.encoder.lcobucci"/>
       <argument type="service" id="doctrine.orm.default_entity_manager"/>
     </service>
+    <service id="App\Service\UploadService" class="App\Service\UploadService" autowire="true" autoconfigure="true"/>
     <service id="App\WebSocket\ChatHub" class="App\WebSocket\ChatHub" autowire="true" autoconfigure="true"/>
     <service id="gos_web_socket.authentication.authenticator" class="Gos\Bundle\WebSocketBundle\Authentication\Authenticator">
       <argument type="iterator"/>

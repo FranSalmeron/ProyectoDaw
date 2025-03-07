@@ -98,14 +98,25 @@ class __TwigTemplate_702efa83eff7878990eac00c66b15a42 extends Template
 
         // line 6
         yield "    <h1>Create new Car</h1>
-
     ";
+        // line 7
+        yield         $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->renderBlock((isset($context["form"]) || array_key_exists("form", $context) ? $context["form"] : (function () { throw new RuntimeError('Variable "form" does not exist.', 7, $this->source); })()), 'form_start', ["enctype" => "multipart/form-data"]);
+        yield "
+        ";
         // line 8
-        yield Twig\Extension\CoreExtension::include($this->env, $context, "car/_form.html.twig");
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock((isset($context["form"]) || array_key_exists("form", $context) ? $context["form"] : (function () { throw new RuntimeError('Variable "form" does not exist.', 8, $this->source); })()), 'widget');
+        yield "
+        <button class=\"btn\">";
+        // line 9
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(((array_key_exists("button_label", $context)) ? (Twig\Extension\CoreExtension::default((isset($context["button_label"]) || array_key_exists("button_label", $context) ? $context["button_label"] : (function () { throw new RuntimeError('Variable "button_label" does not exist.', 9, $this->source); })()), "Save")) : ("Save")), "html", null, true);
+        yield "</button>
+    ";
+        // line 10
+        yield         $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->renderBlock((isset($context["form"]) || array_key_exists("form", $context) ? $context["form"] : (function () { throw new RuntimeError('Variable "form" does not exist.', 10, $this->source); })()), 'form_end');
         yield "
 
     <a href=\"";
-        // line 10
+        // line 12
         yield $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_car_index");
         yield "\">back to list</a>
 ";
@@ -139,7 +150,7 @@ class __TwigTemplate_702efa83eff7878990eac00c66b15a42 extends Template
      */
     public function getDebugInfo(): array
     {
-        return array (  109 => 10,  104 => 8,  100 => 6,  87 => 5,  64 => 3,  41 => 1,);
+        return array (  120 => 12,  115 => 10,  111 => 9,  107 => 8,  103 => 7,  100 => 6,  87 => 5,  64 => 3,  41 => 1,);
     }
 
     public function getSourceContext(): Source
@@ -150,8 +161,10 @@ class __TwigTemplate_702efa83eff7878990eac00c66b15a42 extends Template
 
 {% block body %}
     <h1>Create new Car</h1>
-
-    {{ include('car/_form.html.twig') }}
+    {{ form_start(form, {'enctype': 'multipart/form-data'}) }}
+        {{ form_widget(form) }}
+        <button class=\"btn\">{{ button_label|default('Save') }}</button>
+    {{ form_end(form) }}
 
     <a href=\"{{ path('app_car_index') }}\">back to list</a>
 {% endblock %}

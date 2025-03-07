@@ -4,9 +4,10 @@ namespace App\Form;
 
 use App\Entity\Car;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
+
 
 class CarType extends AbstractType
 {
@@ -21,25 +22,13 @@ class CarType extends AbstractType
             ->add('color')
             ->add('fuelType')
             ->add('transmission')
+            ->add('traction')
             ->add('doors')
             ->add('seats')
             ->add('description')
-            ->add('location')
             ->add('publication_date')
             ->add('CarCondition')
-            ->add('image', FileType::class, [
-                'label' => 'Imagen del coche',
-                'mapped' => false,  // No se mapea directamente al campo 'image' en la entidad
-                'required' => false,
-                'attr' => [
-                    'accept' => 'image/*',  // Solo se aceptan imágenes
-                ],
-            ])
-            ->add('CarSold')
-            ->add('User')
-            ->add('latitude')  
-            ->add('longitude') 
-        ;
+            ->add('CarSold');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
