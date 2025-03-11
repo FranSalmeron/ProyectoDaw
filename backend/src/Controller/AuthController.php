@@ -96,7 +96,7 @@ class AuthController extends AbstractController
             $payload = [
                 'name' => $user->getName(),
                 'userId' => $user->getId(), 
-                'exp' => time() + 3600, // 1 hora de expiración
+                'exp' => time() + 7200, // 2 hora de expiración
             ];
 
             $token = JWT::encode($payload, $privateKey, 'RS256');

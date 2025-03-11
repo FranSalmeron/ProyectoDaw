@@ -24,8 +24,6 @@ const Login = ({ onLogin, onLoginSuccess }) => {
     e.preventDefault();
     setLoading(true);  // Activamos el indicador de carga
 
-    console.log('Datos a enviar:', { name: username, password });
-
     // Hacer la solicitud al backend para obtener el JWT
     const response = await fetch(`${SOCKET_URL}/api/login`, {
       method: 'POST',

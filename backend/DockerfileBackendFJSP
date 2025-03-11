@@ -27,6 +27,8 @@ RUN a2enmod rewrite
 # Establecemos el directorio de trabajo en el contenedor (aunque el código se monta en /var/www/html)
 WORKDIR /var/www/html
 
+RUN symfony server:ca:install
+
 # Exponemos el puerto 80 para el contenedor
 EXPOSE 8001
 EXPOSE 8081

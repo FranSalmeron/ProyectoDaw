@@ -9,7 +9,6 @@
     <parameter key="kernel.cache_dir">/var/www/html/var/cache/dev</parameter>
     <parameter key="kernel.logs_dir">/var/www/html/var/log</parameter>
     <parameter key="kernel.bundles" type="collection">
-      <parameter key="GosWebSocketBundle">Gos\Bundle\WebSocketBundle\GosWebSocketBundle</parameter>
       <parameter key="FrameworkBundle">Symfony\Bundle\FrameworkBundle\FrameworkBundle</parameter>
       <parameter key="DoctrineBundle">Doctrine\Bundle\DoctrineBundle\DoctrineBundle</parameter>
       <parameter key="DoctrineMigrationsBundle">Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle</parameter>
@@ -20,17 +19,12 @@
       <parameter key="SecurityBundle">Symfony\Bundle\SecurityBundle\SecurityBundle</parameter>
       <parameter key="MonologBundle">Symfony\Bundle\MonologBundle\MonologBundle</parameter>
       <parameter key="MakerBundle">Symfony\Bundle\MakerBundle\MakerBundle</parameter>
-      <parameter key="GosPubSubRouterBundle">Gos\Bundle\PubSubRouterBundle\GosPubSubRouterBundle</parameter>
       <parameter key="NelmioCorsBundle">Nelmio\CorsBundle\NelmioCorsBundle</parameter>
       <parameter key="ApiPlatformBundle">ApiPlatform\Symfony\Bundle\ApiPlatformBundle</parameter>
       <parameter key="LexikJWTAuthenticationBundle">Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle</parameter>
       <parameter key="SensioFrameworkExtraBundle">Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle</parameter>
     </parameter>
     <parameter key="kernel.bundles_metadata" type="collection">
-      <parameter key="GosWebSocketBundle" type="collection">
-        <parameter key="path">/var/www/html/vendor/gos/web-socket-bundle</parameter>
-        <parameter key="namespace">Gos\Bundle\WebSocketBundle</parameter>
-      </parameter>
       <parameter key="FrameworkBundle" type="collection">
         <parameter key="path">/var/www/html/vendor/symfony/framework-bundle</parameter>
         <parameter key="namespace">Symfony\Bundle\FrameworkBundle</parameter>
@@ -71,10 +65,6 @@
         <parameter key="path">/var/www/html/vendor/symfony/maker-bundle/src</parameter>
         <parameter key="namespace">Symfony\Bundle\MakerBundle</parameter>
       </parameter>
-      <parameter key="GosPubSubRouterBundle" type="collection">
-        <parameter key="path">/var/www/html/vendor/gos/pubsub-router-bundle</parameter>
-        <parameter key="namespace">Gos\Bundle\PubSubRouterBundle</parameter>
-      </parameter>
       <parameter key="NelmioCorsBundle" type="collection">
         <parameter key="path">/var/www/html/vendor/nelmio/cors-bundle</parameter>
         <parameter key="namespace">Nelmio\CorsBundle</parameter>
@@ -95,22 +85,6 @@
     <parameter key="kernel.charset">UTF-8</parameter>
     <parameter key="kernel.container_class">App_KernelDevDebugContainer</parameter>
     <parameter key="images_directory">/var/www/html/public/uploads/images</parameter>
-    <parameter key="gos_web_socket.shared_config">true</parameter>
-    <parameter key="gos_web_socket.client.storage.ttl">900</parameter>
-    <parameter key="gos_web_socket.firewall" type="collection">
-      <parameter>main</parameter>
-    </parameter>
-    <parameter key="gos_web_socket.client.storage.prefix"></parameter>
-    <parameter key="gos_web_socket.server.port">%env(WEB_SOCKET_PORT)%</parameter>
-    <parameter key="gos_web_socket.server.host">%env(WEB_SOCKET_HOST)%</parameter>
-    <parameter key="gos_web_socket.server.tls.enabled">false</parameter>
-    <parameter key="gos_web_socket.server.tls.options" type="collection"/>
-    <parameter key="gos_web_socket.server.origin_check">false</parameter>
-    <parameter key="gos_web_socket.server.ip_address_check">false</parameter>
-    <parameter key="gos_web_socket.server.keepalive_ping">false</parameter>
-    <parameter key="gos_web_socket.server.keepalive_interval">30</parameter>
-    <parameter key="gos_web_socket.router_resources" type="collection"/>
-    <parameter key="gos_web_socket.blocked_ip_addresses" type="collection"/>
     <parameter key="event_dispatcher.event_aliases" type="collection">
       <parameter key="Symfony\Component\Console\Event\ConsoleCommandEvent">console.command</parameter>
       <parameter key="Symfony\Component\Console\Event\ConsoleErrorEvent">console.error</parameter>
@@ -129,14 +103,6 @@
       <parameter key="Symfony\Component\HttpKernel\Event\ViewEvent">kernel.view</parameter>
       <parameter key="Symfony\Component\HttpKernel\Event\ExceptionEvent">kernel.exception</parameter>
       <parameter key="Symfony\Component\HttpKernel\Event\TerminateEvent">kernel.terminate</parameter>
-      <parameter key="Gos\Bundle\WebSocketBundle\Event\ServerLaunchedEvent">gos_web_socket.server_launched</parameter>
-      <parameter key="Gos\Bundle\WebSocketBundle\Event\ClientConnectedEvent">gos_web_socket.client_connected</parameter>
-      <parameter key="Gos\Bundle\WebSocketBundle\Event\ClientDisconnectedEvent">gos_web_socket.client_disconnected</parameter>
-      <parameter key="Gos\Bundle\WebSocketBundle\Event\ClientErrorEvent">gos_web_socket.client_error</parameter>
-      <parameter key="Gos\Bundle\WebSocketBundle\Event\ClientRejectedEvent">gos_web_socket.client_rejected</parameter>
-      <parameter key="Gos\Bundle\WebSocketBundle\Event\ConnectionRejectedEvent">gos_web_socket.connection_rejected</parameter>
-      <parameter key="Gos\Bundle\WebSocketBundle\Event\PushHandlerFailEvent">gos_web_socket.push_fail</parameter>
-      <parameter key="Gos\Bundle\WebSocketBundle\Event\PushHandlerSuccessEvent">gos_web_socket.push_success</parameter>
       <parameter key="Symfony\Component\Security\Core\Event\AuthenticationSuccessEvent">security.authentication.success</parameter>
       <parameter key="Symfony\Component\Security\Http\Event\InteractiveLoginEvent">security.interactive_login</parameter>
       <parameter key="Symfony\Component\Security\Http\Event\SwitchUserEvent">security.switch_user</parameter>
@@ -291,7 +257,8 @@
     </parameter>
     <parameter key="nelmio_cors.defaults" type="collection">
       <parameter key="allow_origin" type="collection">
-        <parameter>http://192.168.1.132</parameter>
+        <parameter>https://192.168.1.132</parameter>
+        <parameter>wss://192.168.1.132</parameter>
       </parameter>
       <parameter key="allow_credentials">false</parameter>
       <parameter key="allow_headers" type="collection">
@@ -523,10 +490,6 @@
         <parameter>messenger</parameter>
         <parameter>@WebProfiler/Collector/messenger.html.twig</parameter>
       </parameter>
-      <parameter key="gos_web_socket.data_collector.websocket" type="collection">
-        <parameter>websocket</parameter>
-        <parameter>@GosWebSocket/Collector/websocket.html.twig</parameter>
-      </parameter>
       <parameter key="mailer.data_collector" type="collection">
         <parameter>mailer</parameter>
         <parameter>@WebProfiler/Collector/mailer.html.twig</parameter>
@@ -660,256 +623,6 @@
       <argument type="service" id="doctrine.orm.default_entity_manager"/>
     </service>
     <service id="App\Service\UploadService" class="App\Service\UploadService" autowire="true" autoconfigure="true"/>
-    <service id="App\WebSocket\ChatHub" class="App\WebSocket\ChatHub" autowire="true" autoconfigure="true"/>
-    <service id="gos_web_socket.authentication.authenticator" class="Gos\Bundle\WebSocketBundle\Authentication\Authenticator">
-      <argument type="iterator"/>
-      <argument type="service" id="gos_web_socket.authentication.token_storage"/>
-    </service>
-    <service id="gos_web_socket.authentication.connection_repository" class="Gos\Bundle\WebSocketBundle\Authentication\ConnectionRepository">
-      <argument type="service" id="gos_web_socket.authentication.token_storage"/>
-      <argument type="service" id="gos_web_socket.authentication.authenticator"/>
-    </service>
-    <service id="gos_web_socket.authentication.provider.session" class="Gos\Bundle\WebSocketBundle\Authentication\Provider\SessionAuthenticationProvider" abstract="true">
-      <argument type="service" id="gos_web_socket.authentication.token_storage"/>
-      <argument>null</argument>
-    </service>
-    <service id="gos_web_socket.authentication.storage.driver.in_memory" class="Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\InMemoryStorageDriver"/>
-    <service id="gos_web_socket.authentication.storage.driver.psr_cache" class="Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\PsrCacheStorageDriver">
-      <argument>null</argument>
-    </service>
-    <service id="gos_web_socket.authentication.token_storage" class="Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorage">
-      <argument type="service" id="gos_web_socket.authentication.storage.driver.in_memory"/>
-    </service>
-    <service id="gos_web_socket.client.authentication.websocket_provider" class="Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProvider">
-      <tag name="monolog.logger" channel="websocket"/>
-      <argument type="service" id="gos_web_socket.client.storage"/>
-      <argument>%gos_web_socket.firewall%</argument>
-      <call method="setLogger">
-        <argument type="service" id="monolog.logger.websocket"/>
-      </call>
-      <deprecated package="gos/web-socket-bundle" version="3.11">The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="gos_web_socket.client.driver.doctrine_cache" class="Gos\Bundle\WebSocketBundle\Client\Driver\DoctrineCacheDriverDecorator">
-      <deprecated package="gos/web-socket-bundle" version="3.4">The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="gos_web_socket.client.driver.symfony_cache" class="Gos\Bundle\WebSocketBundle\Client\Driver\SymfonyCacheDriverDecorator">
-      <deprecated package="gos/web-socket-bundle" version="3.11">The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="gos_web_socket.client.driver.in_memory" class="Gos\Bundle\WebSocketBundle\Client\Driver\InMemoryDriver">
-      <deprecated package="gos/web-socket-bundle" version="3.11">The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="gos_web_socket.client.manipulator" class="Gos\Bundle\WebSocketBundle\Client\ClientManipulator" public="true">
-      <tag name="container.private" package="gos/web-socket-bundle" version="3.9"/>
-      <argument type="service" id="gos_web_socket.client.storage"/>
-      <argument type="service" id="gos_web_socket.client.authentication.websocket_provider"/>
-      <deprecated package="gos/web-socket-bundle" version="3.11">The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="gos_web_socket.client.storage" class="Gos\Bundle\WebSocketBundle\Client\ClientStorage">
-      <tag name="monolog.logger" channel="websocket"/>
-      <argument type="service" id="gos_web_socket.client.driver.in_memory"/>
-      <argument>900</argument>
-      <call method="setLogger">
-        <argument type="service" id="monolog.logger.websocket"/>
-      </call>
-      <deprecated package="gos/web-socket-bundle" version="3.11">The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="gos_web_socket.command.websocket_server" class="Gos\Bundle\WebSocketBundle\Command\WebsocketServerCommand">
-      <tag name="console.command" command="gos:websocket:server"/>
-      <tag name="container.no_preload"/>
-      <argument type="service" id="gos_web_socket.server.launcher"/>
-      <argument>%env(WEB_SOCKET_HOST)%</argument>
-      <argument>%env(WEB_SOCKET_PORT)%</argument>
-      <argument type="service" id="gos_web_socket.registry.server"/>
-      <call method="setName">
-        <argument>gos:websocket:server</argument>
-      </call>
-      <call method="setDescription">
-        <argument>Starts the websocket server</argument>
-      </call>
-    </service>
-    <service id="gos_web_socket.data_collector.websocket" class="Gos\Bundle\WebSocketBundle\DataCollector\WebsocketDataCollector">
-      <tag name="data_collector" template="@GosWebSocket/Collector/websocket.html.twig" id="websocket"/>
-      <deprecated package="gos/web-socket-bundle" version="3.1">The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="gos_web_socket.dispatcher.rpc" class="Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcher" public="true">
-      <tag name="monolog.logger" channel="websocket"/>
-      <tag name="container.private" package="gos/web-socket-bundle" version="3.9"/>
-      <argument type="service" id="gos_web_socket.registry.rpc"/>
-      <call method="setLogger">
-        <argument type="service" id="monolog.logger.websocket"/>
-      </call>
-    </service>
-    <service id="gos_web_socket.dispatcher.topic" class="Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcher" public="true">
-      <tag name="monolog.logger" channel="websocket"/>
-      <tag name="container.private" package="gos/web-socket-bundle" version="3.9"/>
-      <argument type="service" id="gos_web_socket.registry.topic"/>
-      <argument type="service" id="gos_web_socket.topic.periodic_timer"/>
-      <argument type="service" id="gos_web_socket.wamp.topic_manager"/>
-      <call method="setLogger">
-        <argument type="service" id="monolog.logger.websocket"/>
-      </call>
-    </service>
-    <service id="gos_web_socket.event_listener.client" class="Gos\Bundle\WebSocketBundle\EventListener\ClientEventListener">
-      <tag name="kernel.event_listener" event="gos_web_socket.client_connected" method="onClientConnect"/>
-      <tag name="kernel.event_listener" event="gos_web_socket.client_disconnected" method="onClientDisconnect"/>
-      <tag name="kernel.event_listener" event="gos_web_socket.client_error" method="onClientError"/>
-      <tag name="kernel.event_listener" event="gos_web_socket.client_rejected" method="onClientRejected"/>
-      <tag name="kernel.event_listener" event="gos_web_socket.connection_rejected" method="onConnectionRejected"/>
-      <tag name="monolog.logger" channel="websocket"/>
-      <argument type="service" id="gos_web_socket.client.storage"/>
-      <argument type="service" id="gos_web_socket.client.authentication.websocket_provider"/>
-      <call method="setLogger">
-        <argument type="service" id="monolog.logger.websocket"/>
-      </call>
-    </service>
-    <service id="gos_web_socket.event_listener.close_pusher_connections" class="Gos\Bundle\WebSocketBundle\EventListener\ClosePusherConnectionsListener">
-      <tag name="kernel.event_listener" event="kernel.terminate" method="closeConnection"/>
-      <argument type="service" id="gos_web_socket.registry.pusher"/>
-      <deprecated package="gos/web-socket-bundle" version="3.1">The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="gos_web_socket.event_listener.register_periodic_memory_timer" class="Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicMemoryTimerListener">
-      <tag name="kernel.event_listener" event="gos_web_socket.server_launched" method="registerPeriodicHandler" priority="255"/>
-      <tag name="monolog.logger" channel="websocket"/>
-      <argument type="service" id="gos_web_socket.registry.periodic"/>
-      <call method="setLogger">
-        <argument type="service" id="monolog.logger.websocket"/>
-      </call>
-    </service>
-    <service id="gos_web_socket.event_listener.register_periodic_timers" class="Gos\Bundle\WebSocketBundle\EventListener\RegisterPeriodicTimersListener">
-      <tag name="kernel.event_listener" event="gos_web_socket.server_launched" method="registerPeriodics"/>
-      <tag name="monolog.logger" channel="websocket"/>
-      <argument type="service" id="gos_web_socket.registry.periodic"/>
-      <call method="setLogger">
-        <argument type="service" id="monolog.logger.websocket"/>
-      </call>
-    </service>
-    <service id="gos_web_socket.event_listener.register_push_handlers" class="Gos\Bundle\WebSocketBundle\EventListener\RegisterPushHandlersListener">
-      <tag name="kernel.event_listener" event="gos_web_socket.server_launched" method="registerPushHandlers"/>
-      <tag name="monolog.logger" channel="websocket"/>
-      <argument type="service" id="gos_web_socket.registry.server_push_handler"/>
-      <argument type="service" id="gos_web_socket.server.application.wamp"/>
-      <call method="setLogger">
-        <argument type="service" id="monolog.logger.websocket"/>
-      </call>
-      <deprecated package="gos/web-socket-bundle" version="3.1">The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="gos_web_socket.event_listener.start_server" class="Gos\Bundle\WebSocketBundle\EventListener\StartServerListener">
-      <tag name="kernel.event_listener" event="gos_web_socket.server_launched" method="bindPnctlEvent"/>
-      <tag name="monolog.logger" channel="websocket"/>
-      <argument type="service" id="gos_web_socket.registry.periodic"/>
-      <argument type="service" id="gos_web_socket.registry.server_push_handler"/>
-      <call method="setLogger">
-        <argument type="service" id="monolog.logger.websocket"/>
-      </call>
-    </service>
-    <service id="gos_web_socket.periodic_ping.doctrine" class="Gos\Bundle\WebSocketBundle\Periodic\DoctrinePeriodicPing" abstract="true">
-      <tag name="monolog.logger" channel="websocket"/>
-      <call method="setLogger">
-        <argument type="service" id="monolog.logger.websocket"/>
-      </call>
-    </service>
-    <service id="gos_web_socket.periodic_ping.pdo" class="Gos\Bundle\WebSocketBundle\Periodic\PdoPeriodicPing" abstract="true">
-      <tag name="monolog.logger" channel="websocket"/>
-      <call method="setLogger">
-        <argument type="service" id="monolog.logger.websocket"/>
-      </call>
-    </service>
-    <service id="gos_web_socket.periodic_ping.memory_usage" class="Gos\Bundle\WebSocketBundle\Periodic\PeriodicMemoryUsage">
-      <tag name="monolog.logger" channel="websocket"/>
-      <call method="setLogger">
-        <argument type="service" id="monolog.logger.websocket"/>
-      </call>
-    </service>
-    <service id="gos_web_socket.registry.periodic" class="Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry" public="true">
-      <tag name="container.private" package="gos/web-socket-bundle" version="3.9"/>
-    </service>
-    <service id="gos_web_socket.registry.origins" class="Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry" public="true">
-      <tag name="container.private" package="gos/web-socket-bundle" version="3.9"/>
-      <call method="addOrigin">
-        <argument>192.168.1.132</argument>
-      </call>
-    </service>
-    <service id="gos_web_socket.registry.pusher" class="Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry" public="true">
-      <deprecated package="gos/web-socket-bundle" version="3.1">The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="gos_web_socket.registry.rpc" class="Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry" public="true">
-      <tag name="container.private" package="gos/web-socket-bundle" version="3.9"/>
-    </service>
-    <service id="gos_web_socket.registry.server" class="Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry" public="true">
-      <tag name="container.private" package="gos/web-socket-bundle" version="3.9"/>
-      <call method="addServer">
-        <argument type="service" id="gos_web_socket.server.websocket"/>
-      </call>
-    </service>
-    <service id="gos_web_socket.registry.server_push_handler" class="Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry" public="true">
-      <deprecated package="gos/web-socket-bundle" version="3.1">The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="gos_web_socket.registry.topic" class="Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry" public="true">
-      <tag name="container.private" package="gos/web-socket-bundle" version="3.9"/>
-    </service>
-    <service id="gos_web_socket.router.wamp" class="Gos\Bundle\WebSocketBundle\Router\WampRouter">
-      <tag name="monolog.logger" channel="websocket"/>
-      <argument type="service" id="gos_pubsub_router.router.websocket"/>
-      <call method="setLogger">
-        <argument type="service" id="monolog.logger.websocket"/>
-      </call>
-    </service>
-    <service id="gos_web_socket.server.application.wamp" class="Gos\Bundle\WebSocketBundle\Server\App\WampApplication">
-      <tag name="monolog.logger" channel="websocket"/>
-      <argument type="service" id="gos_web_socket.dispatcher.rpc"/>
-      <argument type="service" id="gos_web_socket.dispatcher.topic"/>
-      <argument type="service" id="debug.event_dispatcher"/>
-      <argument type="service" id="gos_web_socket.client.storage"/>
-      <argument type="service" id="gos_web_socket.router.wamp"/>
-      <call method="setLogger">
-        <argument type="service" id="monolog.logger.websocket"/>
-      </call>
-    </service>
-    <service id="gos_web_socket.server.builder" class="Gos\Bundle\WebSocketBundle\Server\App\ServerBuilder">
-      <argument type="service" id="gos_web_socket.server.event_loop"/>
-      <argument type="service" id="gos_web_socket.wamp.topic_manager"/>
-      <argument type="service" id="gos_web_socket.registry.origins"/>
-      <argument type="service" id="debug.event_dispatcher"/>
-      <argument>false</argument>
-      <argument>false</argument>
-      <argument>30</argument>
-      <argument>false</argument>
-      <argument type="collection"/>
-    </service>
-    <service id="gos_web_socket.server.entry_point" class="Gos\Bundle\WebSocketBundle\Server\EntryPoint" public="true">
-      <argument type="service" id="gos_web_socket.registry.server"/>
-      <deprecated package="gos/web-socket-bundle" version="3.7">The "%service_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="gos_web_socket.server.launcher" class="Gos\Bundle\WebSocketBundle\Server\ServerLauncher" public="true">
-      <tag name="container.private" package="gos/web-socket-bundle" version="3.9"/>
-      <argument type="service" id="gos_web_socket.registry.server"/>
-    </service>
-    <service id="gos_web_socket.server.event_loop" class="React\EventLoop\LoopInterface" public="true">
-      <tag name="container.private" package="gos/web-socket-bundle" version="3.9"/>
-      <factory class="React\EventLoop\Loop" method="get"/>
-    </service>
-    <service id="gos_web_socket.server.websocket" class="Gos\Bundle\WebSocketBundle\Server\Type\WebSocketServer">
-      <tag name="gos_web_socket.server"/>
-      <tag name="monolog.logger" channel="websocket"/>
-      <argument type="service" id="gos_web_socket.server.builder"/>
-      <argument type="service" id="gos_web_socket.server.event_loop"/>
-      <argument type="service" id="debug.event_dispatcher"/>
-      <argument>false</argument>
-      <argument type="collection"/>
-      <call method="setLogger">
-        <argument type="service" id="monolog.logger.websocket"/>
-      </call>
-    </service>
-    <service id="gos_web_socket.topic.periodic_timer" class="Gos\Bundle\WebSocketBundle\Topic\TopicPeriodicTimer" public="true">
-      <tag name="container.private" package="gos/web-socket-bundle" version="3.9"/>
-      <argument type="service" id="gos_web_socket.server.event_loop"/>
-    </service>
-    <service id="gos_web_socket.wamp.topic_manager" class="Gos\Bundle\WebSocketBundle\Topic\TopicManager" public="true">
-      <tag name="container.private" package="gos/web-socket-bundle" version="3.9"/>
-      <call method="setWampApplication">
-        <argument type="service" id="gos_web_socket.server.application.wamp"/>
-      </call>
-    </service>
     <service id="argument_metadata_factory" class="Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactory"/>
     <service id="response_listener" class="Symfony\Component\HttpKernel\EventListener\ResponseListener">
       <tag name="kernel.event_subscriber"/>
@@ -2467,7 +2180,6 @@
           <argument>/var/www/html/vendor/symfony/form/Resources/translations</argument>
           <argument>/var/www/html/vendor/symfony/security-core/Resources/translations</argument>
           <argument>/var/www/html/translations</argument>
-          <argument>/var/www/html/vendor/gos/web-socket-bundle/translations</argument>
           <argument>/var/www/html/vendor/symfony/framework-bundle/translations</argument>
           <argument>/var/www/html/vendor/doctrine/doctrine-bundle/translations</argument>
           <argument>/var/www/html/vendor/doctrine/doctrine-migrations-bundle/translations</argument>
@@ -2478,7 +2190,6 @@
           <argument>/var/www/html/vendor/symfony/security-bundle/translations</argument>
           <argument>/var/www/html/vendor/symfony/monolog-bundle/translations</argument>
           <argument>/var/www/html/vendor/symfony/maker-bundle/src/translations</argument>
-          <argument>/var/www/html/vendor/gos/pubsub-router-bundle/translations</argument>
           <argument>/var/www/html/vendor/nelmio/cors-bundle/translations</argument>
           <argument>/var/www/html/vendor/api-platform/core/src/Symfony/Bundle/translations</argument>
           <argument>/var/www/html/vendor/lexik/jwt-authentication-bundle/translations</argument>
@@ -2490,7 +2201,6 @@
             <argument>vendor/symfony/form/Resources/translations</argument>
             <argument>vendor/symfony/security-core/Resources/translations</argument>
             <argument>translations</argument>
-            <argument>vendor/gos/web-socket-bundle/translations</argument>
             <argument>vendor/symfony/framework-bundle/translations</argument>
             <argument>vendor/doctrine/doctrine-bundle/translations</argument>
             <argument>vendor/doctrine/doctrine-migrations-bundle/translations</argument>
@@ -2501,7 +2211,6 @@
             <argument>vendor/symfony/security-bundle/translations</argument>
             <argument>vendor/symfony/monolog-bundle/translations</argument>
             <argument>vendor/symfony/maker-bundle/src/translations</argument>
-            <argument>vendor/gos/pubsub-router-bundle/translations</argument>
             <argument>vendor/nelmio/cors-bundle/translations</argument>
             <argument>vendor/api-platform/core/src/Symfony/Bundle/translations</argument>
             <argument>vendor/lexik/jwt-authentication-bundle/translations</argument>
@@ -2754,86 +2463,6 @@
       <argument type="service" id="debug.stopwatch"/>
       <argument type="service" id="monolog.logger.event" on-invalid="null"/>
       <argument type="service" id="request_stack" on-invalid="null"/>
-      <call method="addListener">
-        <argument>gos_web_socket.client_connected</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="gos_web_socket.event_listener.client"/>
-          <argument>onClientConnect</argument>
-        </argument>
-        <argument>0</argument>
-      </call>
-      <call method="addListener">
-        <argument>gos_web_socket.client_disconnected</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="gos_web_socket.event_listener.client"/>
-          <argument>onClientDisconnect</argument>
-        </argument>
-        <argument>0</argument>
-      </call>
-      <call method="addListener">
-        <argument>gos_web_socket.client_error</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="gos_web_socket.event_listener.client"/>
-          <argument>onClientError</argument>
-        </argument>
-        <argument>0</argument>
-      </call>
-      <call method="addListener">
-        <argument>gos_web_socket.client_rejected</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="gos_web_socket.event_listener.client"/>
-          <argument>onClientRejected</argument>
-        </argument>
-        <argument>0</argument>
-      </call>
-      <call method="addListener">
-        <argument>gos_web_socket.connection_rejected</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="gos_web_socket.event_listener.client"/>
-          <argument>onConnectionRejected</argument>
-        </argument>
-        <argument>0</argument>
-      </call>
-      <call method="addListener">
-        <argument>kernel.terminate</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="gos_web_socket.event_listener.close_pusher_connections"/>
-          <argument>closeConnection</argument>
-        </argument>
-        <argument>0</argument>
-      </call>
-      <call method="addListener">
-        <argument>gos_web_socket.server_launched</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="gos_web_socket.event_listener.register_periodic_memory_timer"/>
-          <argument>registerPeriodicHandler</argument>
-        </argument>
-        <argument>255</argument>
-      </call>
-      <call method="addListener">
-        <argument>gos_web_socket.server_launched</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="gos_web_socket.event_listener.register_periodic_timers"/>
-          <argument>registerPeriodics</argument>
-        </argument>
-        <argument>0</argument>
-      </call>
-      <call method="addListener">
-        <argument>gos_web_socket.server_launched</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="gos_web_socket.event_listener.register_push_handlers"/>
-          <argument>registerPushHandlers</argument>
-        </argument>
-        <argument>0</argument>
-      </call>
-      <call method="addListener">
-        <argument>gos_web_socket.server_launched</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="gos_web_socket.event_listener.start_server"/>
-          <argument>bindPnctlEvent</argument>
-        </argument>
-        <argument>0</argument>
-      </call>
       <call method="addListener">
         <argument>kernel.controller</argument>
         <argument type="collection">
@@ -3607,7 +3236,7 @@
     <service id="router.default" class="Symfony\Bundle\FrameworkBundle\Routing\Router">
       <tag name="monolog.logger" channel="router"/>
       <tag name="container.service_subscriber" id="routing.loader"/>
-      <argument type="service" id=".service_locator.0asppet.router.default"/>
+      <argument type="service" id=".service_locator.NUKe30Y.router.default"/>
       <argument>kernel::loadRoutes</argument>
       <argument type="collection">
         <argument key="cache_dir">/var/www/html/var/cache/dev</argument>
@@ -4582,9 +4211,6 @@
       </call>
       <call method="add">
         <argument type="service" id="data_collector.messenger"/>
-      </call>
-      <call method="add">
-        <argument type="service" id="gos_web_socket.data_collector.websocket"/>
       </call>
       <call method="add">
         <argument type="service" id="mailer.data_collector"/>
@@ -5645,14 +5271,6 @@
       <call method="addRuntimeLoader">
         <argument type="service" id="twig.runtime_loader"/>
       </call>
-      <call method="addGlobal">
-        <argument>gos_web_socket_server_host</argument>
-        <argument>%gos_web_socket.server.host%</argument>
-      </call>
-      <call method="addGlobal">
-        <argument>gos_web_socket_server_port</argument>
-        <argument>%gos_web_socket.server.port%</argument>
-      </call>
       <call method="registerUndefinedFilterCallback">
         <argument type="collection">
           <argument type="service" id="twig.missing_extension_suggestor"/>
@@ -5705,14 +5323,6 @@
       <tag name="twig.loader"/>
       <argument type="collection"/>
       <argument>/var/www/html</argument>
-      <call method="addPath">
-        <argument>/var/www/html/vendor/gos/web-socket-bundle/templates</argument>
-        <argument>GosWebSocket</argument>
-      </call>
-      <call method="addPath">
-        <argument>/var/www/html/vendor/gos/web-socket-bundle/templates</argument>
-        <argument>!GosWebSocket</argument>
-      </call>
       <call method="addPath">
         <argument>/var/www/html/vendor/doctrine/doctrine-bundle/templates</argument>
         <argument>Doctrine</argument>
@@ -6797,90 +6407,6 @@
       <argument type="service" id="maker.file_manager"/>
       <argument type="service" id="maker.security_config_updater"/>
       <argument type="service" id="maker.security_controller_builder"/>
-    </service>
-    <service id="gos_pubsub_router.cache_warmer.router" class="Gos\Bundle\PubSubRouterBundle\CacheWarmer\RouterCacheWarmer">
-      <tag name="container.service_subscriber" id="gos_pubsub_router.router_registry"/>
-      <tag name="kernel.cache_warmer"/>
-      <argument type="service" id=".service_locator.hvq7UFV.gos_pubsub_router.cache_warmer.router"/>
-    </service>
-    <service id="gos_pubsub_router.command.debug_router" class="Gos\Bundle\PubSubRouterBundle\Command\DebugRouterCommand">
-      <tag name="console.command"/>
-      <tag name="container.no_preload"/>
-      <argument type="service" id="gos_pubsub_router.router_registry"/>
-      <call method="setName">
-        <argument>gos:pubsub-router:debug</argument>
-      </call>
-      <call method="setDescription">
-        <argument>Display current routes for a pubsub router</argument>
-      </call>
-    </service>
-    <service id="gos_pubsub_router.loader.closure" class="Gos\Bundle\PubSubRouterBundle\Loader\ClosureLoader">
-      <tag name="gos_pubsub_router.routing.loader"/>
-    </service>
-    <service id="gos_pubsub_router.loader.container" class="Gos\Bundle\PubSubRouterBundle\Loader\ContainerLoader">
-      <tag name="gos_pubsub_router.routing.loader"/>
-      <argument type="service" id="api_platform.filter_locator"/>
-    </service>
-    <service id="gos_pubsub_router.loader.glob" class="Gos\Bundle\PubSubRouterBundle\Loader\GlobFileLoader">
-      <tag name="gos_pubsub_router.routing.loader"/>
-      <argument type="service" id="file_locator"/>
-    </service>
-    <service id="gos_pubsub_router.loader.php" class="Gos\Bundle\PubSubRouterBundle\Loader\PhpFileLoader">
-      <tag name="gos_pubsub_router.routing.loader"/>
-      <argument type="service" id="file_locator"/>
-    </service>
-    <service id="gos_pubsub_router.loader.xml" class="Gos\Bundle\PubSubRouterBundle\Loader\XmlFileLoader">
-      <tag name="gos_pubsub_router.routing.loader"/>
-      <argument type="service" id="file_locator"/>
-    </service>
-    <service id="gos_pubsub_router.loader.yaml" class="Gos\Bundle\PubSubRouterBundle\Loader\YamlFileLoader">
-      <tag name="gos_pubsub_router.routing.loader"/>
-      <argument type="service" id="file_locator"/>
-    </service>
-    <service id="gos_pubsub_router.router_registry" class="Gos\Bundle\PubSubRouterBundle\Router\RouterRegistry" public="true">
-      <tag name="container.private" package="gos/pubsub-router-bundle" version="2.6"/>
-      <call method="addRouter">
-        <argument type="service" id="gos_pubsub_router.router.websocket"/>
-      </call>
-    </service>
-    <service id="gos_pubsub_router.routing.loader" class="Symfony\Component\Config\Loader\DelegatingLoader">
-      <argument type="service" id="gos_pubsub_router.routing.resolver"/>
-    </service>
-    <service id="gos_pubsub_router.routing.resolver" class="Symfony\Component\Config\Loader\LoaderResolver">
-      <call method="addLoader">
-        <argument type="service" id="gos_pubsub_router.loader.closure"/>
-      </call>
-      <call method="addLoader">
-        <argument type="service" id="gos_pubsub_router.loader.container"/>
-      </call>
-      <call method="addLoader">
-        <argument type="service" id="gos_pubsub_router.loader.glob"/>
-      </call>
-      <call method="addLoader">
-        <argument type="service" id="gos_pubsub_router.loader.php"/>
-      </call>
-      <call method="addLoader">
-        <argument type="service" id="gos_pubsub_router.loader.xml"/>
-      </call>
-      <call method="addLoader">
-        <argument type="service" id="gos_pubsub_router.loader.yaml"/>
-      </call>
-    </service>
-    <service id="gos_pubsub_router.router.websocket" class="Gos\Bundle\PubSubRouterBundle\Router\Router">
-      <argument>websocket</argument>
-      <argument type="service" id="gos_pubsub_router.routing.loader"/>
-      <argument>%gos_web_socket.router_resources%</argument>
-      <argument type="collection">
-        <argument key="cache_dir">/var/www/html/var/cache/dev</argument>
-        <argument key="debug">true</argument>
-        <argument key="generator_class">Gos\Bundle\PubSubRouterBundle\Generator\CompiledGenerator</argument>
-        <argument key="generator_dumper_class">Gos\Bundle\PubSubRouterBundle\Generator\Dumper\CompiledGeneratorDumper</argument>
-        <argument key="matcher_class">Gos\Bundle\PubSubRouterBundle\Matcher\CompiledMatcher</argument>
-        <argument key="matcher_dumper_class">Gos\Bundle\PubSubRouterBundle\Matcher\Dumper\CompiledMatcherDumper</argument>
-      </argument>
-      <call method="setConfigCacheFactory">
-        <argument type="service" id="config_cache_factory"/>
-      </call>
     </service>
     <service id="nelmio_cors.cors_listener" class="Nelmio\CorsBundle\EventListener\CorsListener">
       <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" priority="250"/>
@@ -9025,19 +8551,6 @@
     <service id="security.ldap_locator" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <argument type="collection"/>
     </service>
-    <service id="monolog.logger.websocket" class="Symfony\Bridge\Monolog\Logger">
-      <argument>websocket</argument>
-      <call method="pushProcessor">
-        <argument type="service" id="debug.log_processor"/>
-      </call>
-      <call method="pushHandler">
-        <argument type="service" id="monolog.handler.console"/>
-      </call>
-      <call method="pushHandler">
-        <argument type="service" id="monolog.handler.main"/>
-      </call>
-      <configurator class="Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\AddDebugLogProcessorPass" method="configureLogger"/>
-    </service>
     <service id="monolog.logger.request" class="Symfony\Bridge\Monolog\Logger">
       <argument>request</argument>
       <call method="pushProcessor">
@@ -9313,17 +8826,17 @@
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.wSgjnB6" method="withContext"/>
     </service>
-    <service id=".service_locator.0asppet" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.NUKe30Y" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="routing.loader" type="service_closure" id="routing.loader"/>
       </argument>
     </service>
-    <service id=".service_locator.0asppet.router.default" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.NUKe30Y.router.default" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="router.default"/>
       <argument>router.default</argument>
       <argument type="service" id="service_container"/>
-      <factory service=".service_locator.0asppet" method="withContext"/>
+      <factory service=".service_locator.NUKe30Y" method="withContext"/>
     </service>
     <service id=".service_locator.oCg4uHe" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
@@ -9348,18 +8861,6 @@
       <argument>twig.template_cache_warmer</argument>
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.v.Wwsjy" method="withContext"/>
-    </service>
-    <service id=".service_locator.hvq7UFV" class="Symfony\Component\DependencyInjection\ServiceLocator">
-      <tag name="container.service_locator"/>
-      <argument type="collection">
-        <argument key="gos_pubsub_router.router_registry" type="service_closure" id="gos_pubsub_router.router_registry"/>
-      </argument>
-    </service>
-    <service id=".service_locator.hvq7UFV.gos_pubsub_router.cache_warmer.router" class="Symfony\Component\DependencyInjection\ServiceLocator">
-      <tag name="container.service_locator_context" id="gos_pubsub_router.cache_warmer.router"/>
-      <argument>gos_pubsub_router.cache_warmer.router</argument>
-      <argument type="service" id="service_container"/>
-      <factory service=".service_locator.hvq7UFV" method="withContext"/>
     </service>
     <service id=".service_locator.aNklfos" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
@@ -9628,13 +9129,6 @@
     <service id=".errored..service_locator.Dhg828p.App\Entity\Transaction" class="App\Entity\Transaction"/>
     <service id=".errored..service_locator.4T4EJFR.App\Entity\User" class="App\Entity\User"/>
     <service id=".errored..service_locator.GPGtF8v.App\Entity\User" class="App\Entity\User"/>
-    <service id=".gos_web_socket.command.websocket_server.lazy" class="Symfony\Component\Console\Command\LazyCommand">
-      <argument>gos:websocket:server</argument>
-      <argument type="collection"/>
-      <argument>Starts the websocket server</argument>
-      <argument>false</argument>
-      <argument type="service_closure" id="gos_web_socket.command.websocket_server"/>
-    </service>
     <service id=".console.command.about.lazy" class="Symfony\Component\Console\Command\LazyCommand">
       <argument>about</argument>
       <argument type="collection"/>
@@ -10034,13 +9528,6 @@
       <argument>false</argument>
       <argument type="service_closure" id="security.command.user_password_hash"/>
     </service>
-    <service id=".gos_pubsub_router.command.debug_router.lazy" class="Symfony\Component\Console\Command\LazyCommand">
-      <argument>gos:pubsub-router:debug</argument>
-      <argument type="collection"/>
-      <argument>Display current routes for a pubsub router</argument>
-      <argument>false</argument>
-      <argument type="service_closure" id="gos_pubsub_router.command.debug_router"/>
-    </service>
     <service id=".lexik_jwt_authentication.check_config_command.lazy" class="Symfony\Component\Console\Command\LazyCommand">
       <argument>lexik:jwt:check-config</argument>
       <argument type="collection"/>
@@ -10277,9 +9764,8 @@
     </service>
     <service id="console.command_loader" class="Symfony\Component\Console\CommandLoader\ContainerCommandLoader" public="true">
       <tag name="container.no_preload"/>
-      <argument type="service" id=".service_locator.Usq9P_v"/>
+      <argument type="service" id=".service_locator.mLhQMZy"/>
       <argument type="collection">
-        <argument key="gos:websocket:server">gos_web_socket.command.websocket_server</argument>
         <argument key="about">console.command.about</argument>
         <argument key="assets:install">console.command.assets_install</argument>
         <argument key="cache:clear">console.command.cache_clear</argument>
@@ -10353,7 +9839,6 @@
         <argument key="lint:twig">twig.command.lint</argument>
         <argument key="debug:firewall">security.command.debug_firewall</argument>
         <argument key="security:hash-password">security.command.user_password_hash</argument>
-        <argument key="gos:pubsub-router:debug">gos_pubsub_router.command.debug_router</argument>
         <argument key="api:json-schema:generate">api_platform.json_schema.json_schema_generate_command</argument>
         <argument key="api:openapi:export">api_platform.openapi.command</argument>
         <argument key="api:swagger:export">api_platform.swagger.command.swagger_command</argument>
@@ -10395,10 +9880,9 @@
         <argument key="make:state-provider">maker.auto_command.make_state_provider</argument>
       </argument>
     </service>
-    <service id=".service_locator.Usq9P_v" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.mLhQMZy" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
-        <argument key="gos_web_socket.command.websocket_server" type="service_closure" id=".gos_web_socket.command.websocket_server.lazy"/>
         <argument key="console.command.about" type="service_closure" id=".console.command.about.lazy"/>
         <argument key="console.command.assets_install" type="service_closure" id=".console.command.assets_install.lazy"/>
         <argument key="console.command.cache_clear" type="service_closure" id=".console.command.cache_clear.lazy"/>
@@ -10472,7 +9956,6 @@
         <argument key="twig.command.lint" type="service_closure" id=".twig.command.lint.lazy"/>
         <argument key="security.command.debug_firewall" type="service_closure" id=".security.command.debug_firewall.lazy"/>
         <argument key="security.command.user_password_hash" type="service_closure" id=".security.command.user_password_hash.lazy"/>
-        <argument key="gos_pubsub_router.command.debug_router" type="service_closure" id=".gos_pubsub_router.command.debug_router.lazy"/>
         <argument key="api_platform.json_schema.json_schema_generate_command" type="service_closure" id="api_platform.json_schema.json_schema_generate_command"/>
         <argument key="api_platform.openapi.command" type="service_closure" id="api_platform.openapi.command"/>
         <argument key="api_platform.swagger.command.swagger_command" type="service_closure" id="api_platform.swagger.command.swagger_command"/>
@@ -10646,39 +10129,6 @@
       </argument>
     </service>
     <service id="App\Kernel" alias="kernel" public="true"/>
-    <service id="Gos\Bundle\WebSocketBundle\Authentication\AuthenticatorInterface" alias="gos_web_socket.authentication.authenticator"/>
-    <service id="Gos\Bundle\WebSocketBundle\Authentication\ConnectionRepositoryInterface" alias="gos_web_socket.authentication.connection_repository"/>
-    <service id="Gos\Bundle\WebSocketBundle\Authentication\Storage\TokenStorageInterface" alias="gos_web_socket.authentication.token_storage"/>
-    <service id="Gos\Bundle\WebSocketBundle\Client\Auth\WebsocketAuthenticationProviderInterface" alias="gos_web_socket.client.authentication.websocket_provider">
-      <deprecated package="gos/web-socket-bundle" version="3.11">The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface" alias="gos_web_socket.client.manipulator">
-      <deprecated package="gos/web-socket-bundle" version="3.11">The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="Gos\Bundle\WebSocketBundle\Client\ClientStorageInterface" alias="gos_web_socket.client.storage">
-      <deprecated package="gos/web-socket-bundle" version="3.11">The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="Gos\Bundle\WebSocketBundle\Pusher\PusherRegistry" alias="gos_web_socket.registry.pusher">
-      <deprecated package="gos/web-socket-bundle" version="3.1">The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="Gos\Bundle\WebSocketBundle\Pusher\ServerPushHandlerRegistry" alias="gos_web_socket.registry.server_push_handler">
-      <deprecated package="gos/web-socket-bundle" version="3.1">The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
-    <service id="Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\RpcDispatcherInterface" alias="gos_web_socket.dispatcher.rpc"/>
-    <service id="Gos\Bundle\WebSocketBundle\Server\App\Dispatcher\TopicDispatcherInterface" alias="gos_web_socket.dispatcher.topic"/>
-    <service id="Gos\Bundle\WebSocketBundle\Server\App\Registry\OriginRegistry" alias="gos_web_socket.registry.origins"/>
-    <service id="Gos\Bundle\WebSocketBundle\Server\App\Registry\PeriodicRegistry" alias="gos_web_socket.registry.periodic"/>
-    <service id="Gos\Bundle\WebSocketBundle\Server\App\Registry\RpcRegistry" alias="gos_web_socket.registry.rpc"/>
-    <service id="Gos\Bundle\WebSocketBundle\Server\App\Registry\ServerRegistry" alias="gos_web_socket.registry.server"/>
-    <service id="Gos\Bundle\WebSocketBundle\Server\App\Registry\TopicRegistry" alias="gos_web_socket.registry.topic"/>
-    <service id="Gos\Bundle\WebSocketBundle\Server\ServerLauncherInterface" alias="gos_web_socket.server.launcher"/>
-    <service id="Gos\Bundle\WebSocketBundle\Topic\TopicManager" alias="gos_web_socket.wamp.topic_manager"/>
-    <service id="React\EventLoop\LoopInterface" alias="gos_web_socket.server.event_loop"/>
-    <service id="gos_web_socket.authentication.storage.driver" alias="gos_web_socket.authentication.storage.driver.in_memory"/>
-    <service id="Gos\Bundle\WebSocketBundle\Authentication\Storage\Driver\StorageDriverInterface" alias="gos_web_socket.authentication.storage.driver.in_memory"/>
-    <service id="Gos\Bundle\WebSocketBundle\Client\Driver\DriverInterface" alias="gos_web_socket.client.driver.in_memory">
-      <deprecated package="gos/web-socket-bundle" version="3.11">The "%alias_id%" service is deprecated and will be removed in GosWebSocketBundle 4.0.</deprecated>
-    </service>
     <service id="Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface" alias="parameter_bag"/>
     <service id="Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface" alias="parameter_bag"/>
     <service id="Symfony\Component\EventDispatcher\EventDispatcherInterface" alias="debug.event_dispatcher"/>
@@ -10919,7 +10369,6 @@
     <service id="argument_resolver.controller_locator" alias=".service_locator.QAruWHG"/>
     <service id="doctrine.id_generator_locator" alias=".service_locator.KLVvNIq"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
-    <service id="Psr\Log\LoggerInterface $websocketLogger" alias="monolog.logger.websocket"/>
     <service id="Psr\Log\LoggerInterface $requestLogger" alias="monolog.logger.request"/>
     <service id="Psr\Log\LoggerInterface $consoleLogger" alias="monolog.logger.console"/>
     <service id="Psr\Log\LoggerInterface $messengerLogger" alias="monolog.logger.messenger"/>
