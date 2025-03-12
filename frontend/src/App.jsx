@@ -6,6 +6,8 @@ import Register from './Components/Register.jsx';
 import Login from './Components/Login.jsx';
 import Home from './Components/Home.jsx';
 import SubmitCar from './Components/SubmitCar.jsx';
+import { CsrfProvider } from './helpers/csrfContext.jsx';
+import { toast, ToastContainer } from 'react-toastify';
 
 function App() {
     const [currentPage, setCurrentPage] = useState('home');
@@ -31,19 +33,20 @@ function App() {
             case 'register':
                 return <Register />;
             case 'submitCar':
-                return <SubmitCar />
+                return <SubmitCar onSubmitSuccess={() => setCurrentPage('home')} />
             default:
                 return <Home />;
         }
       };
     return (
-    <>
-    <div class="bg-gray-300">
-        <NavBar userName={userName} onSelectPage={setCurrentPage} onLogout={handleLogout} />
-        {renderPage()} 
-        <Footer />
-    </div>
-    </>
+    <CsrfProvider>
+        <ToastContainer />
+        <div class="bg-gray-300">
+            <NavBar userName={userName} onSelectPage={setCurrentPage} onLogout={handleLogout} />
+            {renderPage()} 
+            <Footer />
+        </div>
+    </CsrfProvider>
     );
     }
     export default App;

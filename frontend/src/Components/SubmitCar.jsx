@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';  
 import 'react-toastify/dist/ReactToastify.css'; 
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 
 const symfonyUrl = import.meta.env.VITE_API_URL;
 
-function SubmitCar() {
+function SubmitCar(onSubmitSuccess) {
   const [formData, setFormData] = useState({
     brand: '',
     model: '',
@@ -23,6 +24,8 @@ function SubmitCar() {
     carSold: false,
     user: localStorage.getItem("userId"),  
     images: [],
+    lat: null,
+    lon: null,
   });
 
   // Establecer automáticamente la fecha de publicación como la fecha actual
@@ -31,7 +34,47 @@ function SubmitCar() {
       ...prevState,
       publication_date: new Date().toISOString().split('T')[0], // Formato YYYY-MM-DD
     }));
+
+    // Obtener la ubicación del usuario automáticamente si es posible
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setFormData((prevState) => ({
+            ...prevState,
+            lat: latitude,
+            lon: longitude,
+          }));
+        },
+        (error) => {
+          console.error(error);
+          toast.error('No se pudo obtener la ubicación automáticamente');
+        }
+      );
+    }
   }, []);
+
+  // Componente para el mapa que permite seleccionar ubicación
+  const MapClickHandler = () => {
+    const map = useMapEvents({
+      click(event) {
+        const { lat, lng } = event.latlng;
+        setFormData((prevState) => ({
+          ...prevState,
+          lat,
+          lon: lng
+        }));
+      }
+    });
+
+    return (
+      formData.lat && formData.lon && (
+        <Marker position={[formData.lat, formData.lon]}>
+          <Popup>Ubicación seleccionada.</Popup>
+        </Marker>
+      )
+    );
+  };
 
   // Manejar cambios en los inputs del formulario
   const handleChange = (e) => {
@@ -40,6 +83,24 @@ function SubmitCar() {
       ...formData,
       [name]: value,
     });
+  };
+
+  const handleSliderChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: parseInt(value),  // Para convertir a número entero
+    });
+  };
+
+  const handlePriceOrMileageChange = (e) => {
+    const { name, value } = e.target;
+    if (value >= 0) {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
   // Manejar la carga del archivo de imagen
@@ -75,6 +136,7 @@ function SubmitCar() {
 
       if (response.ok) {
         toast.success('Coche creado con éxito');
+        onSubmitSuccess();
       } else {
         toast.error('Error al crear el coche');
       }
@@ -84,7 +146,7 @@ function SubmitCar() {
   };
 
   return (
-    <div className="w-9/10 max-w-lg mx-auto bg-black text-white p-8 rounded-lg shadow-lg m-5">
+    <div className="w-9/10 max-w-2xl mx-auto bg-black text-white p-8 rounded-lg shadow-lg m-5">
       <h2 className="text-3xl font-bold text-center text-white-300 mb-6">Introduce los detalles del coche</h2>
       
       <form onSubmit={handleSubmit}>
@@ -130,48 +192,71 @@ function SubmitCar() {
           />
         </div>
 
-        {/* Kilometraje */}
-        <div className="mb-4">
-          <label htmlFor="mileage" className="block text-lg font-medium mb-2">Kilometraje:</label>
-          <input
-            id="mileage"
-            type="number"
-            name="mileage"
-            min = "0"
-            value={formData.mileage}
-            onChange={handleChange}
-            className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-            placeholder="Kilometraje"
-          />
+         {/* Kilometraje */}
+         <div className="mb-4">
+          <label htmlFor="mileage" className="block text-lg font-medium mb-2">Kilometraje (en km):</label>
+          <div className="flex items-center">
+            <input
+              id="mileage"
+              type="range"
+              name="mileage"
+              min="0"
+              max="500000"
+              step="10000"
+              value={formData.mileage}
+              onChange={handleSliderChange}
+              className="w-3/4 p-2 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+            <input
+              type="number"
+              name="mileage"
+              value={formData.mileage}
+              onChange={handlePriceOrMileageChange}
+              className="ml-4 w-28 p-3 bg-gray-800 text-white rounded-lg"
+              min="0"
+            />
+          </div>
+          <p className="text-center">{formData.mileage} km</p>
         </div>
 
         {/* Precio */}
         <div className="mb-4">
           <label htmlFor="price" className="block text-lg font-medium mb-2">Precio:</label>
-          <input
-            id="price"
-            type="number"
-            name="price"
-            step="0.01" 
-            min="0"
-            value={formData.price}
-            onChange={handleChange}
-            className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-            placeholder="Precio del coche"
-          />
+          <div className="flex items-center">
+            <input
+              id="price"
+              type="range"
+              name="price"
+              min="0"
+              max="100000"
+              step="1000"
+              value={formData.price}
+              onChange={handleSliderChange}
+              className="w-3/4 p-2 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+            <input
+              type="number"
+              name="price"
+              value={formData.price}
+              onChange={handlePriceOrMileageChange}
+              className="ml-4 w-28 p-3 bg-gray-800 text-white rounded-lg"
+              min="0"
+              step="0.01"
+            />
+          </div>
+          <p className="text-center">{formData.price}€</p>
         </div>
 
-        {/* Color */}
+        {/* Color (Paleta de colores) */}
         <div className="mb-4">
           <label htmlFor="color" className="block text-lg font-medium mb-2">Color:</label>
           <input
-            id="color"
             type="text"
             name="color"
             value={formData.color}
             onChange={handleChange}
             className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-            placeholder="Color del coche"
+            placeholder="Escribe el color del coche"
           />
         </div>
 
@@ -228,46 +313,36 @@ function SubmitCar() {
           </select>
         </div>
 
-        {/* Puertas */}
-        <div className="mb-4">
+         {/* Puertas */}
+         <div className="mb-4">
           <label htmlFor="doors" className="block text-lg font-medium mb-2">Puertas:</label>
-          <select
+          <input
             id="doors"
+            type="range"
             name="doors"
+            min="1"
+            max="5"
             value={formData.doors}
-            onChange={handleChange}
+            onChange={handleSliderChange}
             className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-          >
-            <option value="">Seleccione número de puertas</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
+          />
+          <p className="text-center">{formData.doors} Puertas</p>
         </div>
-
-        {/* Sillones */}
-        <div className="mb-4">
+        
+         {/* Sillones */}
+         <div className="mb-4">
           <label htmlFor="seats" className="block text-lg font-medium mb-2">Sillones:</label>
-          <select
+          <input
             id="seats"
+            type="range"
             name="seats"
+            min="1"
+            max="9"
             value={formData.seats}
-            onChange={handleChange}
+            onChange={handleSliderChange}
             className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-          >
-            <option value="">Seleccione número de sillones</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-          </select>
+          />
+          <p className="text-center">{formData.seats} Sillones</p>
         </div>
 
         {/* Condición del coche */}
@@ -314,6 +389,43 @@ function SubmitCar() {
             onChange={handleFileChange}
             className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
           />
+        </div>
+
+        {/* Latitud y Longitud (autocompletado o manual) */}
+        <div className="mb-4">
+          <label htmlFor="lat" className="block text-lg font-medium mb-2">Latitud:</label>
+          <input
+            id="lat"
+            type="number"
+            name="lat"
+            value={formData.lat || ''}
+            onChange={handleChange}
+            className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            placeholder="Latitud"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label htmlFor="lon" className="block text-lg font-medium mb-2">Longitud:</label>
+          <input
+            id="lon"
+            type="number"
+            name="lon"
+            value={formData.lon || ''}
+            onChange={handleChange}
+            className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            placeholder="Longitud"
+          />
+        </div>
+
+        {/* Mapa para seleccionar ubicación */}
+        <div className="mb-4" style={{ height: "300px" }}>
+          <MapContainer center={[formData.lat || 37.1775, formData.lon || -3.5986]} zoom={13} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <MapClickHandler />
+          </MapContainer>
         </div>
 
         {/* Botón de envío */}

@@ -19,7 +19,7 @@ const NavBar = ({ userName, onSelectPage, onLogout }) => {
             ) : (
                 <>
                     <li>
-                        <button onClick={() => onSelectPage('submitCar')} class="text-white">Poner coche a la venta</button>
+                        <button onClick={() => onSelectPage('submitCar')} class="text-white">Vender Coche</button>
                     </li>
                     <div class="ml-auto flex items-center space-x-4">
                         <li class="text-white">Bienvenido, {userName}</li>

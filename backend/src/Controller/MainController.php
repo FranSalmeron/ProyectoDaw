@@ -7,6 +7,7 @@ use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 class MainController extends AbstractController
 {
@@ -23,26 +24,11 @@ class MainController extends AbstractController
             'controller_name' => 'MainController',
         ]);
     }
-    #[Route('/api/db', name: 'get_db')]
-    public function index(): JsonResponse
+
+    #[Route('/csrf-token', name: 'app_csrf_token', methods: ['GET'])]
+    public function csrfToken(CsrfTokenManagerInterface $csrfTokenManager): JsonResponse
     {
-        try {
-            $sql = 'SELECT * FROM user';
-            $result = $this->connection->fetchOne($sql);
-            
-            if (!$result) {
-                return $this->json([
-                    'message' => 'No se encontraron registros en la tabla user'
-                ]);
-            }
-            
-            return $this->json([
-                'message' => 'Usuarios: ' . $result
-            ]);
-        } catch (\Exception $e) {
-            return $this->json([
-                'error' => 'Database error: ' . $e->getMessage()
-            ], 500);
-        }
+        $csrfToken = $csrfTokenManager->getToken('your_token_id')->getValue();
+        return new JsonResponse(['csrfToken' => $csrfToken]);
     }
 }

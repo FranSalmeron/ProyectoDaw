@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CarRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CarRepository::class)]
 class Car
@@ -13,59 +14,85 @@ class Car
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
+    #[Groups('car_list')] 
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups('car_list')] 
     private ?string $brand = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups('car_list')] 
     private ?string $model = null;
 
     #[ORM\Column]
+    #[Groups('car_list')] 
     private ?int $manufacture_year = null;
 
     #[ORM\Column]
+    #[Groups('car_list')] 
     private ?int $mileage = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups('car_list')] 
     private ?string $price = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups('car_list')] 
     private ?string $color = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups('car_list')] 
     private ?string $fuelType = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups('car_list')] 
     private ?string $transmission = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups('car_list')] 
     private ?string $traction = null;
 
 
     #[ORM\Column]
+    #[Groups('car_list')] 
     private ?int $doors = null;
 
     #[ORM\Column]
+    #[Groups('car_list')] 
     private ?int $seats = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups('car_list')] 
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups('car_list')] 
     private ?\DateTimeInterface $publication_date = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups('car_list')] 
     private ?string $CarCondition = null;
 
     #[ORM\Column(type: "json", nullable: true)]
+    #[Groups('car_list')] 
     private ?array $images = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups('car_list')] 
     private ?bool $CarSold = null;
 
     #[ORM\ManyToOne(inversedBy: 'cars')]
+    #[Groups('car_list')]
     private ?User $User = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 6)]
+    #[Groups('car_list')] 
+    private ?string $lat = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 6)]
+    #[Groups('car_list')] 
+    private ?string $lon = null;
 
     public function getId(): ?int
     {
@@ -257,6 +284,30 @@ class Car
     public function setUser(?User $User): static
     {
         $this->User = $User;
+
+        return $this;
+    }
+
+    public function getLat(): ?string
+    {
+        return $this->lat;
+    }
+
+    public function setLat(string $lat): static
+    {
+        $this->lat = $lat;
+
+        return $this;
+    }
+
+    public function getLon(): ?string
+    {
+        return $this->lon;
+    }
+
+    public function setLon(string $lon): static
+    {
+        $this->lon = $lon;
 
         return $this;
     }
