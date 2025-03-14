@@ -29,8 +29,8 @@ class CarController extends AbstractController
             return new JsonResponse(['message' => 'No cars found'], Response::HTTP_NOT_FOUND);
         }
 
-        // La URL base para las imágenes, que apunta al contenedor frontend
-        $imageBaseUrl = 'https://192.168.1.132:8001/uploads/images/';  // Aquí cambia con la URL del contenedor frontend
+        // La URL base para las imágenes,
+        $imageBaseUrl = 'https://192.168.1.132:8001/uploads/images/';
 
         // Añadir la URL base de las imágenes
         foreach ($cars as $car) {
@@ -124,6 +124,7 @@ class CarController extends AbstractController
         $car->setCarSold($formData['carSold']);
         $car->setLat($formData['lat']);
         $car->setLon($formData['lon']);
+        $car->setCity($formData['city']);
 
         // Asignar las imágenes
         $car->setImages($imagePaths);
@@ -214,6 +215,9 @@ class CarController extends AbstractController
         }
         if (isset($data['lon'])) {
             $car->setLon($data['lon']);
+        }
+        if(isset($data['city'])) {
+            $car->setCity($data['city']);
         }
 
         try {

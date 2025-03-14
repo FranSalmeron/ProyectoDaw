@@ -258,7 +258,7 @@
     <parameter key="nelmio_cors.defaults" type="collection">
       <parameter key="allow_origin" type="collection">
         <parameter>https://192.168.1.132</parameter>
-        <parameter>wss://192.168.1.132</parameter>
+        <parameter>https://backend</parameter>
       </parameter>
       <parameter key="allow_credentials">false</parameter>
       <parameter key="allow_headers" type="collection">

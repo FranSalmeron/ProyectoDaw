@@ -94,6 +94,10 @@ class Car
     #[Groups('car_list')] 
     private ?string $lon = null;
 
+    #[ORM\Column(length: 255)]
+    #[Groups('car_list')]
+    private ?string $city = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -308,6 +312,18 @@ class Car
     public function setLon(string $lon): static
     {
         $this->lon = $lon;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): static
+    {
+        $this->city = $city;
 
         return $this;
     }

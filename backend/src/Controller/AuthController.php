@@ -95,6 +95,7 @@ class AuthController extends AbstractController
             $privateKey = file_get_contents($_SERVER['DOCUMENT_ROOT'] . './../config/jwt/private.pem');
             $payload = [
                 'name' => $user->getName(),
+                'roles' => $user->getRoles(),
                 'userId' => $user->getId(), 
                 'exp' => time() + 7200, // 2 hora de expiración
             ];

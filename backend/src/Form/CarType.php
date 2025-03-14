@@ -30,7 +30,8 @@ class CarType extends AbstractType
             ->add('CarCondition')
             ->add('CarSold')
             ->add('lat')
-            ->add('lon');
+            ->add('lon')
+            ->add('city');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
