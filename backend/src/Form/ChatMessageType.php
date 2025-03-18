@@ -16,6 +16,7 @@ class ChatMessageType extends AbstractType
             ->add('messageDate')
             ->add('chat')
             ->add('user')
+            ->add('idMessage')
         ;
     }
 

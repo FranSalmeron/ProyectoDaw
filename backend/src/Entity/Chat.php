@@ -15,12 +15,16 @@ class Chat
     private ?int $id = null;  
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: "user1_id", referencedColumnName: "id")]
-    private ?User $user1 = null;
+    #[ORM\JoinColumn(name: "buyer_id", referencedColumnName: "id")]
+    private ?User $buyer = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: "user2_id", referencedColumnName: "id")]
-    private ?User $user2 = null;
+    #[ORM\JoinColumn(name: "seller_id", referencedColumnName: "id")]
+    private ?User $seller = null;
+
+    #[ORM\ManyToOne(targetEntity: Car::class)]
+    #[ORM\JoinColumn(name: "car_id", referencedColumnName: "id")]
+    private ?Car $car = null;  
 
     #[ORM\Column(type: "datetime")]
     private \DateTimeInterface $createdDate;
@@ -30,32 +34,41 @@ class Chat
         $this->createdDate = new \DateTime();
     }
 
-    // Getter y setter para 'id'
     public function getId(): ?int
     {
         return $this->id;
     }
-
-    // Getter y setter para 'user1'
-    public function getUser1(): ?User
+  
+    public function getbuyer(): ?User
     {
-        return $this->user1;
+        return $this->buyer;
     }
 
-    public function setUser1(User $user1): self
+    public function setbuyer(User $buyer): self
     {
-        $this->user1 = $user1;
+        $this->buyer = $buyer;
         return $this;
     }
 
-    public function getUser2(): ?User
+    public function getseller(): ?User
     {
-        return $this->user2;
+        return $this->seller;
     }
 
-    public function setUser2(User $user2): self
+    public function setseller(User $seller): self
     {
-        $this->user2 = $user2;
+        $this->seller = $seller;
+        return $this;
+    }
+
+    public function getCar(): ?Car
+    {
+        return $this->car;
+    }
+
+    public function setCar(Car $car): self
+    {
+        $this->car = $car;
         return $this;
     }
 

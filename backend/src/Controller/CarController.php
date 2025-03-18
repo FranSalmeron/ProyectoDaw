@@ -44,16 +44,16 @@ class CarController extends AbstractController
         }
 
         // Serializamos el array de coches a JSON
-        $jsonCars = $serializer->serialize($cars, 'json', ['groups' => 'car_list']); 
+        $jsonCars = $serializer->serialize($cars, 'json', ['groups' => 'car_list']);
 
-        
+
         // Agregar un log para verificar los datos serializados
         $logger->info('Coches serializados: ' . $jsonCars);  // Aquí registramos los datos serializados en el log
 
         // Retornamos la respuesta JSON con los coches serializados
         return new JsonResponse(json_decode($jsonCars), Response::HTTP_OK);
     }
-    
+
     #[Route('/car/user/{id}', name: 'app_car_index_by_user', methods: ['GET'])]
     public function indexByUser(CarRepository $carRepository, SerializerInterface $serializer, $id): Response
     {
@@ -145,11 +145,33 @@ class CarController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_car_show', methods: ['GET'])]
-    public function show(Car $car): Response
+    public function showById(CarRepository $carRepository, SerializerInterface $serializer, $id): Response
     {
-        return $this->render('car/show.html.twig', [
-            'car' => $car,
-        ]);
+        // Buscar el coche por el ID recibido como parámetro
+        $car = $carRepository->find($id);
+
+        // Si no se encuentra el coche, devolver un error 404
+        if (!$car) {
+            return new JsonResponse(['message' => 'Car not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        // La URL base para las imágenes
+        $imageBaseUrl = 'https://192.168.1.132:8001/uploads/images/';
+
+        // Comprobar si el coche tiene imágenes y construir la URL completa
+        if ($car->getImages()) {
+            $imagesWithUrls = [];
+            foreach ($car->getImages() as $image) {
+                $imagesWithUrls[] = $imageBaseUrl . $image; // Construimos la URL completa
+            }
+            $car->setImages($imagesWithUrls); // Reemplazamos los nombres de los archivos con las URLs completas
+        }
+
+        // Serializamos el coche a JSON
+        $jsonCar = $serializer->serialize($car, 'json', ['groups' => 'car_detail']);
+
+        // Retornamos la respuesta JSON con los detalles del coche
+        return new JsonResponse(json_decode($jsonCar), Response::HTTP_OK);
     }
 
     #[Route('/{id}/edit', name: 'app_car_edit', methods: ['PATCH'])]
@@ -216,7 +238,7 @@ class CarController extends AbstractController
         if (isset($data['lon'])) {
             $car->setLon($data['lon']);
         }
-        if(isset($data['city'])) {
+        if (isset($data['city'])) {
             $car->setCity($data['city']);
         }
 

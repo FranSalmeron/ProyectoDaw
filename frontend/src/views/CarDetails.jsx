@@ -1,17 +1,19 @@
-import React from 'react'; 
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { toast } from 'react-toastify'; 
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css"; 
 import Slider from "react-slick";
 
-const CarDetails = ({ car, setPage, setVendor }) => {
+const CarDetails = ({ car, setPage, setSelectedVendor }) => {
     const [selectedImageIndex, setSelectedImageIndex] = useState(0); 
     const sliderRef = useRef(null);
+    const [toastShown, setToastShown] = useState(false);  // Estado para controlar el toast
 
     // Verificamos si el coche está disponible como prop
-    if (!car) {
+    if (!car && !toastShown) {
+        setToastShown(true); // Aseguramos que el toast solo se muestre una vez
         toast.error('No se ha proporcionado un coche para mostrar');
+        setPage('home'); // Redirigir a la página de inicio si no se proporciona un coche
         return <div>No se ha encontrado el coche</div>; // Mensaje en caso de que no se pase un coche
     }
    
@@ -56,7 +58,8 @@ const CarDetails = ({ car, setPage, setVendor }) => {
             toast.error('Debes estar registrado para chatear.');
             setPage('login'); // Redirigir al login si no está autenticado
         } else {
-            setPage('chat', setVendor = { sellerId: car.User.id, carId: car.id })
+            setPage('chat');
+            setSelectedVendor({ sellerId: car.User.id, carId: car.id });  // Aquí pasamos los valores de vendor
         }
     };
 

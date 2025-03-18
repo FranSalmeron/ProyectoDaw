@@ -53,7 +53,7 @@ const NavBar = ({ userName, onSelectPage, onLogout }) => {
                                 <button onClick={() => onSelectPage('submitCar')} class="text-white">Vender Coche</button>
                             </li>
                             <li>
-                                <button onClick={() => onSelectPage('chat')} class="text-white">Chats</button>
+                                <button onClick={() => onSelectPage('chats')} class="text-white">Chats</button>
                             </li>
                             <li>
                                 <button onClick={onLogout} class="text-white">Cerrar sesión</button>

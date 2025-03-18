@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import './App.css'
 import { NavBar, Footer } from './components/indexComponents.jsx';
-import { Home, Login, Register, SubmitCar, CarDetails, Chat, BuyCar } from './views/indexViews.jsx';
+import { Home, Login, Register, SubmitCar, CarDetails, Chat, Chats, BuyCar } from './views/indexViews.jsx';
 import { CsrfProvider } from './helpers/csrfContext.jsx';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import getUserIdFromToken from './helpers/decodeToken.jsx';
 
 function App() {
     const [currentPage, setCurrentPage] = useState('home');
@@ -11,6 +13,9 @@ function App() {
     const [selectedCar, setSelectedCar] = useState(null); 
     const [selectedChat, setSelectedChat] = useState(null);
     const [selectedVendor, setSelectedVendor] = useState(null);
+    const [errorShown, setErrorShown] = useState(false);
+
+    const userId = getUserIdFromToken();
 
      // Recargar la página actual desde localStorage si existe
      useEffect(() => {
@@ -50,31 +55,35 @@ function App() {
                 case 'submitCar':
                     return <SubmitCar onSubmitSuccess={() => handlePageChange('home')} />;
                 case 'car-details':
-                    return <CarDetails car={selectedCar} setPage={handlePageChange} selectedVendor={setSelectedVendor} />;
+                    return <CarDetails car={selectedCar} setPage={handlePageChange} setSelectedVendor={setSelectedVendor} />;
                 case 'chat':
-                    return <Chat />;
+                    return <Chat sellerId={selectedVendor.sellerId} carId={selectedVendor.carId} setPage={handlePageChange} />;
                 case 'chats':
-                    return <Chats sellerId={selectedVendor.User.id} carId={selectedVendor.id} />;
+                    return <Chats userIdApi={userId} setPage={handlePageChange} setSelectedVendor={setSelectedVendor} />;
                 case 'buycar':
                     return <BuyCar />;
                 default:
                     setCurrentPage('home');
+                }
             }
-        } catch (error) {
-            toast.error('Página no encontrada, redirigiendo a inicio...');
-            setCurrentPage('home'); // Redirige a home en caso de error
-            return <Home onSelectCar={setSelectedCar} onSelectPage={handlePageChange} />; // Renderiza Home como fallback
-        }
-    };
+            catch (error) {
+                if (!errorShown) {
+                    toast.error('Página no encontrada, redirigiendo a inicio...');
+                    setErrorShown(true); // Marca que el error ya fue mostrado
+                }
+                setCurrentPage('home'); // Redirige a home en caso de error
+                return <Home onSelectCar={setSelectedCar} onSelectPage={handlePageChange} />;
+            }
+        };
 
     return (
     <CsrfProvider>
-        <ToastContainer />
         <div class="bg-gray-300">
             <NavBar userName={userName} onSelectPage={handlePageChange} onLogout={handleLogout} />
             {renderPage()} 
             <Footer />
         </div>
+       
     </CsrfProvider>
     );
     }

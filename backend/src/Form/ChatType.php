@@ -15,6 +15,7 @@ class ChatType extends AbstractType
             ->add('createdDate')
             ->add('user1')
             ->add('user2')
+            ->add('car')
         ;
     }
 

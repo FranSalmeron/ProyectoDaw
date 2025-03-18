@@ -9,11 +9,14 @@ use Doctrine\ORM\Mapping as ORM;
 class ChatMessage
 {
     #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "AUTO")]  // Esto hace que idMessage sea autoincremental
+    #[ORM\Column(type: "integer")]
+    private ?int $idMessage = null;
+
     #[ORM\ManyToOne(targetEntity: Chat::class)]
-    #[ORM\JoinColumn(name: "chat_id", referencedColumnName: "id")] 
+    #[ORM\JoinColumn(name: "chat_id", referencedColumnName: "id")]
     private ?Chat $chat = null;
 
-    #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id")]
     private ?User $user = null;
@@ -71,6 +74,18 @@ class ChatMessage
     public function setMessageDate(\DateTimeInterface $messageDate): self
     {
         $this->messageDate = $messageDate;
+        return $this;
+    }
+
+    public function getIdMessage(): ?int
+    {
+        return $this->idMessage;
+    }
+
+    public function setIdMessage(int $idMessage): static
+    {
+        $this->idMessage = $idMessage;
+
         return $this;
     }
 }

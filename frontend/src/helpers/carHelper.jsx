@@ -1,7 +1,6 @@
 const symfonyUrl = import.meta.env.VITE_API_URL
 import { useCsrfToken } from './csrfContext';
 import { toast } from 'react-toastify';  
-import 'react-toastify/dist/ReactToastify.css'; 
 
 export const carList = async () => {
     try {
@@ -79,6 +78,5 @@ export const deleteCar = async (carId) => {
         }
     } catch (error) {
         console.error("Error: ", error);
-        toast.error('Hubo un error al eliminar el coche');
     }
 };

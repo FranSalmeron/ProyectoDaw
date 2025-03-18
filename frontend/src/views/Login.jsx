@@ -36,8 +36,6 @@ const Login = ({ onLogin, onLoginSuccess }) => {
       const token = data.token;
 
       const decodedToken = decodeJwt(token);
-      const userId = decodedToken.userId;
-      const userName = decodedToken.name;
 
       localStorage.setItem('jwt', token);
      

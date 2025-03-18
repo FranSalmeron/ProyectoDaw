@@ -2,23 +2,33 @@ security:
     password_hashers:
         App\Entity\User:
             algorithm: auto
+
     providers:
-        jwt_provider:
-            id: App\Security\JwtUserProvider
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: id
 
     firewalls:
         # Configuración para la ruta de login (sin autenticación)
         login:
             pattern: ^/api/login$
             security: false  # Esta ruta no requiere autenticación
-        # Configuración para todas las rutas /api (excepto /api/login)
-        main:
-            pattern: ^/api  # Aplica el firewall a todas las rutas que comiencen con /api
-            stateless: true  # Sin estado para la autenticación
-            custom_authenticators:
-                - App\Service\JwtAuthService  # Autenticador personalizado para JWT
-            entry_point: App\Security\JwtAuthenticationEntryPoint  # Manejador de errores de autenticación
+        csrf-token:
+            pattern: ^/csrf-token  # Excluye esta ruta del firewall JWT
+            security: false  # Desactiva la seguridad para esta ruta
 
+        # Configuración para todas las rutas /api (excepto /api/login y /api/verify-token)
+        api:
+            pattern: ^/(api|chat|ChatMessage)
+            stateless: true
+            jwt: ~  # Esto habilita el autenticador JWT
+
+    # Define todas las reglas de acceso en una sola sección
     access_control:
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }  # Login accesible sin autenticación previa
-        - { path: ^/api, roles: ROLE_USER }  # Resto de rutas requiere autenticación
+        - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }  # Registro accesible sin autenticación
+        - { path: ^/api/verify-token, roles: IS_AUTHENTICATED_ANONYMOUSLY }  # La ruta verify-token también sin autenticación
+        - { path: ^/api, roles: ROLE_USER }  # El resto de rutas requiere autenticación
+        - { path: ^/chat, roles: ROLE_USER }  # Las rutas /chat requieren autenticación JWT
+        - { path: ^/message, roles: ROLE_USER }  # Las rutas /message también requieren autenticación JWT
