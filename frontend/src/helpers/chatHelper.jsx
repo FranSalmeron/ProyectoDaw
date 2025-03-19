@@ -74,14 +74,13 @@ export const deleteChat = async (chatId) => {
     toast.error('Hubo un error al eliminar el chat.');
   }
 };
+
 export const listChats = async (userId) => {
   try {
-
     // Verificamos si el token está disponible
     if (!token) {
-      throw new Error('No se encontró el token JWT.');
+      console.error('No se encontró el token JWT.');
     }
-
     // Realizamos la solicitud GET a la API para obtener los chats del usuario
     const response = await fetch(`${symfonyUrl}/chat/${userId}/chats`, {
       method: 'GET',
@@ -90,10 +89,9 @@ export const listChats = async (userId) => {
         'Content-Type': 'application/json' 
       }
     });
-
     // Verificamos si la respuesta fue exitosa
     if (!response.ok) {
-      throw new Error('Error al obtener los chats');
+      console.error('Error al obtener los chats');
     }
 
     // Parseamos la respuesta JSON

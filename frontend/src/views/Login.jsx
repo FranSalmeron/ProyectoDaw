@@ -34,10 +34,10 @@ const Login = ({ onLogin, onLoginSuccess }) => {
     if (response.ok) {
       const data = await response.json();
       const token = data.token;
-
-      const decodedToken = decodeJwt(token);
+      const refreshToken = data.refreshToken;
 
       localStorage.setItem('jwt', token);
+      localStorage.setItem('refreshToken', refreshToken);
      
       // Mostrar notificación de login exitoso
       toast.success('¡Login exitoso!');  

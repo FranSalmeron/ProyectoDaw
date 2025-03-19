@@ -46,6 +46,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Car::class, mappedBy: 'User')]
     private Collection $cars;
 
+    #[ORM\Column(length: 255)]
+    private ?string $refreshToken = null;
+
     public function __construct()
     {
         $this->cars = new ArrayCollection();
@@ -160,6 +163,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $car->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRefreshToken(): ?string
+    {
+        return $this->refreshToken;
+    }
+
+    public function setRefreshToken(string $refreshToken): static
+    {
+        $this->refreshToken = $refreshToken;
 
         return $this;
     }

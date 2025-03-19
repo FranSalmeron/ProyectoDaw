@@ -1,7 +1,8 @@
 const symfonyUrl = import.meta.env.VITE_API_URL
-import { useCsrfToken } from './csrfContext';
 import { toast } from 'react-toastify';  
+import { useCsrfToken } from './csrfContext';
 
+// Obtener todos los coches
 export const carList = async () => {
     try {
         const response = await fetch(`${symfonyUrl}/car/`);
@@ -15,6 +16,7 @@ export const carList = async () => {
     }  
 }
 
+// Obtener coches por usuario
 export const carByUser = async (userId) => {
     try {
         const response = await fetch(`${symfonyUrl}/car/user/${userId}`);
@@ -28,6 +30,21 @@ export const carByUser = async (userId) => {
     }
 }
 
+// Obtener un coche por su ID
+export const carById = async (carId) => {
+    try {
+        const response = await fetch(`${symfonyUrl}/car/${carId}`);
+        if (!response.ok) {
+            throw new Error('Error fetching car by id');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error: "+ error);
+    }
+}
+
+// Editar coche
 export const editCar = async (carId, carData) => {
     try {
         const response = await fetch(`${symfonyUrl}/car/${carId}/edit`, {
@@ -54,9 +71,10 @@ export const editCar = async (carId, carData) => {
     }
 }
 
+// Eliminar coche
 export const deleteCar = async (carId) => {
-    const csrfToken = useCsrfToken();
     try {
+        const csrfToken = useCsrfToken();
         const response = await fetch(`${symfonyUrl}/car/${carId}/delete`, {
             method: 'DELETE',
             headers: {

@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { createChat } from '../helpers/chatHelper';
-import  getUserIdFromToken from '../helpers/decodeToken';
+
 import { loadMessages, sendMessage } from '../helpers/chatMessageHelper';
 
-const Chat = ({ sellerId, carId }) => {
+const Chat = ({ sellerId, carId, currentUserId }) => {
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
   const [loading, setLoading] = useState(true);
   const [chatId, setChatId] = useState(null);
 
-  const currentUserId = getUserIdFromToken();
   
   // Crear el chat si no existe
   useEffect(() => {

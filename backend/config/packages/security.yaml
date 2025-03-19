@@ -14,6 +14,9 @@ security:
         login:
             pattern: ^/api/login$
             security: false  # Esta ruta no requiere autenticación
+        refreshToken:
+            pattern: ^/api/refreshToken$
+            security: false  # Esta ruta no requiere autenticación
         csrf-token:
             pattern: ^/csrf-token  # Excluye esta ruta del firewall JWT
             security: false  # Desactiva la seguridad para esta ruta
@@ -27,6 +30,7 @@ security:
     # Define todas las reglas de acceso en una sola sección
     access_control:
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }  # Login accesible sin autenticación previa
+        - { path: ^/api/refreshToken, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }  # Registro accesible sin autenticación
         - { path: ^/api/verify-token, roles: IS_AUTHENTICATED_ANONYMOUSLY }  # La ruta verify-token también sin autenticación
         - { path: ^/api, roles: ROLE_USER }  # El resto de rutas requiere autenticación

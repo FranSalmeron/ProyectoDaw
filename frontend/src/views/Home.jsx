@@ -4,7 +4,6 @@ import L from 'leaflet';
 import { ToastContainer, toast } from 'react-toastify';
 import 'leaflet/dist/leaflet.css';
 import { carList } from '../helpers/carHelper.jsx';
-import { CsrfProvider } from '../helpers/csrfContext.jsx';
 
 const Home = ({ onSelectCar, onSelectPage }) => {
   const [cars, setCars] = useState([]);
@@ -107,7 +106,7 @@ const Home = ({ onSelectCar, onSelectPage }) => {
   });
 
   return (
-    <CsrfProvider>
+    <>
       <ToastContainer />
       <div className="flex flex-col sm:flex-row p-4 relative z-0">
         {/* Lista de coches */}
@@ -186,7 +185,7 @@ const Home = ({ onSelectCar, onSelectPage }) => {
           </MapContainer>
         </div>
       </div>
-    </CsrfProvider>
+      </>
   );
 };
 
