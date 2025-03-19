@@ -260,9 +260,7 @@ class CarController extends AbstractController
 
     #[Route('/{id}/delete', name: 'app_car_delete', methods: ['POST'])]
     public function delete(Request $request, Car $car, EntityManagerInterface $entityManager): Response
-    {
-        // Verificar CSRF
-        if ($this->isCsrfTokenValid('delete' . $car->getId(), $request->request->get('_token'))) {
+    {        
             try {
                 // Eliminar el coche
                 $entityManager->remove($car);
@@ -281,12 +279,5 @@ class CarController extends AbstractController
                     'error' => $e->getMessage()
                 ], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-        }
-
-        // Si el CSRF no es válido
-        return new JsonResponse([
-            'status' => 'no',
-            'message' => 'CSRF token invalid'
-        ], Response::HTTP_BAD_REQUEST);
     }
 }

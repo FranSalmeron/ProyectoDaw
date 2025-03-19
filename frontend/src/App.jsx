@@ -4,7 +4,6 @@ import { NavBar, Footer } from './components/indexComponents.jsx';
 import { Home, Login, Register, SubmitCar, CarDetails, Chat, Chats, BuyCar } from './views/indexViews.jsx';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { CsrfProvider } from './helpers/csrfContext.jsx';
 import { getUserIdFromToken, isTokenExpired } from './helpers/decodeToken.jsx';
 
 function App() {
@@ -86,13 +85,11 @@ function App() {
     };
 
     return (
-        <CsrfProvider>
             <div className="bg-gray-300">
                 <NavBar userName={userName} onSelectPage={handlePageChange} onLogout={handleLogout} />
                 {renderPage()} 
                 <Footer />
             </div>
-        </CsrfProvider>
     );
 }
 

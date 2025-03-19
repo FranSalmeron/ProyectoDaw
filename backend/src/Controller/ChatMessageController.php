@@ -87,10 +87,9 @@ class ChatMessageController extends AbstractController
     #[Route('/{ChatMessage}/delete', name: 'app_ChatMessage_message_delete', methods: ['POST'])]
     public function delete(Request $request, ChatMessage $ChatMessage, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $ChatMessage->getContent(), $request->request->get('_token'))) {
+        
             $entityManager->remove($ChatMessage);
             $entityManager->flush();
-        }
 
         return $this->json([
             'success' => true,

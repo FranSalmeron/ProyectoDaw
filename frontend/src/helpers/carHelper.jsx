@@ -1,6 +1,6 @@
 const symfonyUrl = import.meta.env.VITE_API_URL
 import { toast } from 'react-toastify';  
-import { useCsrfToken } from './csrfContext';
+
 
 // Obtener todos los coches
 export const carList = async () => {
@@ -74,12 +74,10 @@ export const editCar = async (carId, carData) => {
 // Eliminar coche
 export const deleteCar = async (carId) => {
     try {
-        const csrfToken = useCsrfToken();
         const response = await fetch(`${symfonyUrl}/car/${carId}/delete`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
             },
         });
 

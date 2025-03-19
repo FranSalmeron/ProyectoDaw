@@ -71,10 +71,8 @@ class TransactionController extends AbstractController
     #[Route('/{id}', name: 'app_transaction_delete', methods: ['POST'])]
     public function delete(Request $request, Transaction $transaction, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$transaction->getId(), $request->request->get('_token'))) {
             $entityManager->remove($transaction);
             $entityManager->flush();
-        }
 
         return $this->redirectToRoute('app_transaction_index', [], Response::HTTP_SEE_OTHER);
     }

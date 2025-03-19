@@ -24,11 +24,4 @@ class MainController extends AbstractController
             'controller_name' => 'MainController',
         ]);
     }
-
-    #[Route('/csrf-token', name: 'app_csrf_token', methods: ['GET'])]
-    public function csrfToken(CsrfTokenManagerInterface $csrfTokenManager): JsonResponse
-    {
-        $csrfToken = $csrfTokenManager->getToken('your_token_id')->getValue();
-        return new JsonResponse(['csrfToken' => $csrfToken]);
-    }
 }
