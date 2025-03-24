@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { listChats } from '../helpers/chatHelper';
-import { carById } from '../helpers/carHelper'; // Asegúrate de importar el método
+import { carById } from '../helpers/carHelper';
+import { toast } from 'react-toastify';
 
-const Chats = ({ userIdApi, setPage, setSelectedVendor }) => {
+const Chats = ({ userIdApi, setPage, setSelectedVendor, username }) => {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [chatDetails, setChatDetails] = useState([]); // Para almacenar los chats con detalles del coche
+  const [chatDetails, setChatDetails] = useState([]); 
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -17,11 +18,12 @@ const Chats = ({ userIdApi, setPage, setSelectedVendor }) => {
         // Ahora vamos a obtener los detalles de los coches secuencialmente
         const detailsWithCars = [];
         for (const chat of chatList) {
-          const car = await carById(chat.car); // Obtenemos el coche con el carId
+          const data = await carById(chat.car); 
           detailsWithCars.push({
             chatId: chat.chatId,
             seller: chat.seller,
-            car: car,
+            buyer: chat.buyer,
+            car: data,
             createdDate: chat.createdDate,
           });
         }
@@ -38,40 +40,51 @@ const Chats = ({ userIdApi, setPage, setSelectedVendor }) => {
   }, [userIdApi]);
 
   // Maneja el clic para redirigir al chat correspondiente
-  const handleChatClick = (car) => {
-    setSelectedVendor({ sellerId: car.User.id, carId: car.id });
+  const handleChatClick = (chatDetails) => {
+    setSelectedVendor({ sellerId: chatDetails.car.User.id, carId: chatDetails.car.id, buyerId: chatDetails.buyer });
     setPage('chat');
   };
 
   if (loading) {
-    return <div>Cargando chats...</div>;
+    return <div className="text-center text-gray-500">Cargando chats...</div>;
   }
 
   return (
-    <div>
-      <h2>Mis Chats</h2>
+    <div className="max-w-3xl mx-auto p-4">
+      <h2 className="text-2xl font-semibold text-center mb-6">Mis Chats</h2>
       {chats.length === 0 ? (
-        <p>No tienes chats activos.</p>
+        <p className="text-center text-gray-500">No tienes chats activos.</p>
       ) : (
-        <ul>
+        <ul className="space-y-4">
           {chatDetails.map((chatDetailsItem) => (
-            <li key={chatDetailsItem.chatId} className="chat-item" onClick={() => handleChatClick(chatDetailsItem.car)}>
-              <div className="chat-info flex items-center space-x-4">
-                {/* Imagen del coche */}
-                <div className="car-image w-16 h-16">
-                  <img
-                    src={chatDetailsItem.car.images[0]} // La primera imagen del coche
-                    alt="Car"
-                    className="object-cover w-full h-full rounded-full"
-                  />
-                </div>
+            <li
+              key={chatDetailsItem.chatId}
+              className="flex items-center space-x-4 p-4 bg-white border border-gray-200 rounded-lg shadow hover:shadow-lg transition-shadow cursor-pointer"
+              onClick={() => handleChatClick(chatDetailsItem)}
+            >
+              {/* Imagen del coche */}
+              <div className="w-16 h-16 flex-shrink-0">
+                <img
+                  src={chatDetailsItem.car.images[0]} // La primera imagen del coche
+                  alt="Car"
+                  className="object-cover w-full h-full rounded-full"
+                />
+              </div>
 
-                <div className="chat-details">
-                  <p className="text-sm font-semibold">Vendedor: {chatDetailsItem.seller}</p>
-                  <p className="text-sm text-gray-500">Comprador interesado</p>
-                  <p className="text-sm">Marca/Modelo: {chatDetailsItem.car.brand} {chatDetailsItem.car.model}</p>
-                  <p className="text-xs text-gray-400">Fecha de creación: {new Date(chatDetailsItem.createdDate).toLocaleString()}</p>
-                </div>
+              {/* Detalles del chat */}
+              <div className="flex flex-col justify-between flex-grow">
+                <p className="text-sm font-semibold text-gray-800">
+                  Vendedor: {chatDetailsItem.car.User.name}
+                </p>
+                <p className="text-sm text-gray-500">
+                  Comprador interesado: {chatDetailsItem.buyer} {/* Arreglar mas adelante para que ponga el nombre*/ }
+                </p>
+                <p className="text-sm text-gray-700">
+                  Marca/Modelo: {chatDetailsItem.car.brand} {chatDetailsItem.car.model}
+                </p>
+                <p className="text-xs text-gray-400">
+                  Fecha de creación: {new Date(chatDetailsItem.createdDate).toLocaleString()}
+                </p>
               </div>
             </li>
           ))}
@@ -82,3 +95,4 @@ const Chats = ({ userIdApi, setPage, setSelectedVendor }) => {
 };
 
 export default Chats;
+

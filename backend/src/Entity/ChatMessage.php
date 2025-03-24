@@ -1,15 +1,13 @@
 <?php
-
 namespace App\Entity;
 
 use App\Repository\ChatMessageRepository;
 use Doctrine\ORM\Mapping as ORM;
-
 #[ORM\Entity(repositoryClass: ChatMessageRepository::class)]
 class ChatMessage
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: "AUTO")]  // Esto hace que idMessage sea autoincremental
+    #[ORM\GeneratedValue(strategy: "AUTO")]
     #[ORM\Column(type: "integer")]
     private ?int $idMessage = null;
 
@@ -27,12 +25,12 @@ class ChatMessage
     #[ORM\Column(type: "datetime")]
     private \DateTimeInterface $messageDate;
 
-    // Constructor para inicializar la fecha automáticamente
     public function __construct()
     {
         $this->messageDate = new \DateTime();
     }
 
+    // Getters y setters
     public function getChat(): ?Chat
     {
         return $this->chat;
@@ -82,10 +80,9 @@ class ChatMessage
         return $this->idMessage;
     }
 
-    public function setIdMessage(int $idMessage): static
+    public function setIdMessage(int $idMessage): self
     {
         $this->idMessage = $idMessage;
-
         return $this;
     }
 }

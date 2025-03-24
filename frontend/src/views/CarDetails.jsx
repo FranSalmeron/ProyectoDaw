@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css"; 
 import Slider from "react-slick";
+import { getUserIdFromToken } from '../helpers/decodeToken';
 
 const CarDetails = ({ car, setPage, setSelectedVendor }) => {
     const [selectedImageIndex, setSelectedImageIndex] = useState(0); 
@@ -58,8 +59,9 @@ const CarDetails = ({ car, setPage, setSelectedVendor }) => {
             toast.error('Debes estar registrado para chatear.');
             setPage('login'); // Redirigir al login si no está autenticado
         } else {
+            const currentUserId = getUserIdFromToken();
             setPage('chat');
-            setSelectedVendor({ sellerId: car.User.id, carId: car.id });  // Aquí pasamos los valores de vendor
+            setSelectedVendor({ sellerId: car.User.id, carId: car.id, buyerId: currentUserId });  // Aquí pasamos los valores de vendor
         }
     };
 

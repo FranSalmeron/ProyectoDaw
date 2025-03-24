@@ -81,7 +81,7 @@ class ChatController extends AbstractController
         }
 
         // Verificar que el comprador no sea el mismo que el vendedor
-        if ($buyerId === $sellerId) {
+        if ($buyerId == $sellerId) {
             return $this->json([
                 'success' => false,
                 'message' => 'El comprador no puede ser el mismo que el vendedor.',

@@ -10,7 +10,6 @@ function App() {
     const [currentPage, setCurrentPage] = useState('home');
     const [userName, setUserName] = useState(localStorage.getItem('userName'));
     const [selectedCar, setSelectedCar] = useState(null); 
-    const [selectedChat, setSelectedChat] = useState(null);
     const [selectedVendor, setSelectedVendor] = useState(null);
     const [errorShown, setErrorShown] = useState(false);
     const [userId, setUserId] = useState(0);
@@ -23,7 +22,7 @@ function App() {
         if (savedPage) {
             setCurrentPage(savedPage);
         }
-        
+        /* Pendiente de arreglo de logica booleana*/
         if (isTokenExpired(token)) {
             const userIdFromToken = getUserIdFromToken();  // Obtener el userId del token
             setUserId(userIdFromToken);  // Establecerlo en el estado
@@ -66,9 +65,9 @@ function App() {
                 case 'car-details':
                     return <CarDetails car={selectedCar} setPage={handlePageChange} setSelectedVendor={setSelectedVendor} />;
                 case 'chat':
-                    return <Chat sellerId={selectedVendor.sellerId} carId={selectedVendor.carId} setPage={handlePageChange} currentUserId={userId} />;
+                    return <Chat sellerId={selectedVendor.sellerId} carId={selectedVendor.carId} setPage={handlePageChange} buyerId={selectedVendor.buyerId}  />;
                 case 'chats':
-                    return <Chats userIdApi={userId} setPage={handlePageChange} setSelectedVendor={setSelectedVendor} />;
+                    return <Chats userIdApi={userId} setPage={handlePageChange} setSelectedVendor={setSelectedVendor} username={userName} />;
                 case 'buycar':
                     return <BuyCar />;
                 default:

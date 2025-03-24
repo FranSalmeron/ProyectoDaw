@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 const symfonyUrl = import.meta.env.VITE_API_URL
 
 const getUserIdFromToken = () => {
@@ -35,7 +37,7 @@ const getUserIdFromToken = () => {
   const isTokenExpired = async (token) => {
     if (!token) {
       console.error('No se encontró el token JWT.');
-      return true; // Si no existe el token, lo consideramos expirado
+      return false;
     }
   
     const tokenParts = token.split('.');
@@ -54,8 +56,10 @@ const getUserIdFromToken = () => {
       const currentTime = Math.floor(Date.now() / 1000); // Obtener el tiempo actual en segundos
       if (payload.exp && payload.exp < currentTime) {
         // Si el token ha expirado, intenta refrescarlo
+        toast.info("Regenerando token");
         const refreshSuccess = await refreshTokenHandler(localStorage.getItem('refreshToken'));
         if (refreshSuccess) {
+          toast.info("Token regenerado");
           return false; // El token ha sido refrescado correctamente, por lo tanto no está expirado
         }
         return true; // El token ha expirado y no se pudo refrescar

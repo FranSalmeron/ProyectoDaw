@@ -150,28 +150,28 @@ class CarController extends AbstractController
         // Buscar el coche por el ID recibido como parámetro
         $car = $carRepository->find($id);
 
-        // Si no se encuentra el coche, devolver un error 404
+        // Si no hay coches, se puede devolver una respuesta vacía o un mensaje de error
         if (!$car) {
-            return new JsonResponse(['message' => 'Car not found'], Response::HTTP_NOT_FOUND);
-        }
+            return new JsonResponse(['message' => 'No car found'], Response::HTTP_NOT_FOUND);
+        }        
 
-        // La URL base para las imágenes
+        // La URL base para las imágenes,
         $imageBaseUrl = 'https://192.168.1.132:8001/uploads/images/';
 
-        // Comprobar si el coche tiene imágenes y construir la URL completa
-        if ($car->getImages()) {
-            $imagesWithUrls = [];
-            foreach ($car->getImages() as $image) {
-                $imagesWithUrls[] = $imageBaseUrl . $image; // Construimos la URL completa
+        // Añadir la URL base de las imágenes
+            if ($car->getImages()) {
+                $imagesWithUrls = [];
+                foreach ($car->getImages() as $image) {
+                    $imagesWithUrls[] = $imageBaseUrl . $image; // Construimos la URL completa
+                }
+                $car->setImages($imagesWithUrls); // Reemplazamos los nombres de los archivos con las URLs completas
             }
-            $car->setImages($imagesWithUrls); // Reemplazamos los nombres de los archivos con las URLs completas
-        }
+        
+        // Serializamos el array de coches a JSON
+        $jsonCars = $serializer->serialize($car, 'json', ['groups' => 'car_list']);
 
-        // Serializamos el coche a JSON
-        $jsonCar = $serializer->serialize($car, 'json', ['groups' => 'car_detail']);
-
-        // Retornamos la respuesta JSON con los detalles del coche
-        return new JsonResponse(json_decode($jsonCar), Response::HTTP_OK);
+        // Retornamos la respuesta JSON con los coches serializados
+        return new JsonResponse(json_decode($jsonCars), Response::HTTP_OK);
     }
 
     #[Route('/{id}/edit', name: 'app_car_edit', methods: ['PATCH'])]

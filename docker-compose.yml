@@ -22,7 +22,8 @@ services:
       context: ./backend
       dockerfile: DockerfileBackendFJSP
     ports:
-      - "8001:8001"  
+      - "8001:8001" 
+      - "8081:8081" 
     restart: always
     command: >
       sh -c "symfony server:start --port=8001 --allow-all-ip & tail -f /dev/null"

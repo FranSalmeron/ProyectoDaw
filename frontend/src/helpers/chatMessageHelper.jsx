@@ -1,23 +1,20 @@
 import { toast } from "react-toastify";
 
 const symfonyUrl = import.meta.env.VITE_API_URL;
+const token = localStorage.getItem('jwt');
 
+/**
+ * Función para cargar los mensajes de un chat
+ * @param {string} chatId - ID del chat
+ * @returns {Array} Lista de mensajes
+ */
 export const loadMessages = async (chatId) => {
   try {
-    // Obtener el token JWT del localStorage
-    const token = localStorage.getItem('jwt');
-
-    // Verificar que el token esté presente
-    if (!token) {
-      toast.error('No se pudo encontrar el token de autenticación.');
-      return [];
-    }
-
     const response = await fetch(`${symfonyUrl}/ChatMessage/${chatId}/messages`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`, 
-      },
+        'Content-Type': 'application/json'
+      }
     });
 
     if (!response.ok) {
@@ -26,10 +23,10 @@ export const loadMessages = async (chatId) => {
     }
 
     const data = await response.json();
-    if (data.messages.length === 0) {
+    if (!data || data.length === 0) {
       toast.info("No hay mensajes en este chat.");
     }
-    return data.messages;
+    return data || [];
   } catch (error) {
     console.error('Error al cargar los mensajes', error);
     toast.error("Error al cargar los mensajes.");
@@ -37,22 +34,18 @@ export const loadMessages = async (chatId) => {
   }
 };
 
+/**
+ * Función para enviar un mensaje en un chat
+ * @param {string} chatId - ID del chat
+ * @param {string} userId - ID del usuario
+ * @param {string} message - Contenido del mensaje
+ */
 export const sendMessage = async (chatId, userId, message) => {
   try {
-    // Obtener el token JWT del localStorage
-    const token = localStorage.getItem('jwt');
-
-    // Verificar que el token esté presente
-    if (!token) {
-      toast.error('No se pudo encontrar el token de autenticación.');
-      return;
-    }
-
     const response = await fetch(`${symfonyUrl}/ChatMessage/${chatId}/send`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Aquí agregamos el token en el encabezado Authorization
       },
       body: JSON.stringify({
         userId: userId,
@@ -70,4 +63,5 @@ export const sendMessage = async (chatId, userId, message) => {
     toast.error("Error al enviar el mensaje.");
   }
 };
+
 

@@ -20,7 +20,6 @@ return [
         '/chat' => [[['_route' => 'app_chat_car_index', '_controller' => 'App\\Controller\\ChatController::show'], null, ['GET' => 0], null, true, false, null]],
         '/chat/create' => [[['_route' => 'app_chat_car_create', '_controller' => 'App\\Controller\\ChatController::createChat'], null, ['POST' => 0], null, false, false, null]],
         '/' => [[['_route' => 'app_main', '_controller' => 'App\\Controller\\MainController::main'], null, null, null, false, false, null]],
-        '/csrf-token' => [[['_route' => 'app_csrf_token', '_controller' => 'App\\Controller\\MainController::csrfToken'], null, ['GET' => 0], null, false, false, null]],
         '/review' => [[['_route' => 'app_review_index', '_controller' => 'App\\Controller\\ReviewController::index'], null, ['GET' => 0], null, true, false, null]],
         '/review/new' => [[['_route' => 'app_review_new', '_controller' => 'App\\Controller\\ReviewController::new'], null, ['GET' => 0, 'POST' => 1], null, false, false, null]],
         '/transaction' => [[['_route' => 'app_transaction_index', '_controller' => 'App\\Controller\\TransactionController::index'], null, ['GET' => 0], null, true, false, null]],
@@ -69,30 +68,27 @@ return [
                         .'|chats(*:444)'
                     .')'
                 .')'
-                .'|/ChatMessage/([^/]++)(?'
-                    .'|/(?'
-                        .'|messages(*:490)'
-                        .'|edit(*:502)'
-                        .'|delete(*:516)'
-                        .'|send(*:528)'
-                    .')'
-                    .'|(*:537)'
+                .'|/ChatMessage/([^/]++)/(?'
+                    .'|edit(*:483)'
+                    .'|delete(*:497)'
+                    .'|send(*:509)'
+                    .'|messages(*:525)'
                 .')'
                 .'|/review/([^/]++)(?'
-                    .'|(*:565)'
-                    .'|/edit(*:578)'
-                    .'|(*:586)'
+                    .'|(*:553)'
+                    .'|/edit(*:566)'
+                    .'|(*:574)'
                 .')'
                 .'|/transaction/([^/]++)(?'
-                    .'|(*:619)'
-                    .'|/edit(*:632)'
-                    .'|(*:640)'
+                    .'|(*:607)'
+                    .'|/edit(*:620)'
+                    .'|(*:628)'
                 .')'
                 .'|/user/([^/]++)(?'
-                    .'|(*:666)'
+                    .'|(*:654)'
                     .'|/(?'
-                        .'|edit(*:682)'
-                        .'|delete(*:696)'
+                        .'|edit(*:670)'
+                        .'|delete(*:684)'
                     .')'
                 .')'
             .')/?$}sDu',
@@ -115,20 +111,19 @@ return [
         398 => [[['_route' => 'app_car_delete', '_controller' => 'App\\Controller\\CarController::delete'], ['id'], ['POST' => 0], null, false, false, null]],
         431 => [[['_route' => 'app_chat_car_delete', '_controller' => 'App\\Controller\\ChatController::delete'], ['id'], ['DELETE' => 0], null, false, false, null]],
         444 => [[['_route' => 'app_chat_user_chats', '_controller' => 'App\\Controller\\ChatController::getUserChats'], ['userId'], ['GET' => 0], null, false, false, null]],
-        490 => [[['_route' => 'app_ChatMessage_message_get_all', '_controller' => 'App\\Controller\\ChatMessageController::getAllMessages'], ['chatId'], ['GET' => 0], null, false, false, null]],
-        502 => [[['_route' => 'app_ChatMessage_message_edit', '_controller' => 'App\\Controller\\ChatMessageController::edit'], ['chatMessage'], ['POST' => 0], null, false, false, null]],
-        516 => [[['_route' => 'app_ChatMessage_message_delete', '_controller' => 'App\\Controller\\ChatMessageController::delete'], ['ChatMessage'], ['POST' => 0], null, false, false, null]],
-        528 => [[['_route' => 'app_ChatMessage_message_send', '_controller' => 'App\\Controller\\ChatMessageController::sendMessage'], ['chatId'], ['POST' => 0], null, false, false, null]],
-        537 => [[['_route' => 'app_ChatMessage_message_show', '_controller' => 'App\\Controller\\ChatMessageController::show'], ['ChatMessage'], ['GET' => 0], null, false, true, null]],
-        565 => [[['_route' => 'app_review_show', '_controller' => 'App\\Controller\\ReviewController::show'], ['id'], ['GET' => 0], null, false, true, null]],
-        578 => [[['_route' => 'app_review_edit', '_controller' => 'App\\Controller\\ReviewController::edit'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        586 => [[['_route' => 'app_review_delete', '_controller' => 'App\\Controller\\ReviewController::delete'], ['id'], ['POST' => 0], null, false, true, null]],
-        619 => [[['_route' => 'app_transaction_show', '_controller' => 'App\\Controller\\TransactionController::show'], ['id'], ['GET' => 0], null, false, true, null]],
-        632 => [[['_route' => 'app_transaction_edit', '_controller' => 'App\\Controller\\TransactionController::edit'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        640 => [[['_route' => 'app_transaction_delete', '_controller' => 'App\\Controller\\TransactionController::delete'], ['id'], ['POST' => 0], null, false, true, null]],
-        666 => [[['_route' => 'app_user_show', '_controller' => 'App\\Controller\\UserController::show'], ['id'], ['GET' => 0], null, false, true, null]],
-        682 => [[['_route' => 'app_user_edit', '_controller' => 'App\\Controller\\UserController::edit'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        696 => [
+        483 => [[['_route' => 'app_ChatMessage_message_edit', '_controller' => 'App\\Controller\\ChatMessageController::edit'], ['chatMessage'], ['POST' => 0], null, false, false, null]],
+        497 => [[['_route' => 'app_ChatMessage_message_delete', '_controller' => 'App\\Controller\\ChatMessageController::delete'], ['ChatMessage'], ['POST' => 0], null, false, false, null]],
+        509 => [[['_route' => 'app_ChatMessage_message_send', '_controller' => 'App\\Controller\\ChatMessageController::sendMessage'], ['chatId'], ['POST' => 0], null, false, false, null]],
+        525 => [[['_route' => 'app_ChatMessage_message_show', '_controller' => 'App\\Controller\\ChatMessageController::loadMessages'], ['chatId'], ['GET' => 0], null, false, false, null]],
+        553 => [[['_route' => 'app_review_show', '_controller' => 'App\\Controller\\ReviewController::show'], ['id'], ['GET' => 0], null, false, true, null]],
+        566 => [[['_route' => 'app_review_edit', '_controller' => 'App\\Controller\\ReviewController::edit'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        574 => [[['_route' => 'app_review_delete', '_controller' => 'App\\Controller\\ReviewController::delete'], ['id'], ['POST' => 0], null, false, true, null]],
+        607 => [[['_route' => 'app_transaction_show', '_controller' => 'App\\Controller\\TransactionController::show'], ['id'], ['GET' => 0], null, false, true, null]],
+        620 => [[['_route' => 'app_transaction_edit', '_controller' => 'App\\Controller\\TransactionController::edit'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        628 => [[['_route' => 'app_transaction_delete', '_controller' => 'App\\Controller\\TransactionController::delete'], ['id'], ['POST' => 0], null, false, true, null]],
+        654 => [[['_route' => 'app_user_show', '_controller' => 'App\\Controller\\UserController::show'], ['id'], ['GET' => 0], null, false, true, null]],
+        670 => [[['_route' => 'app_user_edit', '_controller' => 'App\\Controller\\UserController::edit'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        684 => [
             [['_route' => 'app_user_delete', '_controller' => 'App\\Controller\\UserController::delete'], ['id'], ['POST' => 0], null, false, false, null],
             [null, null, null, null, false, false, 0],
         ],

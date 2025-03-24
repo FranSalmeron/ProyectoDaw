@@ -13,7 +13,7 @@ class ChatMessageType extends AbstractType
     {
         $builder
             ->add('content')
-            ->add('messageDate')
+            ->add('message_Date')
             ->add('chat')
             ->add('user')
             ->add('idMessage')

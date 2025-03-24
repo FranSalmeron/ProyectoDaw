@@ -21,7 +21,7 @@ export const createChat = async (sellerId, buyerId, carId) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Añadir el token aquí
+        'Authorization': `Bearer ${token}`, 
       },
       body: body,
     });
@@ -35,7 +35,7 @@ export const createChat = async (sellerId, buyerId, carId) => {
     if (data.chatId) {
       return data.chatId;
     } else {
-      toast.error("No se pudo crear el chat.");
+      toast.error("No se pudo entrar al chat, intentalo de nuevo.");
       return null;
     }
   } catch (error) {

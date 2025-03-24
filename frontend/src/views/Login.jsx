@@ -10,16 +10,6 @@ const Login = ({ onLogin, onLoginSuccess }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);  
 
-  // Función para decodificar un token JWT y obtener el payload
-  const decodeJwt = (token) => {
-    const base64Url = token.split('.')[1];  
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); 
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    
-    return JSON.parse(jsonPayload);  // Convertimos el payload a un objeto JSON
-  };
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);  // Activamos el indicador de carga

@@ -14,16 +14,25 @@ security:
         login:
             pattern: ^/api/login$
             security: false  # Esta ruta no requiere autenticación
+            
         refreshToken:
             pattern: ^/api/refreshToken$
             security: false  # Esta ruta no requiere autenticación
+            
+        ChatMessageSend:
+            pattern: ^/ChatMessage/\d+/send  # El patrón para la ruta específica
+            security: false  # Desactiva la seguridad para esta ruta
+
         csrf-token:
             pattern: ^/csrf-token  # Excluye esta ruta del firewall JWT
             security: false  # Desactiva la seguridad para esta ruta
-
+            
+        ChatCreate:
+            pattern:  ^/chat/create
+            jwt: ~
         # Configuración para todas las rutas /api (excepto /api/login y /api/verify-token)
         api:
-            pattern: ^/(api|chat|ChatMessage)
+            pattern: ^/(api)
             stateless: true
             jwt: ~  # Esto habilita el autenticador JWT
 
