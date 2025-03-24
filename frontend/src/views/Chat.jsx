@@ -10,10 +10,12 @@ const Chat = ({ sellerId, carId, buyerId, setPage }) => {
   const [loading, setLoading] = useState(true);
   const [chatId, setChatId] = useState(null);
   const [isSending, setIsSending] = useState(false);
-  
+  const [taskId, setTaskId] = useState(null); // Almacenar taskId para el polling
+
   const MAX_CHARACTERS = 500;
   const currentUserId = getUserIdFromToken();
   const messagesEndRef = useRef(null);
+  const symfonyUrl = import.meta.env.VITE_API_URL;
 
   // **Crear el chat si no existe**
   useEffect(() => {
@@ -27,9 +29,14 @@ const Chat = ({ sellerId, carId, buyerId, setPage }) => {
         const chatIdResponse = await createChat(sellerId, buyerId, carId);
         if (chatIdResponse) {
           setChatId(chatIdResponse);
-          const loadedMessages = await loadMessages(chatIdResponse);
-          setMessages(loadedMessages);
-          setLoading(false);
+
+          // Solicitar carga de mensajes asíncrona
+          const loadMessagesResponse = await loadMessages(chatIdResponse, setMessages, setLoading);
+          if (loadMessagesResponse?.taskId) {
+            setTaskId(loadMessagesResponse.taskId);
+            pollTaskStatus(loadMessagesResponse.taskId, setMessages, setLoading); // Iniciar el polling para verificar el estado
+          }
+
         } else {
           setPage('home');
         }
@@ -42,24 +49,32 @@ const Chat = ({ sellerId, carId, buyerId, setPage }) => {
     createChatIfNotExists();
   }, [buyerId, sellerId, carId]);
 
-  // **Polling para cargar todos los mensajes regularmente**
-  useEffect(() => {
-    if (!chatId) return;
-
+  // **Polling para verificar si los mensajes están listos**
+  const pollTaskStatus = (taskId, setMessages, setLoading) => {
     const interval = setInterval(async () => {
       try {
-        const loadedMessages = await loadMessages(chatId);
-        if (loadedMessages.length > messages.length) {
-          // Si los nuevos mensajes son más que los anteriores, se actualizan
-          setMessages(loadedMessages);
+        const response = await fetch(`${symfonyUrl}/ChatMessage/task/${taskId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = await response.json();
+        if (data.status == 'completed') {
+          setMessages(data.data); // Asignar los mensajes cuando estén listos
+          clearInterval(interval); // Detener el polling
+          setLoading(false); // Finalizar la carga
+        } else {
+          console.log('Tarea aún pendiente...');
         }
       } catch (error) {
-        console.error('Error al cargar los mensajes', error);
+        console.error('Error al verificar estado de la tarea', error);
+        clearInterval(interval);
+        toast.error("Error al verificar el estado de la tarea.");
       }
-    }, 15000); // Polling cada 15 segundos
-
-    return () => clearInterval(interval); // Limpiar el intervalo al desmontar el componente
-  }, [chatId, messages.length]); // Dependencia en el número de mensajes para comparar la longitud
+    }, 2000); // Polling cada 2 segundos
+  };
 
   // **Enviar mensaje al chat**
   const sendMessageToChat = async () => {
@@ -103,7 +118,7 @@ const Chat = ({ sellerId, carId, buyerId, setPage }) => {
     <div className="chat-container p-4 max-w-3xl mx-auto">
       <h2 className="text-2xl font-semibold mb-6">Chat</h2>
       <div className="messages-container space-y-4 mb-4 max-h-[400px] overflow-y-auto">
-        {messages.map((message, index) => (
+        {messages.map((message) => (
           <div key={message.messageId} className={`message p-3 rounded-lg max-w-xs ${message.userId == currentUserId ? 'ml-auto bg-blue-500 text-white' : 'mr-auto bg-blue-100 text-gray-800'}`}>
             <p>{message.content}</p>
             <small className="text-xs opacity-75">{new Date(message.messageDate).toLocaleTimeString()}</small>

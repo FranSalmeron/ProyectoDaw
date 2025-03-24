@@ -1,9 +1,7 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\ChatMessage;
-use App\Repository\ChatMessageRepository;
 use App\Repository\ChatRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,11 +10,24 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Message\LoadMessagesMessage;
 use App\Entity\Chat;
+use Doctrine\DBAL\Types\GuidType;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Ramsey\Uuid\Guid\Guid;
+use Symfony\Contracts\Cache\CacheInterface;
 
 #[Route('/ChatMessage')]
 class ChatMessageController extends AbstractController
 {
+    private MessageBusInterface $bus;
+    private CacheInterface $cache;
+
+    public function __construct(MessageBusInterface $bus, CacheInterface $cache)
+    {
+        $this->bus = $bus;  // Inyectamos el bus de mensajes
+        $this->cache = $cache; // Inyectamos el servicio de cache
+    }
     // Mostrar un mensaje específico
     #[Route('/{ChatMessage}', name: 'app_ChatMessage_message_show', methods: ['GET'])]
     public function show(ChatMessage $ChatMessage): Response
@@ -26,41 +37,6 @@ class ChatMessageController extends AbstractController
             'content' => $ChatMessage->getContent(),
             'userId' => $ChatMessage->getUser()->getId(),
             'messageDate' => $ChatMessage->getMessageDate()->format('Y-m-d H:i:s'),
-        ]);
-    }
-
-    // Editar un mensaje
-    #[Route('/{chatMessage}/edit', name: 'app_ChatMessage_message_edit', methods: ['POST'])]
-    public function edit(Request $request, ChatMessage $chatMessage, EntityManagerInterface $entityManager): Response
-    {
-        $originalMessageDate = $chatMessage->getMessageDate();
-        $messageContent = $request->get('content');  // Obtener el nuevo contenido del mensaje desde la solicitud
-
-        if ($messageContent) {
-            $chatMessage->setContent($messageContent);  // Establecer el nuevo contenido
-        }
-
-        $chatMessage->setMessageDate($originalMessageDate);  // No modificar la fecha de creación
-
-        $entityManager->flush();
-
-        return $this->json([
-            'success' => true,
-            'message' => 'Mensaje editado exitosamente.',
-            'chatMessageId' => $chatMessage->getIdMessage(),
-        ]);
-    }
-
-    // Eliminar un mensaje
-    #[Route('/{ChatMessage}/delete', name: 'app_ChatMessage_message_delete', methods: ['POST'])]
-    public function delete(Request $request, ChatMessage $ChatMessage, EntityManagerInterface $entityManager): Response
-    {
-        $entityManager->remove($ChatMessage);
-        $entityManager->flush();
-
-        return $this->json([
-            'success' => true,
-            'message' => 'Mensaje eliminado exitosamente.',
         ]);
     }
 
@@ -124,31 +100,42 @@ class ChatMessageController extends AbstractController
         ]);
     }
 
-    #[Route('/{chatId}/messages', name: 'app_ChatMessage_message_show', methods: ['GET'])]
-    public function loadMessages(int $chatId, EntityManagerInterface $entityManager, ChatMessageRepository $chatMessageRepository): JsonResponse
+    // Iniciar carga de mensajes en background (asíncrono)
+    #[Route('/{chatId}/messages', name: 'app_ChatMessage_load_messages', methods: ['GET'])]
+    public function loadMessages(int $chatId): JsonResponse
     {
-        // Recuperamos el Chat correspondiente al chatId
-        $chat = $entityManager->getRepository(Chat::class)->find($chatId);
+        // Generar un taskId único para el polling
+        $taskId = Guid::uuid4()->toString();
 
-        if (!$chat) {
-            return new JsonResponse(['error' => 'Chat not found'], JsonResponse::HTTP_NOT_FOUND);
+        // Enviar mensaje para procesar la carga de mensajes de manera asíncrona
+        $message = new LoadMessagesMessage($chatId, $taskId);
+        $this->bus->dispatch($message);
+
+        // Responder con el taskId generado
+        return new JsonResponse([
+            'status' => 'Message dispatched',
+            'taskId' => $taskId
+        ]);
+    }
+
+    // Consultar el estado de la tarea (polling)
+    #[Route('/task/{taskId}', name: 'app_check_task_status', methods: ['GET'])]
+    public function checkTaskStatus(string $taskId): JsonResponse
+    {
+        // Consultar el estado de la tarea en la cache
+        $data = $this->cache->get($taskId, function () {
+            return null; // Si la tarea no existe, retorna null
+        });
+
+        // Si la tarea está completa, devolvemos los mensajes
+        if ($data) {
+            return new JsonResponse([
+                'status' => 'completed',
+                'data' => $data,
+            ]);
         }
 
-        // Obtener todos los mensajes de ese chat
-        $messages = $chatMessageRepository->findBy(['chat' => $chat], ['messageDate' => 'ASC']);
-
-        // Preparar los datos para la respuesta JSON
-        $data = [];
-        foreach ($messages as $message) {
-            $data[] = [
-                'messageId' => $message->getIdMessage(),
-                'content' => $message->getContent(),
-                'userId' => $message->getUser()->getId(),
-                'messageDate' => $message->getMessageDate()->format('Y-m-d H:i:s'),
-            ];
-        }
-
-        // Retornar la respuesta JSON con los mensajes
-        return new JsonResponse($data);
+        // Si la tarea sigue pendiente, devolver el estado pendiente
+        return new JsonResponse(['status' => 'pending']);
     }
 }
