@@ -29,7 +29,6 @@ const Chat = ({ sellerId, carId, buyerId, setPage }) => {
       try {
         const chatIdResponse = await createChat(sellerId, buyerId, carId);
         if (chatIdResponse) {
-          console.log("Chat creado con ID:", chatIdResponse);
           setChatId(chatIdResponse);
         } else {
           setPage('home');
@@ -46,7 +45,6 @@ const Chat = ({ sellerId, carId, buyerId, setPage }) => {
   // **Cargar mensajes y empezar polling solo si no hay taskId**
   useEffect(() => {
     if (chatId) {
-      console.log("chatId actualizado:", chatId);
 
       // Solo cargar mensajes si no hay un taskId aún
       if (!taskId) {
@@ -69,7 +67,6 @@ const Chat = ({ sellerId, carId, buyerId, setPage }) => {
   // **Iniciar el polling cada 15 segundos (actualización periódica de mensajes)**
   const startPolling = (taskId) => {
     const intervalId = setInterval(async () => {
-      console.log("Actualizando mensajes...");
 
       // Verificar si el taskId está definido
       if (taskId) {

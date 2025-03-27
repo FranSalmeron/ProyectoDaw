@@ -11,9 +11,6 @@ const token = localStorage.getItem('jwt');
 export const loadMessages = async (chatId, setLoading, taskId = null) => {
   console.log("Cargando mensajes...");
 
-  // Log para ver el taskId antes de la solicitud
-  console.log("taskId enviado a la API:", taskId);
-
   try {
     const response = await fetch(`${symfonyUrl}/ChatMessage/${chatId}/messages`, {
       method: 'Post',
@@ -31,9 +28,6 @@ export const loadMessages = async (chatId, setLoading, taskId = null) => {
     }
 
     const data = await response.json();
-
-    // Log para ver el taskId recibido en la respuesta
-    console.log("taskId recibido en la respuesta:", data.taskId);
 
     if (data.status === 'Message dispatched') {
       return data.taskId; // Retornar el taskId para el polling
@@ -56,7 +50,6 @@ export const loadMessages = async (chatId, setLoading, taskId = null) => {
  * @param {string} taskId - ID de la tarea
  */
 export const pollTaskStatus = async (taskId, setMessages, setLoading, existingMessages) => {
-  console.log("Verificando el estado de la tarea con taskId:", taskId);
 
   try {
     const response = await fetch(`${symfonyUrl}/ChatMessage/task/${taskId}`, {
@@ -84,8 +77,6 @@ export const pollTaskStatus = async (taskId, setMessages, setLoading, existingMe
         toast.error("Error al cargar los mensajes: formato incorrecto.");
       }
       setLoading(false);
-    } else {
-      console.log('Tarea aún pendiente...');
     }
   } catch (error) {
     console.error('Error al verificar estado de la tarea', error);
