@@ -40,7 +40,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $address = null; 
 
     #[ORM\Column(length: 20, nullable: true)]
-    #[Groups(['user_id', 'car_list'])]
+    #[Groups(['user_id'])]
     private ?string $phone = null; 
 
     #[ORM\OneToMany(targetEntity: Car::class, mappedBy: 'User')]

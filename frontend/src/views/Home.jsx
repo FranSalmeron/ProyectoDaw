@@ -4,59 +4,28 @@ import L from 'leaflet';
 import { ToastContainer, toast } from 'react-toastify';
 import 'leaflet/dist/leaflet.css';
 import { carList } from '../helpers/carHelper.jsx';
+import { useCars } from '../context/CarContext.jsx';
 
 const Home = ({ onSelectCar, onSelectPage }) => {
-  const [cars, setCars] = useState([]);
+  const { cars, addCars } = useCars(); // Usamos el contexto para acceder a los coches
   const [position, setPosition] = useState([37.1775, -3.5986]); // Coordenadas predeterminadas
-  const [loading, setLoading] = useState(true); // Para mostrar un estado de carga
-
-  // Función para obtener los coches desde localStorage
-  const getCachedCars = () => {
-    const cachedData = localStorage.getItem('coches');
-    if (cachedData) {
-      const { data, timestamp } = JSON.parse(cachedData);
-      // Si los datos tienen menos de 30 minutos de antigüedad, los retornamos
-      if (Date.now() - timestamp < 30 * 60 * 1000) {
-        return data;
-      }
-    }
-    return null;
-  };
+  const [loading, setLoading] = useState(true); // Estado de carga
 
   useEffect(() => {
     const getCars = async () => {
-      // Primero intentamos obtener los coches desde el cache
-      const cachedCoches = getCachedCars();
-      if (cachedCoches) {
-        setCars(cachedCoches);
-        setLoading(false);
-        return;
-      }
-
-      // Si no tenemos coches en cache, hacemos la petición a la API
+      setLoading(true);
       try {
-        const data = await carList();
-        if (data && Array.isArray(data)) {
-          setCars(data);
-          // Guardamos los coches en localStorage con un timestamp
-          const dataToCache = {
-            data,
-            timestamp: Date.now(),
-          };
-          localStorage.setItem('coches', JSON.stringify(dataToCache));
-        } else {
-          throw new Error('No se pudo obtener una lista de coches');
-        }
+        await carList(addCars);  // Llama a carList solo una vez para añadir los coches
+        setLoading(false);
       } catch (error) {
-        console.error(error);
         toast.error('No se pudieron cargar los coches. Intenta más tarde.');
-      } finally {
         setLoading(false);
       }
     };
 
-    getCars();
+    getCars(); // Llamada al cargar el componente
 
+    // Obtener la ubicación geográfica
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -71,18 +40,20 @@ const Home = ({ onSelectCar, onSelectPage }) => {
     } else {
       toast.error('Geolocalización no soportada en este navegador.');
     }
-  }, []);
+  }, []);  // Esto asegura que se ejecute solo una vez cuando el componente se monta
 
   const CarImage = ({ car }) => {
-    {car.images[0]};
     return (
       <div className="relative w-full h-48 overflow-hidden">
-        <img
-        
-          src={car.images[0]}
-          alt="Car"
-          className="w-auto h-auto object-cover"
-        />
+        {car.images && car.images.length > 0 ? (
+          <img
+            src={car.images[0]}  // Usamos la primera imagen del array
+            alt={`${car.brand} ${car.model}`}
+            className="w-auto h-auto object-cover"
+          />
+        ) : (
+          <p>No hay imágenes disponibles</p>
+        )}
       </div>
     );
   };
@@ -107,6 +78,9 @@ const Home = ({ onSelectCar, onSelectPage }) => {
     popupAnchor: [0, -32],
   });
 
+  // Asegúrate de que cars es un array vacío o con elementos antes de usar map
+  const carsAvailable = Array.isArray(cars) && cars.length > 0;
+
   return (
     <>
       <ToastContainer />
@@ -116,7 +90,7 @@ const Home = ({ onSelectCar, onSelectPage }) => {
           <h3 className="text-xl font-semibold mb-4">Coches Disponibles:</h3>
           {loading ? (
             <p>Cargando Coches...</p>
-          ) : cars.length > 0 ? (
+          ) : carsAvailable ? (
             <ul className="space-y-6">
               {cars.map((car, index) => (
                 <li key={index} className="bg-white p-4 shadow-md rounded-lg">
@@ -173,7 +147,7 @@ const Home = ({ onSelectCar, onSelectPage }) => {
               </Popup>
             </Marker>
 
-            {cars.map((car, index) => (
+            {carsAvailable && cars.map((car, index) => (
               car.lat && car.lon && (
                 <Marker key={index} position={[car.lat, car.lon]} icon={carIcon}>
                   <Popup>
@@ -187,7 +161,7 @@ const Home = ({ onSelectCar, onSelectPage }) => {
           </MapContainer>
         </div>
       </div>
-      </>
+    </>
   );
 };
 

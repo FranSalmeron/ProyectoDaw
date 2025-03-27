@@ -5,6 +5,8 @@ import { Home, Login, Register, SubmitCar, CarDetails, Chat, Chats, BuyCar } fro
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getUserIdFromToken, isTokenExpired } from './helpers/decodeToken.jsx';
+import { CarProvider } from './context/CarContext.jsx';
+import { ChatProvider } from './context/ChatContext.jsx';
 
 function App() {
     const [currentPage, setCurrentPage] = useState('home');
@@ -84,11 +86,15 @@ function App() {
     };
 
     return (
-            <div className="bg-gray-300">
-                <NavBar userName={userName} onSelectPage={handlePageChange} onLogout={handleLogout} />
-                {renderPage()} 
-                <Footer />
-            </div>
+        <div className="bg-gray-300">
+            <CarProvider>
+                <ChatProvider>
+                    <NavBar userName={userName} onSelectPage={handlePageChange} onLogout={handleLogout} />
+                    {renderPage()} 
+                    <Footer />
+                </ChatProvider>
+            </CarProvider>
+        </div>
     );
 }
 

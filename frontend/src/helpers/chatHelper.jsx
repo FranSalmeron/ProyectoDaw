@@ -75,36 +75,64 @@ export const deleteChat = async (chatId) => {
   }
 };
 
-export const listChats = async (userId) => {
+export const listChats = async (userId, addChats) => {
+  console.log("Cargando chats...");
   try {
-    // Verificamos si el token está disponible
-    if (!token) {
-      console.error('No se encontró el token JWT.');
+    // Primero, revisamos si hay datos en el localStorage
+    const storedChats = localStorage.getItem('cachedChats');
+    const now = new Date();
+    const thirtyMinutes = 30 * 60 * 1000; // 30 minutos en milisegundos
+
+    // Si existe cachedChats en localStorage
+    if (storedChats) {
+      const { chats, lastUpdated } = JSON.parse(storedChats); // Desestructuramos el objeto
+
+      // Verificamos si los datos son válidos y si no ha pasado el tiempo de expiración
+      if (now - new Date(lastUpdated) < thirtyMinutes) {
+        chats.forEach(chat => addChats(chat));  // Agregamos los chats desde localStorage
+      } else {
+        // Si han pasado más de 30 minutos, necesitamos actualizar los datos
+        console.log("La caché ha caducado. Actualizando chats...");
+        await fetchAndStoreChats(userId, addChats);  // Actualizamos los chats
+      }
+    } else {
+      // Si no hay datos en localStorage, hacemos la petición a la API
+      await fetchAndStoreChats(userId, addChats);
     }
-    // Realizamos la solicitud GET a la API para obtener los chats del usuario
+  } catch (error) {
+    console.error("Error al obtener los chats: ", error);
+  }
+};
+
+// Función para hacer la petición y almacenar los chats junto con el timestamp
+const fetchAndStoreChats = async (userId, addChats) => {
+  try {
     const response = await fetch(`${symfonyUrl}/chat/${userId}/chats`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`, 
-        'Content-Type': 'application/json' 
-      }
+        'Content-Type': 'application/json',
+      },
     });
-    // Verificamos si la respuesta fue exitosa
+
     if (!response.ok) {
-      console.error('Error al obtener los chats');
+      throw new Error('Error fetching chats');
     }
 
-    // Parseamos la respuesta JSON
     const data = await response.json();
-    
-    // Si la respuesta es exitosa, retornamos los chats
-    if (data.success) {
-      return data.chats;
+    console.log("Datos recibidos de la API: ", data);
+
+    if (Array.isArray(data.chats) && data.chats.length > 0) {
+      // Guardamos los chats en localStorage con el timestamp de la última actualización
+      const newData = {
+        chats: data.chats,
+        lastUpdated: new Date().toISOString(),  // Guardamos la fecha actual
+      };
+      localStorage.setItem('cachedChats', JSON.stringify(newData));
+      data.chats.forEach(chat => addChats(chat));  // Actualizamos los chats en el estado global
     } else {
-      throw new Error(data.message || 'No se encontraron chats');
+      console.error("No hay chats disponibles o la respuesta no es un array válido");
     }
   } catch (error) {
-    console.error('Error en la función listChats:', error);
-    return null; // Retornamos null en caso de error para manejarlos en el componente
+    console.error("Error al obtener los chats: ", error);
   }
 };
