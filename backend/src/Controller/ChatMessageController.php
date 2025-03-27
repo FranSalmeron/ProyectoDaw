@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\ChatMessage;
@@ -12,21 +13,26 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Message\LoadMessagesMessage;
 use App\Entity\Chat;
+use App\Repository\ChatMessageRepository;
 use Doctrine\DBAL\Types\GuidType;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Ramsey\Uuid\Guid\Guid;
 use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 #[Route('/ChatMessage')]
 class ChatMessageController extends AbstractController
 {
     private MessageBusInterface $bus;
     private CacheInterface $cache;
+    private LoggerInterface $logger;
 
-    public function __construct(MessageBusInterface $bus, CacheInterface $cache)
+    public function __construct(MessageBusInterface $bus, CacheInterface $cache,  LoggerInterface $logger)
     {
         $this->bus = $bus;  // Inyectamos el bus de mensajes
         $this->cache = $cache; // Inyectamos el servicio de cache
+        $this->logger = $logger;
     }
     // Mostrar un mensaje específico
     #[Route('/{ChatMessage}', name: 'app_ChatMessage_message_show', methods: ['GET'])]
@@ -49,7 +55,7 @@ class ChatMessageController extends AbstractController
 
         // Verificar que el contenido del mensaje esté presente
         $messageContent = $data['message'] ?? null;
-        $userId = $data['userId'] ?? null;  // Obtener el userId de la solicitud
+        $userId = $data['userId'] ?? null;
 
         if (!$messageContent) {
             return $this->json([
@@ -93,30 +99,13 @@ class ChatMessageController extends AbstractController
         $entityManager->persist($chatMessage);
         $entityManager->flush();
 
+        // Devolver respuesta de éxito
         return $this->json([
             'success' => true,
-            'message' => 'Mensaje enviado exitosamente.',
-            'chatMessageId' => $chatMessage->getIdMessage(),
+            'message' => 'El mensaje se ha subido correctamente a la base de datos.',
         ]);
     }
 
-    // Iniciar carga de mensajes en background (asíncrono)
-    #[Route('/{chatId}/messages', name: 'app_ChatMessage_load_messages', methods: ['GET'])]
-    public function loadMessages(int $chatId): JsonResponse
-    {
-        // Generar un taskId único para el polling
-        $taskId = Guid::uuid4()->toString();
-
-        // Enviar mensaje para procesar la carga de mensajes de manera asíncrona
-        $message = new LoadMessagesMessage($chatId, $taskId);
-        $this->bus->dispatch($message);
-
-        // Responder con el taskId generado
-        return new JsonResponse([
-            'status' => 'Message dispatched',
-            'taskId' => $taskId
-        ]);
-    }
 
     // Consultar el estado de la tarea (polling)
     #[Route('/task/{taskId}', name: 'app_check_task_status', methods: ['GET'])]
@@ -126,6 +115,13 @@ class ChatMessageController extends AbstractController
         $data = $this->cache->get($taskId, function () {
             return null; // Si la tarea no existe, retorna null
         });
+
+        // Registrar el estado de la caché
+        if ($data) {
+            $this->logger->info('Datos cargados de la caché para taskId: ' . $taskId);
+        } else {
+            $this->logger->info('No se encontraron datos en caché para taskId: ' . $taskId);
+        }
 
         // Si la tarea está completa, devolvemos los mensajes
         if ($data) {
@@ -137,5 +133,31 @@ class ChatMessageController extends AbstractController
 
         // Si la tarea sigue pendiente, devolver el estado pendiente
         return new JsonResponse(['status' => 'pending']);
+    }
+
+
+    // Iniciar carga de mensajes en background (asíncrono)
+    #[Route('/{chatId}/messages', name: 'app_ChatMessage_load_messages', methods: ['POST'])]
+    public function loadMessages(int $chatId, Request $request): JsonResponse
+    {
+        // Obtener el taskId del parámetro de la solicitud
+        $taskId = json_decode($request->getContent(), true);
+        $this->logger->info('taskId recibido en la solicitud: ' . $taskId);
+
+        if (!$taskId) {
+            // Generar un nuevo taskId si no se proporciona uno
+            $taskId = Guid::uuid4()->toString();
+            $this->logger->info('Generado nuevo taskId: ' . $taskId);
+        }
+
+        // Enviar mensaje para procesar la carga de mensajes de manera asíncrona
+        $message = new LoadMessagesMessage($chatId, $taskId);
+        $this->bus->dispatch($message);
+
+        // Responder con el taskId utilizado
+        return new JsonResponse([
+            'status' => 'Message dispatched',
+            'taskId' => $taskId
+        ]);
     }
 }

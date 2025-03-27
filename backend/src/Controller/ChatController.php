@@ -163,7 +163,7 @@ class ChatController extends AbstractController
             'chatId' => $chat->getId(),
         ]);
     }
-    
+
     #[Route('/{userId}/chats', name: 'app_chat_user_chats', methods: ['GET'])]
     public function getUserChats($userId, ChatRepository $chatRepository): Response
     {
@@ -178,16 +178,40 @@ class ChatController extends AbstractController
         // Crear una estructura de datos para enviar en la respuesta
         $chatsData = [];
         foreach ($chats as $chat) {
+            // Obtener el coche asociado al chat
+            $car = $chat->getCar();
+
+            // Verificar si el coche tiene imágenes
+            $imageBaseUrl = '/uploads/images/';
+            $carImages = [];
+            if ($car && $car->getImages()) {
+                foreach ($car->getImages() as $image) {
+                    $carImages[] = $imageBaseUrl . $image;
+                }
+            }
+
+            // Añadir el chat con sus datos a la estructura
             $chatsData[] = [
                 'chatId' => $chat->getId(),
-                'buyer' => $chat->getBuyer()->getId(),
-                'seller' => $chat->getSeller()->getId(),
-                'car' => $chat->getCar()->getId(),
+                'buyer' => [
+                    'id' => $chat->getBuyer()->getId(),
+                    'name' => $chat->getBuyer()->getName(), // Agregar el nombre del comprador
+                ],
+                'seller' => [
+                    'id' => $chat->getSeller()->getId(),
+                    'name' => $chat->getSeller()->getName(), // Agregar el nombre del vendedor
+                ],
+                'car' => [
+                    'id' => $car->getId(),
+                    'images' => $carImages,
+                    'brand' => $car->getBrand(),
+                    'model' => $car->getModel(),
+                ],
                 'createdDate' => $chat->getCreatedDate()->format('Y-m-d H:i:s'),
             ];
         }
 
-        // Retornar los chats en formato JSON
+        // Retornar los chats con los coches, los nombres de comprador y vendedor, y las imágenes en formato JSON
         return $this->json([
             'success' => true,
             'chats' => $chatsData,

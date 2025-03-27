@@ -554,6 +554,7 @@
       <tag name="container.service_subscriber"/>
       <argument type="service" id="debug.traced.messenger.bus.default"/>
       <argument type="service" id="cache.app"/>
+      <argument type="service" id="monolog.logger"/>
       <call method="setContainer">
         <argument type="service" id=".service_locator.jIxfAsi.App\Controller\ChatMessageController"/>
       </call>
@@ -587,7 +588,6 @@
         <argument type="service" id=".service_locator.jIxfAsi.App\Controller\UserController"/>
       </call>
     </service>
-    <service id="App\EventListener" class="App\EventListener" autowire="true" autoconfigure="true"/>
     <service id="App\Form\CarType" class="App\Form\CarType" autowire="true" autoconfigure="true">
       <tag name="form.type"/>
     </service>
@@ -612,6 +612,7 @@
       <argument type="service" id="App\Repository\ChatMessageRepository"/>
       <argument type="service" id="doctrine.orm.default_entity_manager"/>
       <argument type="service" id="cache.app"/>
+      <argument type="service" id="monolog.logger"/>
     </service>
     <service id="App\Repository\CarRepository" class="App\Repository\CarRepository" autowire="true" autoconfigure="true">
       <tag name="doctrine.repository_service"/>

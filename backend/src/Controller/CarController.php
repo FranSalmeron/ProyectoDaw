@@ -24,13 +24,13 @@ class CarController extends AbstractController
     {
         $cars = $carRepository->findAll();
 
-        // Si no hay coches, se puede devolver una respuesta vacía o un mensaje de error
+        
         if (empty($cars)) {
             return new JsonResponse(['message' => 'No cars found'], Response::HTTP_NOT_FOUND);
         }
 
         // La URL base para las imágenes,
-        $imageBaseUrl = 'https://192.168.1.132:8001/uploads/images/';
+        $imageBaseUrl = '/uploads/images/';
 
         // Añadir la URL base de las imágenes
         foreach ($cars as $car) {
@@ -60,7 +60,7 @@ class CarController extends AbstractController
         // Obtener todos los coches de un usuario por su ID
         $cars = $carRepository->findBy(['user' => $id]);
 
-        // Si no hay coches, se puede devolver una respuesta vacía o un mensaje de error
+        
         if (empty($cars)) {
             return new JsonResponse(['message' => 'No cars found for this user'], Response::HTTP_NOT_FOUND);
         }
@@ -150,13 +150,12 @@ class CarController extends AbstractController
         // Buscar el coche por el ID recibido como parámetro
         $car = $carRepository->find($id);
 
-        // Si no hay coches, se puede devolver una respuesta vacía o un mensaje de error
         if (!$car) {
             return new JsonResponse(['message' => 'No car found'], Response::HTTP_NOT_FOUND);
         }        
 
         // La URL base para las imágenes,
-        $imageBaseUrl = 'https://192.168.1.132:8001/uploads/images/';
+        $imageBaseUrl = 'https://localhost:8001/uploads/images/';
 
         // Añadir la URL base de las imágenes
             if ($car->getImages()) {

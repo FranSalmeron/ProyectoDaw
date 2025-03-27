@@ -8,67 +8,91 @@ const token = localStorage.getItem('jwt');
  * @param {string} chatId - ID del chat
  * @returns {Array} Lista de mensajes
  */
-export const loadMessages = async (chatId, setMessages, setLoading) => {
+export const loadMessages = async (chatId, setLoading, taskId = null) => {
+  console.log("Cargando mensajes...");
+
+  // Log para ver el taskId antes de la solicitud
+  console.log("taskId enviado a la API:", taskId);
+
   try {
     const response = await fetch(`${symfonyUrl}/ChatMessage/${chatId}/messages`, {
-      method: 'GET',
+      method: 'Post',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Si es necesario incluir token
-      }
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(taskId),
     });
-
+    
     if (!response.ok) {
-      toast.error("Error al iniciar carga de mensajes");
+      toast.error("Error al cargar mensajes.");
       setLoading(false);
-      return [];
+      return null;
     }
 
     const data = await response.json();
-    if (data.status == 'Message dispatched') {
-      toast.info("Carga de mensajes iniciada.");
-      return { taskId: data.taskId }; // Retorna taskId
+
+    // Log para ver el taskId recibido en la respuesta
+    console.log("taskId recibido en la respuesta:", data.taskId);
+
+    if (data.status === 'Message dispatched') {
+      return data.taskId; // Retornar el taskId para el polling
+    } else {
+      toast.error("Error desconocido al cargar mensajes.");
+      setLoading(false);
+      return null;
     }
   } catch (error) {
-    console.error('Error al iniciar carga de mensajes', error);
-    toast.error("Error al iniciar carga de mensajes.");
+    console.error('Error al cargar mensajes', error);
+    toast.error("Error al cargar mensajes.");
     setLoading(false);
+    return null;
   }
 };
+
 
 /**
  * Función para hacer polling y verificar el estado de la tarea
  * @param {string} taskId - ID de la tarea
  */
-const pollTaskStatus = (taskId, setMessages, setLoading) => {
-  const interval = setInterval(async () => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/ChatMessage/task/${taskId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+export const pollTaskStatus = async (taskId, setMessages, setLoading, existingMessages) => {
+  console.log("Verificando el estado de la tarea con taskId:", taskId);
 
-      const data = await response.json();
-      if (data.status == 'completed') {
-        if (Array.isArray(data.data)) {
-          setMessages(data.data); // Asignar los mensajes cuando estén listos
-        } else {
-          toast.error("Error al cargar los mensajes: formato incorrecto.");
+  try {
+    const response = await fetch(`${symfonyUrl}/ChatMessage/task/${taskId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+
+    if (data.status === 'completed') {
+      if (Array.isArray(data.data)) {
+        const newMessages = data.data;
+
+        // Comparar mensajes para ver si hay nuevos
+        const hasNewMessages = newMessages.length !== existingMessages.length ||
+          newMessages.some((message, index) => message.messageId !== existingMessages[index]?.messageId);
+
+        if (hasNewMessages) {
+          // Si hay nuevos mensajes, actualizar el estado
+          setMessages(newMessages);
         }
-        clearInterval(interval); // Detener el polling
-        setLoading(false); // Finalizar la carga
       } else {
-        console.log('Tarea aún pendiente...');
+        toast.error("Error al cargar los mensajes: formato incorrecto.");
       }
-    } catch (error) {
-      console.error('Error al verificar estado de la tarea', error);
-      clearInterval(interval);
-      toast.error("Error al verificar el estado de la tarea.");
+      setLoading(false);
+    } else {
+      console.log('Tarea aún pendiente...');
     }
-  }, 2000); // Polling cada 2 segundos
+  } catch (error) {
+    console.error('Error al verificar estado de la tarea', error);
+    toast.error("Error al verificar el estado de la tarea.");
+  }
 };
+
 
 /**
  * Función para enviar un mensaje en un chat
@@ -76,7 +100,7 @@ const pollTaskStatus = (taskId, setMessages, setLoading) => {
  * @param {string} userId - ID del usuario
  * @param {string} message - Contenido del mensaje
  */
-export const sendMessage = async (chatId, userId, message) => {
+export const sendMessage = async (chatId, userId, message, taskId) => {
   try {
     const response = await fetch(`${symfonyUrl}/ChatMessage/${chatId}/send`, {
       method: 'POST',
@@ -88,12 +112,9 @@ export const sendMessage = async (chatId, userId, message) => {
         message: message,
       }),
     });
-
     if (!response.ok) {
-      toast.error("Error al enviar el mensaje");
       return;
     }
-    toast.success("Mensaje enviado");
   } catch (error) {
     console.error('Error al enviar un mensaje:', error);
     toast.error("Error al enviar el mensaje.");

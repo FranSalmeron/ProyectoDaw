@@ -74,9 +74,11 @@ const Home = ({ onSelectCar, onSelectPage }) => {
   }, []);
 
   const CarImage = ({ car }) => {
+    {car.images[0]};
     return (
       <div className="relative w-full h-48 overflow-hidden">
         <img
+        
           src={car.images[0]}
           alt="Car"
           className="w-auto h-auto object-cover"

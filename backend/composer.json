@@ -19,6 +19,7 @@
         "lexik/jwt-authentication-bundle": "^2.18",
         "nelmio/cors-bundle": "^2.5",
         "phpdocumentor/reflection-docblock": "^5.6",
+        "predis/predis": "^2.3",
         "ramsey/uuid": "^4.7",
         "react/event-loop": "^1.5",
         "react/http": "^1.11",

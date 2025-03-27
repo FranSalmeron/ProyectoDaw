@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { listChats } from '../helpers/chatHelper';
-import { carById } from '../helpers/carHelper';
 import { toast } from 'react-toastify';
 
-const Chats = ({ userIdApi, setPage, setSelectedVendor, username }) => {
+const Chats = ({ userIdApi, setPage, setSelectedVendor }) => {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [chatDetails, setChatDetails] = useState([]); 
@@ -15,18 +14,13 @@ const Chats = ({ userIdApi, setPage, setSelectedVendor, username }) => {
         const chatList = await listChats(userIdApi);
         setChats(chatList);
 
-        // Ahora vamos a obtener los detalles de los coches secuencialmente
-        const detailsWithCars = [];
-        for (const chat of chatList) {
-          const data = await carById(chat.car); 
-          detailsWithCars.push({
-            chatId: chat.chatId,
-            seller: chat.seller,
-            buyer: chat.buyer,
-            car: data,
-            createdDate: chat.createdDate,
-          });
-        }
+        const detailsWithCars = chatList.map((chat) => ({
+          chatId: chat.chatId,
+          seller: chat.seller,  
+          buyer: chat.buyer,    
+          car: chat.car, 
+          createdDate: chat.createdDate,
+        }));
 
         setChatDetails(detailsWithCars); // Actualizamos el estado con los chats y los coches
       } catch (error) {
@@ -40,8 +34,12 @@ const Chats = ({ userIdApi, setPage, setSelectedVendor, username }) => {
   }, [userIdApi]);
 
   // Maneja el clic para redirigir al chat correspondiente
-  const handleChatClick = (chatDetails) => {
-    setSelectedVendor({ sellerId: chatDetails.car.User.id, carId: chatDetails.car.id, buyerId: chatDetails.buyer });
+  const handleChatClick = (chatDetailsItem) => {
+    setSelectedVendor({ 
+      sellerId: chatDetailsItem.seller.id, 
+      carId: chatDetailsItem.car.id, 
+      buyerId: chatDetailsItem.buyer.id, 
+    });
     setPage('chat');
   };
 
@@ -74,10 +72,10 @@ const Chats = ({ userIdApi, setPage, setSelectedVendor, username }) => {
               {/* Detalles del chat */}
               <div className="flex flex-col justify-between flex-grow">
                 <p className="text-sm font-semibold text-gray-800">
-                  Vendedor: {chatDetailsItem.car.User.name}
+                  Vendedor: {chatDetailsItem.seller.name} {/* Usamos el nombre del vendedor */}
                 </p>
                 <p className="text-sm text-gray-500">
-                  Comprador interesado: {chatDetailsItem.buyer} {/* Arreglar mas adelante para que ponga el nombre*/ }
+                  Comprador interesado: {chatDetailsItem.buyer.name} {/* Usamos el nombre del comprador */}
                 </p>
                 <p className="text-sm text-gray-700">
                   Marca/Modelo: {chatDetailsItem.car.brand} {chatDetailsItem.car.model}
@@ -95,4 +93,3 @@ const Chats = ({ userIdApi, setPage, setSelectedVendor, username }) => {
 };
 
 export default Chats;
-
