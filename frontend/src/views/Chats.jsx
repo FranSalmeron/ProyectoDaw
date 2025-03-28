@@ -2,17 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { listChats } from '../helpers/chatHelper';
 import { useChats } from '../context/ChatContext';
 import { toast } from 'react-toastify';
+import { getUserIdFromToken } from '../helpers/decodeToken';
+import {  useNavigate } from 'react-router-dom';
 
-const Chats = ({ userIdApi, setPage, setSelectedVendor }) => {
+const Chats = ({ userId = null }) => {
   const { chats, addChats } = useChats(); // Accedemos al contexto
   const [loading, setLoading] = useState(true); // Estado de carga
   const [chatDetails, setChatDetails] = useState([]); // Detalles de los chats
+  const navigate = useNavigate(); // Para redireccionar 
 
   useEffect(() => {
+    if(userId == null){
+    userId = getUserIdFromToken();
+    }
+    // Si el userId no está disponible, no hacemos nada
+    if (!userId) {
+      toast.error('No se pudo obtener el usuario.');
+      setLoading(false);
+      return;
+    }
+
     const fetchChats = async () => {
       try {
-        // Primero llamamos a listChats para cargar los chats del usuario y guardarlos en el contexto
-        await listChats(userIdApi, addChats); 
+        // Llamamos a listChats para cargar los chats del usuario y guardarlos en el contexto
+        await listChats(userId, addChats); 
+
         // Ahora que los chats están en el contexto, los asignamos a 'chatDetails' solo cuando estén listos
         if (chats.length > 0) {
           const detailsWithCars = chats.map((chat) => ({
@@ -29,6 +43,7 @@ const Chats = ({ userIdApi, setPage, setSelectedVendor }) => {
         }
       } catch (error) {
         console.error('Error al obtener los chats:', error);
+        toast.error('Hubo un error al obtener los chats.');
       } finally {
         setLoading(false); // Termina la carga
       }
@@ -36,15 +51,11 @@ const Chats = ({ userIdApi, setPage, setSelectedVendor }) => {
 
     fetchChats(); // Llamamos a la función para cargar los chats
 
-  }, [userIdApi, addChats]); // Dependencias para reejecutar el useEffect si cambian
+  }, [addChats, chats]); // Dependencias para reejecutar el useEffect si cambian
 
   const handleChatClick = (chatDetailsItem) => {
-    setSelectedVendor({
-      sellerId: chatDetailsItem.seller?.id,
-      carId: chatDetailsItem.car?.id,
-      buyerId: chatDetailsItem.buyer?.id,
-    });
-    setPage('chat');
+    // Redirige a la página del chat
+    navigate(`/chat/${chatDetailsItem.seller?.id}/${chatDetailsItem.car?.id}/${chatDetailsItem.buyer?.id}`);
   };
 
   if (loading) {
@@ -64,7 +75,7 @@ const Chats = ({ userIdApi, setPage, setSelectedVendor }) => {
               className="flex items-center space-x-4 p-4 bg-white border border-gray-200 rounded-lg shadow hover:shadow-lg transition-shadow cursor-pointer"
               onClick={() => handleChatClick(chatDetailsItem)}
             >
-             {/* Imagen del coche o texto alternativo */}
+              {/* Imagen del coche o texto alternativo */}
               <div className="w-16 h-16 flex-shrink-0">
                 {chatDetailsItem.car?.images?.[0] ? (
                   <img

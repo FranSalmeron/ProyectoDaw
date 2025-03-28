@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';  
 import 'react-toastify/dist/ReactToastify.css'; 
+import { Link, useNavigate } from 'react-router-dom';
 
 const SOCKET_URL = import.meta.env.VITE_API_URL;
 
-const Login = ({ onLogin, onLoginSuccess }) => {
+const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);  
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -26,14 +28,15 @@ const Login = ({ onLogin, onLoginSuccess }) => {
       const token = data.token;
       const refreshToken = data.refreshToken;
 
+      localStorage.setItem('username', username);
       localStorage.setItem('jwt', token);
       localStorage.setItem('refreshToken', refreshToken);
      
       // Mostrar notificación de login exitoso
       toast.success('¡Login exitoso!');  
       setLoading(false); 
-      onLogin(username);
-      onLoginSuccess();
+      navigate(`/`);
+      
     } else {
       const errorData = await response.json();
       setError(errorData.message || 'Error al iniciar sesión');

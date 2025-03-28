@@ -5,11 +5,13 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'leaflet/dist/leaflet.css';
 import { carList } from '../helpers/carHelper.jsx';
 import { useCars } from '../context/CarContext.jsx';
+import { useNavigate } from "react-router-dom";
 
-const Home = ({ onSelectCar, onSelectPage }) => {
+const Home = () => {
   const { cars, addCars } = useCars(); // Usamos el contexto para acceder a los coches
   const [position, setPosition] = useState([37.1775, -3.5986]); // Coordenadas predeterminadas
   const [loading, setLoading] = useState(true); // Estado de carga
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getCars = async () => {
@@ -59,10 +61,9 @@ const Home = ({ onSelectCar, onSelectPage }) => {
   };
 
   const handleCarClick = (car) => {
-    onSelectCar(car);
-    onSelectPage('car-details');
+    navigate(`/car_details`, { state: { car } }); // Pasamos el objeto `car` usando el `state`
   };
-
+  
   // Crear un icono personalizado para el marcador
   const carIcon = new L.Icon({
     iconUrl: '/images/marcador.png',
