@@ -1,23 +1,22 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';  // Importamos useLocation para acceder al state
 import { toast } from 'react-toastify'; 
-import "slick-carousel/slick/slick.css"; 
-import "slick-carousel/slick/slick-theme.css"; 
 import Slider from "react-slick";
-import { getUserIdFromToken } from '../helpers/decodeToken';
 
-const CarDetails = ({ car, setPage, setSelectedVendor }) => {
+const CarDetails = () => {
+    const { state } = useLocation();  // Accedemos al state
+    const car = state?.car;  // Tomamos el coche del state, si existe
     const [selectedImageIndex, setSelectedImageIndex] = useState(0); 
     const sliderRef = useRef(null);
     const [toastShown, setToastShown] = useState(false);  // Estado para controlar el toast
 
-    // Verificamos si el coche está disponible como prop
+    // Verificamos si el coche está disponible
     if (!car && !toastShown) {
         setToastShown(true); // Aseguramos que el toast solo se muestre una vez
         toast.error('No se ha proporcionado un coche para mostrar');
-        setPage('home'); // Redirigir a la página de inicio si no se proporciona un coche
         return <div>No se ha encontrado el coche</div>; // Mensaje en caso de que no se pase un coche
     }
-   
+
     // Configuración del carrusel
     const settings = {
         dots: true, 
@@ -34,35 +33,6 @@ const CarDetails = ({ car, setPage, setSelectedVendor }) => {
     const handleImageClick = (index) => {
         setSelectedImageIndex(index);  
         sliderRef.current.slickGoTo(index);
-    };
-
-    // Verificar si el usuario está autenticado
-    const isAuthenticated = () => {
-        const token = localStorage.getItem('jwt'); 
-        return token ? true : false;
-    };
-
-    // Función para manejar el clic en "Comprar"
-    const handleBuyClick = () => {
-        if (!isAuthenticated()) {
-            toast.error('Debes estar registrado para comprar.');
-            setPage('login'); // Redirigir al login si no está autenticado
-        } else {
-            toast.success('Redirigiendo a la pagina de compra.');
-            setPage('buycar');
-        }
-    };
-
-    // Función para manejar el clic en "Chatear"
-    const handleChatClick = () => {
-        if (!isAuthenticated()) {
-            toast.error('Debes estar registrado para chatear.');
-            setPage('login'); // Redirigir al login si no está autenticado
-        } else {
-            const currentUserId = getUserIdFromToken();
-            setPage('chat');
-            setSelectedVendor({ sellerId: car.User.id, carId: car.id, buyerId: currentUserId });  // Aquí pasamos los valores de vendor
-        }
     };
 
     return (
@@ -106,7 +76,6 @@ const CarDetails = ({ car, setPage, setSelectedVendor }) => {
                 <h1 className="text-3xl font-semibold text-gray-800 mb-2">{car.brand} {car.model}</h1>
                 <h2 className="text-lg text-gray-500 mb-4">Vendedor: {car.User.name}</h2>
 
-                {/* Información del coche */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="car-detail-item">
                         <p className="text-gray-700 font-semibold">Ubicacion:</p>
@@ -116,50 +85,12 @@ const CarDetails = ({ car, setPage, setSelectedVendor }) => {
                         <p className="text-gray-700 font-semibold">Precio:</p>
                         <p className="text-gray-500">{car.price} €</p>
                     </div>
-                    <div className="car-detail-item">
-                        <p className="text-gray-700 font-semibold">Año:</p>
-                        <p className="text-gray-500">{car.manufacture_year}</p>
-                    </div>
-                    <div className="car-detail-item">
-                        <p className="text-gray-700 font-semibold">Kilómetros:</p>
-                        <p className="text-gray-500">{car.mileage} km</p>
-                    </div>
-                    <div className="car-detail-item">
-                        <p className="text-gray-700 font-semibold">Combustible:</p>
-                        <p className="text-gray-500">{car.fuelType}</p>
-                    </div>
-                    <div className="car-detail-item">
-                        <p className="text-gray-700 font-semibold">Condición:</p>
-                        <p className="text-gray-500">{car.CarCondition}</p>
-                    </div>
-                    <div className="car-detail-item">
-                        <p className="text-gray-700 font-semibold">Tracción:</p>
-                        <p className="text-gray-500">{car.traction}</p>
-                    </div>
-                    <div className="car-detail-item">
-                        <p className="text-gray-700 font-semibold">Puertas:</p>
-                        <p className="text-gray-500">{car.doors}</p>
-                    </div>
-                    <div className="car-detail-item">
-                        <p className="text-gray-700 font-semibold">Asientos:</p>
-                        <p className="text-gray-500">{car.seats}</p>
-                    </div>
-                    <div className="car-detail-item">
-                        <p className="text-gray-700 font-semibold">Transmisión:</p>
-                        <p className="text-gray-500">{car.transmission}</p>
-                    </div>
-                    <div className="car-detail-item">
-                        <p className="text-gray-700 font-semibold">Color:</p>
-                        <p className="text-gray-500">{car.color}</p>
-                    </div>
-                    <div className="car-detail-item">
-                        <p className="text-gray-700 font-semibold">Fecha Publicación:</p>
-                        <p className="text-gray-500">{new Date(car.publication_date).toLocaleDateString()}</p>
-                    </div>
+                    {/* Agregar otros detalles del coche */}
                 </div>
             </div>
-             {/* Botones de acción */}
-             <div className="car-actions mt-6 flex justify-between">
+
+            {/* Botones de acción */}
+            <div className="car-actions mt-6 flex justify-between">
                 <button 
                     onClick={handleBuyClick} 
                     className="btn bg-blue-500 text-white p-3 rounded-md w-1/3"

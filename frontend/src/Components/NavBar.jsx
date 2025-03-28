@@ -1,10 +1,21 @@
 import { useState } from 'react';
+import { NavLink } from "react-router-dom";
+import { ROUTES } from "../routes/paths";
 
-const NavBar = ({ userName, onSelectPage, onLogout }) => {
+const NavBar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false); // Estado para el menú desplegable
+    const userName = localStorage.getItem('username');
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen); // Alternar la visibilidad del menú
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('userName'); 
+        localStorage.removeItem('jwt'); 
+        localStorage.removeItem('refreshToken'); 
+        localStorage.removeItem('cachedCars')
+        localStorage.removeItem('cachedChats');
     };
 
     return (
@@ -21,11 +32,27 @@ const NavBar = ({ userName, onSelectPage, onLogout }) => {
                     {userName ? `Bienvenido, ${userName}` : 'Bienvenido'}
                     {userName == null && (
                         <ul>
-                            <li>
-                            <button onClick={() => onSelectPage('login')} className="text-white">Logearse</button>
+                             <li>
+                            <NavLink
+                                to={ROUTES.LOGIN}
+                                className={({
+                                isActive,
+                                }) => `text-white  hover:text-red:100  
+                                ${isActive ? "font-bold" : ""}`}
+                            >
+                                Logearse
+                            </NavLink>
                             </li>
                             <li>
-                            <button onClick={() => onSelectPage('register')} className="text-white">Registrarse</button>
+                            <NavLink
+                                to={ROUTES.REGISTER}
+                                className={({
+                                isActive,
+                                }) => `text-white  hover:text-red:100  
+                                ${isActive ? "font-bold" : ""}`}
+                            >
+                                Registrarse
+                            </NavLink>
                             </li>
                         </ul>
                         )}
@@ -36,27 +63,67 @@ const NavBar = ({ userName, onSelectPage, onLogout }) => {
             {isMenuOpen && (
                 <ul class="absolute top-16 left-4 bg-gray-800 p-4 space-y-4 rounded-md shadow-lg z-20">
                     <li>
-                        <button onClick={() => onSelectPage('home')} class="text-white">Inicio</button>
+                        <NavLink
+                            to={ROUTES.HOME}
+                            className={({ isActive }) => `text-white   
+                            ${isActive ? "font-bold hover:text-red:100" : ""}
+                            
+                            `}
+                        >
+                        Inicio
+                        </NavLink>
                     </li>
                     {!userName ? (
                         <>
                             <li>
-                                <button onClick={() => onSelectPage('login')} class="text-white">Logearse</button>
+                            <NavLink
+                                to={ROUTES.LOGIN}
+                                className={({
+                                isActive,
+                                }) => `text-white  hover:text-red:100  
+                                ${isActive ? "font-bold" : ""}`}
+                            >
+                                Logearse
+                            </NavLink>
                             </li>
                             <li>
-                                <button onClick={() => onSelectPage('register')} class="text-white">Registrarse</button>
+                            <NavLink
+                                to={ROUTES.REGISTER}
+                                className={({
+                                isActive,
+                                }) => `text-white  hover:text-red:100  
+                                ${isActive ? "font-bold" : ""}`}
+                            >
+                                Registrarse
+                            </NavLink>
                             </li>
                         </>
                     ) : (
                         <>
                             <li>
-                                <button onClick={() => onSelectPage('submitCar')} class="text-white">Vender Coche</button>
+                            <NavLink
+                                to={ROUTES.SUBMIT_CAR}
+                                className={({
+                                isActive,
+                                }) => `text-white  hover:text-red:100
+                                ${isActive ? "font-bold" : ""}`}
+                            >
+                                Vender Coche
+                            </NavLink>
                             </li>
                             <li>
-                                <button onClick={() => onSelectPage('chats')} class="text-white">Chats</button>
+                            <NavLink
+                                to={ROUTES.CHATS}
+                                className={({
+                                isActive,
+                                }) => `text-white  hover:text-red:100  
+                                ${isActive ? "font-bold" : ""}`}
+                            >
+                                Chats
+                            </NavLink>
                             </li>
                             <li>
-                                <button onClick={onLogout} class="text-white">Cerrar sesión</button>
+                                <button onClick={handleLogout()} class="text-white">Cerrar sesión</button>
                             </li>
                         </>
                     )}

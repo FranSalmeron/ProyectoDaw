@@ -3,8 +3,12 @@ import { toast } from 'react-toastify';
 import { createChat } from '../helpers/chatHelper';
 import { loadMessages, sendMessage, pollTaskStatus } from '../helpers/chatMessageHelper';
 import { getUserIdFromToken } from '../helpers/decodeToken';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const Chat = ({ sellerId, carId, buyerId, setPage }) => {
+const Chat = () => {
+  // Extraemos los parámetros de la URL
+  const { userId, carId, buyerId } = useParams();
+  
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
   const [loading, setLoading] = useState(true);
@@ -17,21 +21,23 @@ const Chat = ({ sellerId, carId, buyerId, setPage }) => {
   const currentUserId = getUserIdFromToken();
   const messagesEndRef = useRef(null);
 
+  const navigate = useNavigate(); // Usamos el hook navigate
+
   // **Crear el chat si no existe**
   useEffect(() => {
     const createChatIfNotExists = async () => {
-      if (!buyerId || !sellerId || !carId) {
+      if (!buyerId || !userId || !carId) {
         toast.error("Error de red");
-        setPage('home');
+        navigate('/');  
         return;
       }
 
       try {
-        const chatIdResponse = await createChat(sellerId, buyerId, carId);
+        const chatIdResponse = await createChat(userId, buyerId, carId);
         if (chatIdResponse) {
           setChatId(chatIdResponse);
         } else {
-          setPage('home');
+          navigate('/'); 
         }
       } catch (error) {
         console.error('Error al crear el chat:', error);
@@ -40,16 +46,14 @@ const Chat = ({ sellerId, carId, buyerId, setPage }) => {
     };
 
     createChatIfNotExists();
-  }, [buyerId, sellerId, carId, setPage]);
+  }, [buyerId, userId, carId, navigate]);
 
   // **Cargar mensajes y empezar polling solo si no hay taskId**
   useEffect(() => {
     if (chatId) {
-
-      // Solo cargar mensajes si no hay un taskId aún
       if (!taskId) {
         const loadMessagesForChat = async () => {
-          setLoading(true); // Indicar que los mensajes están cargando
+          setLoading(true);
           const newTaskId = await loadMessages(chatId, setLoading);
 
           if (newTaskId) {
@@ -67,20 +71,32 @@ const Chat = ({ sellerId, carId, buyerId, setPage }) => {
   // **Iniciar el polling cada 15 segundos (actualización periódica de mensajes)**
   const startPolling = (taskId) => {
     const intervalId = setInterval(async () => {
-
-      // Verificar si el taskId está definido
       if (taskId) {
-        // Cargar los mensajes nuevamente cada 15 segundos
         await loadMessages(chatId, setLoading, taskId);  // Recargar mensajes
-
-        // Verificar el estado de la tarea con el taskId
         pollTaskStatus(taskId, setMessages, setLoading, messages);
       }
     }, 15000);  // Polling cada 15 segundos
 
-    // Limpiar el intervalo cuando el componente se desmonte
-    return () => clearInterval(intervalId);
+    // Limpiar el intervalo cuando el componente se desmonte o el chat se cierre
+    return intervalId;
   };
+
+  // **Manejar el cambio de página para detener el polling**
+  useEffect(() => {
+    // Esta función se ejecuta al cambiar de página, limpiamos el intervalo.
+    const clearPolling = () => {
+      if (taskId) {
+        // Si hay un taskId, limpiamos el intervalo y el taskId
+        clearInterval(taskId);
+        setTaskId(null);
+      }
+    };
+
+    // Si el componente se desmonta (cambio de página)
+    return () => {
+      clearPolling();
+    };
+  }, [taskId]); // El efecto se ejecuta cuando el `taskId` cambia
 
   // **Enviar mensaje al chat**
   const sendMessageToChat = async () => {
@@ -89,34 +105,29 @@ const Chat = ({ sellerId, carId, buyerId, setPage }) => {
       toast.error(`El mensaje no puede tener más de ${MAX_CHARACTERS} caracteres.`);
       return;
     }
-  
+
     setIsSending(true);
-  
+
     try {
-      // Enviar el mensaje al servidor
       const response = await sendMessage(chatId, currentUserId, messageInput, taskId);
-      setMessageInput(''); // Limpiar el campo de entrada.
-      // Solo agregamos el mensaje al estado si el envío fue exitoso.
+      setMessageInput('');
       if (response && response.success) {
         setMessages((prevMessages) => [
           ...prevMessages,
           {
-            messageId: Date.now(),  // Asignar un ID único temporalmente.
+            messageId: Date.now(),
             content: messageInput,
             userId: currentUserId,
             messageDate: new Date().toISOString(),
           },
         ]);
-      } else {
-        toast.error('Error al enviar el mensaje');
       }
     } catch (error) {
-      toast.error('Error al enviar el mensaje');
+      console.error('Error al enviar el mensaje:', error);
     } finally {
       setIsSending(false);
     }
   };
-  
 
   // **Autoscroll al final del chat**
   useEffect(() => {
@@ -144,7 +155,7 @@ const Chat = ({ sellerId, carId, buyerId, setPage }) => {
       <h2 className="text-2xl font-semibold mb-6">Chat</h2>
       <div className="messages-container space-y-4 mb-4 max-h-[400px] overflow-y-auto">
         {messages.map((message) => (
-          <div key={message.messageId} className={`message p-3 rounded-lg max-w-xs ${message.userId == currentUserId ? 'ml-auto bg-blue-500 text-white' : 'mr-auto bg-blue-100 text-gray-800'}`}>
+          <div key={message.messageId} className={`message p-3 rounded-lg max-w-xs ${message.userId === currentUserId ? 'ml-auto bg-blue-500 text-white' : 'mr-auto bg-blue-100 text-gray-800'}`}>
             <p>{message.content}</p>
             <small className="text-xs opacity-75">{new Date(message.messageDate).toLocaleTimeString()}</small>
           </div>
