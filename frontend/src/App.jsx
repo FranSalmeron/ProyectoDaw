@@ -1,7 +1,8 @@
+import React from 'react';
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css';
-import { CarProvider } from './context/CarContext.jsx';
-import { ChatProvider } from './context/ChatContext.jsx';
+import { CarProvider } from './context/CarContext';
+import { ChatProvider } from './context/ChatContext';
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routes/router";
 

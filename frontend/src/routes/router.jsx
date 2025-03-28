@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import RootLayout from "../layouts/RootLayout";
-import { Home, BuyCar, CarDetails, Chat, Chats, Login, Register, SubmitCar, ErrorPage } from "../views/indexViews.jsx";
+import { Home, BuyCar, CarDetails, Chat, Chats, Login, Register, SubmitCar, ErrorPage } from "../views/indexViews";
 import { ROUTES } from "./paths";
 
 export const router = createBrowserRouter([

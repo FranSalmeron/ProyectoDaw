@@ -6,9 +6,10 @@ import L from 'leaflet';
 import { useNavigate } from 'react-router-dom';
 
 const symfonyUrl = import.meta.env.VITE_API_URL;
-const navigate = useNavigate();
+
 
 function SubmitCar() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     brand: '',
     model: '',
