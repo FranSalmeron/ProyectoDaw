@@ -3,8 +3,8 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { ToastContainer, toast } from 'react-toastify';
 import 'leaflet/dist/leaflet.css';
-import { carList } from '../helpers/carHelper.jsx';
-import { useCars } from '../context/CarContext.jsx';
+import { carList } from '../helpers/carHelper';
+import { useCars } from '../context/CarContext';
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
