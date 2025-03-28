@@ -3,10 +3,13 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
+import { useNavigate } from 'react-router-dom';
 
 const symfonyUrl = import.meta.env.VITE_API_URL;
 
-function SubmitCar({ onSubmitSuccess }) {
+
+function SubmitCar() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     brand: '',
     model: '',
@@ -211,8 +214,7 @@ function SubmitCar({ onSubmitSuccess }) {
 
       if (response.ok) {
         toast.success('Coche creado con éxito');
-        localStorage.removeItem("coches");
-        onSubmitSuccess();
+        navigate(`/`);
       } else {
         toast.error('Error al crear el coche');
       }
