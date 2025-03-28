@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { ROUTES } from "../routes/paths";
 
 const NavBar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false); // Estado para el menú desplegable
+    const navigate = useNavigate();
     const userName = localStorage.getItem('username');
 
     const toggleMenu = () => {
@@ -14,8 +15,8 @@ const NavBar = () => {
         localStorage.removeItem('userName'); 
         localStorage.removeItem('jwt'); 
         localStorage.removeItem('refreshToken'); 
-        localStorage.removeItem('cachedCars')
         localStorage.removeItem('cachedChats');
+        navigate(ROUTES.HOME);
     };
 
     return (
@@ -123,7 +124,7 @@ const NavBar = () => {
                             </NavLink>
                             </li>
                             <li>
-                                <button onClick={handleLogout()} class="text-white">Cerrar sesión</button>
+                                <button onClick={() => handleLogout} class="text-white">Cerrar sesión</button>
                             </li>
                         </>
                     )}

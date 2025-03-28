@@ -3,7 +3,6 @@ import { toast } from 'react-toastify';
 
 // Obtener todos los coches
 export const carList = async (addCars) => {
-    console.log("Cargando coches...");
     try {
         // Primero, revisamos si hay datos en el localStorage
         const storedData = localStorage.getItem('cachedCars');
@@ -40,7 +39,6 @@ const fetchAndStoreCars = async (addCars) => {
             throw new Error('Error fetching cars');
         }
         const data = await response.json();
-        console.log("Datos recibidos de la API: ", data);
   
         if (Array.isArray(data) && data.length > 0) {
             // Guardamos los datos en localStorage con el timestamp de la última actualización

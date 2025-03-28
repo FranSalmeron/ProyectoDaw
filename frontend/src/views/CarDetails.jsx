@@ -1,21 +1,29 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';  // Importamos useLocation para acceder al state
+import React, { useState, useRef, useEffect } from 'react';
 import { toast } from 'react-toastify'; 
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css"; 
 import Slider from "react-slick";
+import { getUserIdFromToken } from '../helpers/decodeToken';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const CarDetails = () => {
-    const { state } = useLocation();  // Accedemos al state
-    const car = state?.car;  // Tomamos el coche del state, si existe
     const [selectedImageIndex, setSelectedImageIndex] = useState(0); 
     const sliderRef = useRef(null);
     const [toastShown, setToastShown] = useState(false);  // Estado para controlar el toast
+    const navigate = useNavigate();
+    const location = useLocation();  // Usamos useLocation para obtener el estado de la navegación
 
-    // Verificamos si el coche está disponible
-    if (!car && !toastShown) {
-        setToastShown(true); // Aseguramos que el toast solo se muestre una vez
-        toast.error('No se ha proporcionado un coche para mostrar');
-        return <div>No se ha encontrado el coche</div>; // Mensaje en caso de que no se pase un coche
-    }
+    // Obtenemos el coche desde el state de la navegación
+    const car = location.state?.car;
+
+    // Mostrar el toast solo si el coche no está disponible y asegurarse de que solo se muestre una vez
+    useEffect(() => {
+        if (!car && !toastShown) {
+            setToastShown(true); // Aseguramos que el toast solo se muestre una vez
+            toast.error('No se ha proporcionado un coche para mostrar');
+            navigate('/'); // Redirigir a la página de inicio si no se proporciona un coche
+        }
+    }, [car, toastShown, navigate]);
 
     // Configuración del carrusel
     const settings = {
@@ -34,6 +42,39 @@ const CarDetails = () => {
         setSelectedImageIndex(index);  
         sliderRef.current.slickGoTo(index);
     };
+
+    // Verificar si el usuario está autenticado
+    const isAuthenticated = () => {
+        const token = localStorage.getItem('jwt'); 
+        return token ? true : false;
+    };
+
+    // Función para manejar el clic en "Comprar"
+    const handleBuyClick = () => {
+        if (!isAuthenticated()) {
+            toast.error('Debes estar registrado para comprar.');
+            navigate('/login'); // Redirigir al login si no está autenticado
+        } else {
+            toast.success('Redirigiendo a la página de compra.');
+            navigate('/buy_car'); // Redirige a la página de compra
+        }
+    };
+
+    // Función para manejar el clic en "Chatear"
+    const handleChatClick = () => {
+        if (!isAuthenticated()) {
+            toast.error('Debes estar registrado para chatear.');
+            navigate('/login'); // Redirige al login si no está autenticado
+        } else {
+            const currentUserId = getUserIdFromToken();
+            navigate(`/chat/${currentUserId}/${car.id}/${car.buyerId}`);  // Redirige a la página de chat
+        }
+    };
+
+    // Si no se pasa el coche como estado, mostramos un mensaje de error.
+    if (!car) {
+        return <div>No se ha encontrado el coche</div>;
+    }
 
     return (
         <div className="car-details p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-lg mt-6 mb-6">
@@ -76,6 +117,7 @@ const CarDetails = () => {
                 <h1 className="text-3xl font-semibold text-gray-800 mb-2">{car.brand} {car.model}</h1>
                 <h2 className="text-lg text-gray-500 mb-4">Vendedor: {car.User.name}</h2>
 
+                {/* Información del coche */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="car-detail-item">
                         <p className="text-gray-700 font-semibold">Ubicacion:</p>
@@ -85,7 +127,46 @@ const CarDetails = () => {
                         <p className="text-gray-700 font-semibold">Precio:</p>
                         <p className="text-gray-500">{car.price} €</p>
                     </div>
-                    {/* Agregar otros detalles del coche */}
+                    <div className="car-detail-item">
+                        <p className="text-gray-700 font-semibold">Año:</p>
+                        <p className="text-gray-500">{car.manufacture_year}</p>
+                    </div>
+                    <div className="car-detail-item">
+                        <p className="text-gray-700 font-semibold">Kilómetros:</p>
+                        <p className="text-gray-500">{car.mileage} km</p>
+                    </div>
+                    <div className="car-detail-item">
+                        <p className="text-gray-700 font-semibold">Combustible:</p>
+                        <p className="text-gray-500">{car.fuelType}</p>
+                    </div>
+                    <div className="car-detail-item">
+                        <p className="text-gray-700 font-semibold">Condición:</p>
+                        <p className="text-gray-500">{car.CarCondition}</p>
+                    </div>
+                    <div className="car-detail-item">
+                        <p className="text-gray-700 font-semibold">Tracción:</p>
+                        <p className="text-gray-500">{car.traction}</p>
+                    </div>
+                    <div className="car-detail-item">
+                        <p className="text-gray-700 font-semibold">Puertas:</p>
+                        <p className="text-gray-500">{car.doors}</p>
+                    </div>
+                    <div className="car-detail-item">
+                        <p className="text-gray-700 font-semibold">Asientos:</p>
+                        <p className="text-gray-500">{car.seats}</p>
+                    </div>
+                    <div className="car-detail-item">
+                        <p className="text-gray-700 font-semibold">Transmisión:</p>
+                        <p className="text-gray-500">{car.transmission}</p>
+                    </div>
+                    <div className="car-detail-item">
+                        <p className="text-gray-700 font-semibold">Color:</p>
+                        <p className="text-gray-500">{car.color}</p>
+                    </div>
+                    <div className="car-detail-item">
+                        <p className="text-gray-700 font-semibold">Fecha Publicación:</p>
+                        <p className="text-gray-500">{new Date(car.publication_date).toLocaleDateString()}</p>
+                    </div>
                 </div>
             </div>
 

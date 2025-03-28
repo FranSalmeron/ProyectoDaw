@@ -2,10 +2,10 @@
 ## Tareas:
 
 #### Crear Contextos (Hecho coche y chat)
-#### Crear y configurar el router
+#### Crear y configurar el router (Hecho)
 #### Crear pagina global de coches y añadir filtros
 #### Crear Favoritos
-### Eliminar de favoritos
+#### Eliminar de favoritos
 #### Editar y borrar mensajes de chat
 #### Editar y borrar coches
 #### Pagina de About
@@ -13,4 +13,5 @@
 #### Arreglar JWT
 #### Crear y configurar CSRF Token
 #### Optimizar codigo y velocidad de carga
+#### Crear, consultar y hacer un buen diseño de la pagina visual y esteticamente
 #### Documentacion y cosas necesarias del proyecto.
