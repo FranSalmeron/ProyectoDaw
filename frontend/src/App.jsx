@@ -6,6 +6,7 @@ import { ChatProvider } from './context/ChatContext';
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routes/router";
 import { isTokenExpired } from './helpers/decodeToken';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function App() {
     const token = localStorage.getItem('jwt');

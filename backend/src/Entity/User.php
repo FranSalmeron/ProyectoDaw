@@ -49,6 +49,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $refreshToken = null;
 
+    #[ORM\OneToMany(mappedBy: 'car', targetEntity: CarFavorite::class)]
+    private $favorites;
+
     public function __construct()
     {
         $this->cars = new ArrayCollection();

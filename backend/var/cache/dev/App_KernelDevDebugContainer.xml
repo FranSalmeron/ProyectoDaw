@@ -541,6 +541,13 @@
         <argument type="service" id=".service_locator.jIxfAsi.App\Controller\CarController"/>
       </call>
     </service>
+    <service id="App\Controller\CarFavoriteController" class="App\Controller\CarFavoriteController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.jIxfAsi.App\Controller\CarFavoriteController"/>
+      </call>
+    </service>
     <service id="App\Controller\ChatController" class="App\Controller\ChatController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
@@ -588,6 +595,9 @@
         <argument type="service" id=".service_locator.jIxfAsi.App\Controller\UserController"/>
       </call>
     </service>
+    <service id="App\Form\CarFavoriteType" class="App\Form\CarFavoriteType" autowire="true" autoconfigure="true">
+      <tag name="form.type"/>
+    </service>
     <service id="App\Form\CarType" class="App\Form\CarType" autowire="true" autoconfigure="true">
       <tag name="form.type"/>
     </service>
@@ -613,6 +623,10 @@
       <argument type="service" id="doctrine.orm.default_entity_manager"/>
       <argument type="service" id="cache.app"/>
       <argument type="service" id="monolog.logger"/>
+    </service>
+    <service id="App\Repository\CarFavoriteRepository" class="App\Repository\CarFavoriteRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
     </service>
     <service id="App\Repository\CarRepository" class="App\Repository\CarRepository" autowire="true" autoconfigure="true">
       <tag name="doctrine.repository_service"/>
@@ -1426,6 +1440,7 @@
         <argument>Symfony\Bridge\Doctrine\Form\Type</argument>
       </argument>
       <argument type="collection">
+        <argument>App\Form\CarFavoriteType</argument>
         <argument>App\Form\CarType</argument>
         <argument>App\Form\ChatMessageType</argument>
         <argument>App\Form\ChatType</argument>
@@ -3718,7 +3733,7 @@
       <argument type="service" id="form.registry"/>
     </service>
     <service id="form.extension" class="Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension">
-      <argument type="service" id=".service_locator.zXPIB1g"/>
+      <argument type="service" id=".service_locator.5Ia8Je6"/>
       <argument type="collection">
         <argument key="Symfony\Component\Form\Extension\Core\Type\FormType" type="iterator">
           <argument type="service" id="form.type_extension.form.transformation_failure_handling"/>
@@ -4606,7 +4621,7 @@
     <service id="doctrine.orm.configuration" class="Doctrine\ORM\Configuration" abstract="true"/>
     <service id="doctrine.orm.entity_manager.abstract" class="Doctrine\ORM\EntityManager" lazy="true" abstract="true"/>
     <service id="doctrine.orm.container_repository_factory" class="Doctrine\Bundle\DoctrineBundle\Repository\ContainerRepositoryFactory">
-      <argument type="service" id=".service_locator.9rDrNJQ"/>
+      <argument type="service" id=".service_locator.3sryA.2"/>
     </service>
     <service id="doctrine.orm.manager_configurator.abstract" class="Doctrine\Bundle\DoctrineBundle\ManagerConfigurator" abstract="true">
       <argument type="collection"/>
@@ -7978,6 +7993,9 @@
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\CarController" class="App\Controller\CarController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\CarController" class="App\Controller\CarController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\CarController" class="App\Controller\CarController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\CarFavoriteController" class="App\Controller\CarFavoriteController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\CarFavoriteController" class="App\Controller\CarFavoriteController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\CarFavoriteController" class="App\Controller\CarFavoriteController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\ChatController" class="App\Controller\ChatController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\ChatController" class="App\Controller\ChatController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\ChatController" class="App\Controller\ChatController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -7996,6 +8014,8 @@
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\UserController" class="App\Controller\UserController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\UserController" class="App\Controller\UserController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\UserController" class="App\Controller\UserController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\CarFavoriteType" class="App\Form\CarFavoriteType" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Form\CarFavoriteType" class="App\Form\CarFavoriteType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\CarType" class="App\Form\CarType" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Form\CarType" class="App\Form\CarType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\ChatMessageType" class="App\Form\ChatMessageType" autowire="true" abstract="true"/>
@@ -8010,6 +8030,8 @@
     <service id=".abstract.instanceof.App\Form\UserType" class="App\Form\UserType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Messenger\Handler\MessageHandlerInterface.0.App\Message\MessageHandler" class="App\Message\MessageHandler" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Message\MessageHandler" class="App\Message\MessageHandler" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\CarFavoriteRepository" class="App\Repository\CarFavoriteRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\CarFavoriteRepository" class="App\Repository\CarFavoriteRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\CarRepository" class="App\Repository\CarRepository" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Repository\CarRepository" class="App\Repository\CarRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\ChatMessageRepository" class="App\Repository\ChatMessageRepository" autowire="true" abstract="true"/>
@@ -8485,6 +8507,40 @@
         <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
       </argument>
     </service>
+    <service id=".service_locator.TuQ5fRx" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="carFavoriteRepository" type="service_closure" id="App\Repository\CarFavoriteRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator._nS7eWw" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="carRepository" type="service_closure" id="App\Repository\CarRepository"/>
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.162ian2" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="carFavorite" type="service_closure" id=".errored..service_locator.162ian2.App\Entity\CarFavorite"/>
+      </argument>
+    </service>
+    <service id=".service_locator.6JWk_Yv" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="carFavorite" type="service_closure" id=".errored..service_locator.6JWk_Yv.App\Entity\CarFavorite"/>
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+      </argument>
+    </service>
+    <service id=".service_locator..TQpnPv" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="carFavoriteRepository" type="service_closure" id="App\Repository\CarFavoriteRepository"/>
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+      </argument>
+    </service>
     <service id=".service_locator.zRENt0_" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -8583,7 +8639,7 @@
         <argument key="user" type="service_closure" id=".errored..service_locator.GPGtF8v.App\Entity\User"/>
       </argument>
     </service>
-    <service id=".service_locator.RCulaaA" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.q2mL73Z" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\CarController::delete" type="service_closure" id=".service_locator.BA3xq_G"/>
@@ -8592,6 +8648,12 @@
         <argument key="App\Controller\CarController::indexByUser" type="service_closure" id=".service_locator.hIoLI2S"/>
         <argument key="App\Controller\CarController::new" type="service_closure" id=".service_locator.aKM6MDa"/>
         <argument key="App\Controller\CarController::showById" type="service_closure" id=".service_locator.hIoLI2S"/>
+        <argument key="App\Controller\CarFavoriteController::delete" type="service_closure" id=".service_locator..TQpnPv"/>
+        <argument key="App\Controller\CarFavoriteController::edit" type="service_closure" id=".service_locator.6JWk_Yv"/>
+        <argument key="App\Controller\CarFavoriteController::getUserFavorites" type="service_closure" id=".service_locator.TuQ5fRx"/>
+        <argument key="App\Controller\CarFavoriteController::index" type="service_closure" id=".service_locator.TuQ5fRx"/>
+        <argument key="App\Controller\CarFavoriteController::new" type="service_closure" id=".service_locator._nS7eWw"/>
+        <argument key="App\Controller\CarFavoriteController::show" type="service_closure" id=".service_locator.162ian2"/>
         <argument key="App\Controller\ChatController::createChat" type="service_closure" id=".service_locator.PLZrMx9"/>
         <argument key="App\Controller\ChatController::delete" type="service_closure" id=".service_locator.uWQT4Qu"/>
         <argument key="App\Controller\ChatController::getUserChats" type="service_closure" id=".service_locator.zRENt0_"/>
@@ -8623,6 +8685,12 @@
         <argument key="App\Controller\CarController:indexByUser" type="service_closure" id=".service_locator.hIoLI2S"/>
         <argument key="App\Controller\CarController:new" type="service_closure" id=".service_locator.aKM6MDa"/>
         <argument key="App\Controller\CarController:showById" type="service_closure" id=".service_locator.hIoLI2S"/>
+        <argument key="App\Controller\CarFavoriteController:delete" type="service_closure" id=".service_locator..TQpnPv"/>
+        <argument key="App\Controller\CarFavoriteController:edit" type="service_closure" id=".service_locator.6JWk_Yv"/>
+        <argument key="App\Controller\CarFavoriteController:getUserFavorites" type="service_closure" id=".service_locator.TuQ5fRx"/>
+        <argument key="App\Controller\CarFavoriteController:index" type="service_closure" id=".service_locator.TuQ5fRx"/>
+        <argument key="App\Controller\CarFavoriteController:new" type="service_closure" id=".service_locator._nS7eWw"/>
+        <argument key="App\Controller\CarFavoriteController:show" type="service_closure" id=".service_locator.162ian2"/>
         <argument key="App\Controller\ChatController:createChat" type="service_closure" id=".service_locator.PLZrMx9"/>
         <argument key="App\Controller\ChatController:delete" type="service_closure" id=".service_locator.uWQT4Qu"/>
         <argument key="App\Controller\ChatController:getUserChats" type="service_closure" id=".service_locator.zRENt0_"/>
@@ -8707,9 +8775,10 @@
       <argument type="service" id="debug.argument_resolver.not_tagged_controller.inner"/>
       <argument type="service" id="debug.stopwatch"/>
     </service>
-    <service id=".service_locator.zXPIB1g" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.5Ia8Je6" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
+        <argument key="App\Form\CarFavoriteType" type="service_closure" id="App\Form\CarFavoriteType"/>
         <argument key="App\Form\CarType" type="service_closure" id="App\Form\CarType"/>
         <argument key="App\Form\ChatMessageType" type="service_closure" id="App\Form\ChatMessageType"/>
         <argument key="App\Form\ChatType" type="service_closure" id="App\Form\ChatType"/>
@@ -8801,9 +8870,10 @@
         <argument key="doctrine.orm.messenger.doctrine_schema_subscriber" type="service_closure" id="doctrine.orm.messenger.doctrine_schema_subscriber"/>
       </argument>
     </service>
-    <service id=".service_locator.9rDrNJQ" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.3sryA.2" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
+        <argument key="App\Repository\CarFavoriteRepository" type="service_closure" id="App\Repository\CarFavoriteRepository"/>
         <argument key="App\Repository\CarRepository" type="service_closure" id="App\Repository\CarRepository"/>
         <argument key="App\Repository\ChatMessageRepository" type="service_closure" id="App\Repository\ChatMessageRepository"/>
         <argument key="App\Repository\ChatRepository" type="service_closure" id="App\Repository\ChatRepository"/>
@@ -9089,6 +9159,12 @@
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.jIxfAsi" method="withContext"/>
     </service>
+    <service id=".service_locator.jIxfAsi.App\Controller\CarFavoriteController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\CarFavoriteController"/>
+      <argument>App\Controller\CarFavoriteController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.jIxfAsi" method="withContext"/>
+    </service>
     <service id=".service_locator.jIxfAsi.App\Controller\ChatController" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="App\Controller\ChatController"/>
       <argument>App\Controller\ChatController</argument>
@@ -9355,12 +9431,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
-      <argument type="service" id=".service_locator.RCulaaA"/>
+      <argument type="service" id=".service_locator.q2mL73Z"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
-      <argument type="service" id=".service_locator.RCulaaA"/>
+      <argument type="service" id=".service_locator.q2mL73Z"/>
     </service>
     <service id="debug.traced.messenger.bus.default.inner" class="Symfony\Component\Messenger\MessageBus">
       <argument type="iterator">
@@ -9433,6 +9509,8 @@
     </service>
     <service id=".errored..service_locator.xUrKPVU.Symfony\Component\Config\Loader\LoaderInterface" class="Symfony\Component\Config\Loader\LoaderInterface"/>
     <service id=".errored..service_locator.BA3xq_G.App\Entity\Car" class="App\Entity\Car"/>
+    <service id=".errored..service_locator.162ian2.App\Entity\CarFavorite" class="App\Entity\CarFavorite"/>
+    <service id=".errored..service_locator.6JWk_Yv.App\Entity\CarFavorite" class="App\Entity\CarFavorite"/>
     <service id=".errored..service_locator.uWQT4Qu.App\Entity\Chat" class="App\Entity\Chat"/>
     <service id=".errored..service_locator.HKN.4cP.App\Entity\ChatMessage" class="App\Entity\ChatMessage"/>
     <service id=".errored..service_locator..1epvCf.App\Entity\Review" class="App\Entity\Review"/>
@@ -10668,7 +10746,7 @@
     <service id="sensio_framework_extra.security.expression_language" alias="sensio_framework_extra.security.expression_language.default"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.gSv9zYw" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.RCulaaA"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.q2mL73Z"/>
     <service id="doctrine.id_generator_locator" alias=".service_locator.KLVvNIq"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="Psr\Log\LoggerInterface $requestLogger" alias="monolog.logger.request"/>
@@ -10694,15 +10772,16 @@
     <service id=".service_locator.Xbsa8iG" alias="api_platform.filter_locator"/>
     <service id=".service_locator.0GV1BZZ" alias=".service_locator.gSv9zYw"/>
     <service id=".service_locator.Hd6cZQ6" alias=".service_locator.UTa2lwW"/>
+    <service id=".service_locator.wS1gHQp" alias=".service_locator._nS7eWw"/>
     <service id=".service_locator.XTefk6W" alias=".service_locator.PLZrMx9"/>
     <service id=".service_locator.xZfTEW0" alias=".service_locator.vQ105EG"/>
     <service id=".service_locator.tkfU4P3" alias=".service_locator.Yhx7W1n"/>
     <service id=".service_locator.PbPEf8m" alias=".service_locator.Dhg828p"/>
     <service id=".service_locator.YUNSPEp" alias=".service_locator.mK6IRPJ"/>
     <service id=".service_locator.b76MKMg" alias=".service_locator.GPGtF8v"/>
-    <service id=".service_locator.2qHTNoT" alias=".service_locator.RCulaaA"/>
+    <service id=".service_locator.EHDDobq" alias=".service_locator.q2mL73Z"/>
     <service id=".service_locator.wKF4yn1" alias=".service_locator.19_mNxd"/>
-    <service id=".service_locator.bvisfq5" alias=".service_locator.zXPIB1g"/>
+    <service id=".service_locator.ZO2atEu" alias=".service_locator.5Ia8Je6"/>
     <service id=".service_locator.XW18Svm" alias=".service_locator.TcKhdzh"/>
     <service id=".service_locator.O24_MAy" alias=".service_locator.yY.p4P7"/>
     <service id=".service_locator._eRAkJb" alias=".service_locator.jIxfAsi"/>
@@ -10770,6 +10849,11 @@
     <service id=".service_locator.J_SPBxv" alias=".service_locator.hIoLI2S"/>
     <service id=".service_locator.bInR.ll" alias=".service_locator.aKM6MDa"/>
     <service id=".service_locator.xbgrWJ3" alias=".service_locator.BA3xq_G"/>
+    <service id=".service_locator.oHkb.ls" alias=".service_locator.TuQ5fRx"/>
+    <service id=".service_locator.sPDdizg" alias=".service_locator._nS7eWw"/>
+    <service id=".service_locator.2.5xVYf" alias=".service_locator.162ian2"/>
+    <service id=".service_locator.bBfsOdH" alias=".service_locator.6JWk_Yv"/>
+    <service id=".service_locator.P80E9PB" alias=".service_locator..TQpnPv"/>
     <service id=".service_locator.faKJ7n9" alias=".service_locator.zRENt0_"/>
     <service id=".service_locator.WB9nFIx" alias=".service_locator.PLZrMx9"/>
     <service id=".service_locator.ylKiwKz" alias=".service_locator.uWQT4Qu"/>

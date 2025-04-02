@@ -6,18 +6,24 @@ import 'leaflet/dist/leaflet.css';
 import { carList } from '../helpers/carHelper';
 import { useCars } from '../context/CarContext';
 import { useNavigate } from "react-router-dom";
+import { addFavorite, removeFavorite } from '../helpers/favoriteHelper'; // Importar las funciones necesarias
+import { getUserIdFromToken } from '../helpers/decodeToken';
 
 const Home = () => {
-  const { cars, addCars } = useCars(); // Usamos el contexto para acceder a los coches
-  const [position, setPosition] = useState([37.1775, -3.5986]); // Coordenadas predeterminadas
-  const [loading, setLoading] = useState(true); // Estado de carga
+  const { cars, addCars } = useCars();
+  const [position, setPosition] = useState([37.1775, -3.5986]);
+  const [loading, setLoading] = useState(true);
+  const [favorites, setFavorites] = useState([]); // Para manejar los favoritos del usuario
   const navigate = useNavigate();
+
+  // Obtener el userId del token
+  const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
 
   useEffect(() => {
     const getCars = async () => {
       setLoading(true);
       try {
-        await carList(addCars);  // Llama a carList solo una vez para añadir los coches
+        await carList(addCars);
         setLoading(false);
       } catch (error) {
         toast.error('No se pudieron cargar los coches. Intenta más tarde.');
@@ -25,7 +31,7 @@ const Home = () => {
       }
     };
 
-    getCars(); // Llamada al cargar el componente
+    getCars();
 
     // Obtener la ubicación geográfica
     if (navigator.geolocation) {
@@ -42,14 +48,16 @@ const Home = () => {
     } else {
       toast.error('Geolocalización no soportada en este navegador.');
     }
-  }, []);  // Esto asegura que se ejecute solo una vez cuando el componente se monta
 
+  }, []); // Solo se ejecuta cuando el componente se monta
+
+  // El componente ahora solo muestra la imagen sin redimensionarla
   const CarImage = ({ car }) => {
     return (
       <div className="relative w-full h-48 overflow-hidden">
         {car.images && car.images.length > 0 ? (
           <img
-            src={car.images[0]}  // Usamos la primera imagen del array
+            src={car.images[0]} // Usamos la primera imagen tal cual
             alt={`${car.brand} ${car.model}`}
             className="w-auto h-auto object-cover"
           />
@@ -61,10 +69,9 @@ const Home = () => {
   };
 
   const handleCarClick = (car) => {
-    navigate(`/car_details`, { state: { car } }); // Pasamos el objeto `car` usando el `state`
+    navigate(`/car_details`, { state: { car } });
   };
-  
-  // Crear un icono personalizado para el marcador
+
   const carIcon = new L.Icon({
     iconUrl: '/images/marcador.png',
     iconSize: [32, 32],
@@ -79,8 +86,27 @@ const Home = () => {
     popupAnchor: [0, -32],
   });
 
-  // Asegúrate de que cars es un array vacío o con elementos antes de usar map
   const carsAvailable = Array.isArray(cars) && cars.length > 0;
+
+  const isFavorite = (carId) => {
+    return favorites.some(fav => fav.car.id === carId); // Compara el ID del coche con los favoritos
+  };
+
+  const handleFavoriteClick = async (e, carId) => {
+    e.stopPropagation(); // Prevenir que el clic del corazón dispare el clic de la tarjeta
+    if (isFavorite(carId)) {
+      // Si el coche ya es favorito, lo eliminamos
+      const favorite = favorites.find(fav => fav.car.id === carId);
+      if (favorite) {
+        await removeFavorite(userId, carId);  // Pasar el userId y carId en lugar de favorite.id
+        setFavorites(favorites.filter(fav => fav.car.id !== carId)); // Actualiza el estado
+      }
+    } else {
+      // Si el coche no es favorito, lo añadimos
+      await addFavorite(userId, carId);  // Añadir a favoritos
+      setFavorites([...favorites, { car: cars.find(car => car.id === carId) }]); // Actualiza el estado con el nuevo favorito
+    }
+  };  
 
   return (
     <>
@@ -94,7 +120,7 @@ const Home = () => {
           ) : carsAvailable ? (
             <ul className="space-y-6">
               {cars.map((car, index) => (
-                <li key={index} className="bg-white p-4 shadow-md rounded-lg">
+                <li key={index} className="bg-white p-4 shadow-md rounded-lg relative">
                   <div className="cursor-pointer" onClick={() => handleCarClick(car)}>
                     {/* Primera fila: Marca, Modelo y Precio */}
                     <div className="flex w-full mb-4">
@@ -113,7 +139,7 @@ const Home = () => {
                       </div>
                       <div className="flex-1">
                         <ul className="space-y-2">
-                          <li className="text-gray-500">Ubicacion: {car.city}</li>
+                          <li className="text-gray-500">Ubicación: {car.city}</li>
                           <li className="text-gray-500">Condición: {car.CarCondition}</li>
                           <li className="text-gray-500">Año: {car.manufacture_year}</li>
                           <li className="text-gray-500">Kilómetros: {car.mileage} km</li>
@@ -122,6 +148,22 @@ const Home = () => {
                       </div>
                     </div>
                   </div>
+
+                  {/* Corazón (solo si el usuario está registrado) y al final de la tarjeta */}
+                  {userId && (
+                    <div className="absolute bottom-2 right-2">
+                      <button 
+                        className={`text-white cursor-pointer`}
+                        onClick={(e) => handleFavoriteClick(e, car.id)}
+                      >
+                        <img
+                          src={isFavorite(car.id) ? '/images/corazon-relleno.png' : '/images/corazon-vacio.png'}
+                          alt="Corazón"
+                          className="w-6 h-6"
+                        />
+                      </button>
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
@@ -152,9 +194,9 @@ const Home = () => {
               car.lat && car.lon && (
                 <Marker key={index} position={[car.lat, car.lon]} icon={carIcon}>
                   <Popup>
-                      {car.brand} {car.model}
-                      <br />
-                      {car.description || 'Sin descripción'}
+                    {car.brand} {car.model}
+                    <br />
+                    {car.description || 'Sin descripción'}
                   </Popup>
                 </Marker>
               )

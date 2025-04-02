@@ -106,7 +106,7 @@ const CarList = () => {
         traction: '',
         fuelType: '',
         seats: [1, 9], 
-        price: [0, 50000],
+        price: [0, 1000000],
         mileage: [0, 200000],
         model: '', 
         decade: '',  
@@ -276,7 +276,7 @@ const CarList = () => {
         <input
           type="range"
           min="0"
-          max="50000"
+          max="1000000"
           value={filters.price[0]}
           onChange={(e) => handleSliderChange(e, 'price')}
           className="w-full"
