@@ -155,7 +155,7 @@ const Chat = () => {
       <h2 className="text-2xl font-semibold mb-6">Chat</h2>
       <div className="messages-container space-y-4 mb-4 max-h-[400px] overflow-y-auto">
         {messages.map((message) => (
-          <div key={message.messageId} className={`message p-3 rounded-lg max-w-xs ${message.userId === currentUserId ? 'ml-auto bg-blue-500 text-white' : 'mr-auto bg-blue-100 text-gray-800'}`}>
+          <div key={message.messageId} className={`message p-3 rounded-lg max-w-xs ${message.userId == currentUserId ? 'ml-auto bg-blue-500 text-white' : 'mr-auto bg-blue-100 text-gray-800'}`}>
             <p>{message.content}</p>
             <small className="text-xs opacity-75">{new Date(message.messageDate).toLocaleTimeString()}</small>
           </div>

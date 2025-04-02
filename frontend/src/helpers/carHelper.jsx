@@ -39,7 +39,6 @@ const fetchAndStoreCars = async (addCars) => {
             throw new Error('Error fetching cars');
         }
         const data = await response.json();
-  
         if (Array.isArray(data) && data.length > 0) {
             // Guardamos los datos en localStorage con el timestamp de la última actualización
             const newData = {

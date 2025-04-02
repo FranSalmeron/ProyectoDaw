@@ -2,4 +2,3 @@ lexik_jwt_authentication:
     secret_key: '%env(JWT_SECRET_KEY)%'  # Clave secreta para firmar el JWT (se puede poner en .env)
     public_key: '%env(JWT_PUBLIC_KEY)%'  # Clave pública (si es necesario, en caso de firma asimétrica)
     pass_phrase: '%env(JWT_PASSPHRASE)%' # Si usas una clave privada con passphrase
-    token_ttl: 3600  # Tiempo de expiración del token en segundos (por defecto 1 hora)

@@ -7,4 +7,5 @@ export { default as Chat } from './Chat';
 export { default as BuyCar } from './BuyCar';
 export { default as Chats } from './Chats';
 export { default as ErrorPage} from './ErrorPage';
+export { default as CarList} from './CarList';
 

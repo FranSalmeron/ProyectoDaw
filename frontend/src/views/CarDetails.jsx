@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { toast } from 'react-toastify'; 
-import "slick-carousel/slick/slick.css"; 
+import { toast } from 'react-toastify';
+import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css"; 
 import Slider from "react-slick";
 import { getUserIdFromToken } from '../helpers/decodeToken';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const CarDetails = () => {
-    const [selectedImageIndex, setSelectedImageIndex] = useState(0); 
+    const [selectedImageIndex, setSelectedImageIndex] = useState(0);
     const sliderRef = useRef(null);
     const [toastShown, setToastShown] = useState(false);  // Estado para controlar el toast
     const navigate = useNavigate();
@@ -166,6 +166,10 @@ const CarDetails = () => {
                     <div className="car-detail-item">
                         <p className="text-gray-700 font-semibold">Fecha Publicación:</p>
                         <p className="text-gray-500">{new Date(car.publication_date).toLocaleDateString()}</p>
+                    </div>
+                    <div className="car-detail-item">
+                        <p className="text-gray-700 font-semibold">Descripcion:</p>
+                        <p className="text-gray-500">{car.description}</p>
                     </div>
                 </div>
             </div>

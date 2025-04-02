@@ -5,7 +5,7 @@ import { CarProvider } from './context/CarContext';
 import { ChatProvider } from './context/ChatContext';
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routes/router";
-import { isTokenExpired, getUserIdFromToken } from './helpers/decodeToken';
+import { isTokenExpired } from './helpers/decodeToken';
 
 function App() {
     const token = localStorage.getItem('jwt');

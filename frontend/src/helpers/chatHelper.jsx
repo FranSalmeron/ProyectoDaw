@@ -119,7 +119,6 @@ const fetchAndStoreChats = async (userId, addChats) => {
     }
 
     const data = await response.json();
-    console.log("Datos recibidos de la API: ", data);
 
     if (Array.isArray(data.chats) && data.chats.length > 0) {
       // Guardamos los chats en localStorage con el timestamp de la última actualización

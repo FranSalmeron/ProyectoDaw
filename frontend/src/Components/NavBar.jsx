@@ -5,14 +5,14 @@ import { ROUTES } from "../routes/paths";
 const NavBar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false); // Estado para el menú desplegable
     const navigate = useNavigate();
-    const userName = localStorage.getItem('username');
+    const userName = localStorage.getItem('username')?  localStorage.getItem('username') : null;
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen); // Alternar la visibilidad del menú
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('userName'); 
+        localStorage.removeItem('username'); 
         localStorage.removeItem('jwt'); 
         localStorage.removeItem('refreshToken'); 
         localStorage.removeItem('cachedChats');
@@ -27,7 +27,14 @@ const NavBar = () => {
                     &#9776; {/* Icono de hamburguesa */}
                 </button>
 
-                <h2 class="text-white mx-auto">RenovAuto</h2>
+                <NavLink
+                    to={ROUTES.HOME}
+                    className={({ isActive }) => `text-white   
+                    ${isActive ? "font-bold hover:text-red:100" : ""}   
+                    `}
+                    >
+                    RenovAuto
+                </NavLink>
 
                 <div class="text-white">
                     {userName ? `Bienvenido, ${userName}` : 'Bienvenido'}
@@ -72,6 +79,17 @@ const NavBar = () => {
                             `}
                         >
                         Inicio
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink
+                            to={ROUTES.CAR_LIST}
+                            className={({
+                            isActive,
+                            }) => `text-white  hover:text-red:100  
+                            ${isActive ? "font-bold" : ""}`}
+                        >
+                            Lista Coches
                         </NavLink>
                     </li>
                     {!userName ? (
@@ -124,7 +142,9 @@ const NavBar = () => {
                             </NavLink>
                             </li>
                             <li>
-                                <button onClick={() => handleLogout} class="text-white">Cerrar sesión</button>
+                                <button onClick={handleLogout} className="text-white ">
+                                    Cerrar sesión
+                                </button>
                             </li>
                         </>
                     )}

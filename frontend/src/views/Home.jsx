@@ -152,9 +152,9 @@ const Home = () => {
               car.lat && car.lon && (
                 <Marker key={index} position={[car.lat, car.lon]} icon={carIcon}>
                   <Popup>
-                    {car.brand} {car.model}
-                    <br />
-                    {car.description || 'Sin descripción'}
+                      {car.brand} {car.model}
+                      <br />
+                      {car.description || 'Sin descripción'}
                   </Popup>
                 </Marker>
               )

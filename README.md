@@ -3,6 +3,7 @@
 
 #### Crear Contextos (Hecho coche y chat)
 #### Crear y configurar el router (Hecho)
+#### Cerrar sesion (Hecho)
 #### Crear pagina global de coches y añadir filtros
 #### Crear Favoritos
 #### Eliminar de favoritos
@@ -11,7 +12,6 @@
 #### Pagina de About
 #### Crear y configurar todo lo que pueden hacer los administradores
 #### Arreglar JWT
-#### Crear y configurar CSRF Token
 #### Optimizar codigo y velocidad de carga
 #### Crear, consultar y hacer un buen diseño de la pagina visual y esteticamente
 #### Documentacion y cosas necesarias del proyecto.

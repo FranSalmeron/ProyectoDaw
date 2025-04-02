@@ -35,6 +35,9 @@ class UserController extends AbstractController
             return $this->json(['error' => 'Invalid data'], Response::HTTP_BAD_REQUEST);
         }
 
+        $refreshToken = bin2hex(random_bytes(64)); // Genera un token aleatorio de 64 bytes
+       
+
         
         $user = new User();
         $user->setName($data['name']);
@@ -43,7 +46,8 @@ class UserController extends AbstractController
         $user->setPhone($data['phone']);
         $user->setRoles($data['roles']); 
         $user->setPassword($data['password']);
-
+        $user->setRefreshToken($refreshToken); // Asigna el refresh token al usuario
+        
         $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
         $user->setPassword($hashedPassword);
 

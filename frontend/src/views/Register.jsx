@@ -44,7 +44,7 @@ function Register() {
             };
 
              // Enviar los datos al backend con fetch
-            const response = await fetch(`${symfonyUrl}/api/user/new`, {
+            const response = await fetch(`${symfonyUrl}/user/new`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

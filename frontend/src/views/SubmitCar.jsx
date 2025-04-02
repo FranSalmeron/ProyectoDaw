@@ -4,6 +4,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import { useNavigate } from 'react-router-dom';
+import { getUserIdFromToken } from '../helpers/decodeToken';
+import Select from 'react-select';
+
 
 const symfonyUrl = import.meta.env.VITE_API_URL;
 
@@ -26,7 +29,7 @@ function SubmitCar() {
     publication_date: '',
     carCondition: '', 
     carSold: false,
-    user: localStorage.getItem("userId"),  
+    user: null,  
     images: [],
     lat: null,
     lon: null,
@@ -35,6 +38,14 @@ function SubmitCar() {
 
   // Establecer automáticamente la fecha de publicación como la fecha actual
   useEffect(() => {
+    if (formData.user == null) {
+      const userId = getUserIdFromToken(); // Suponiendo que esta función obtiene el ID del usuario desde el token
+      setFormData((prevState) => ({
+        ...prevState,
+        user: userId, // Asignamos el userId al estado correctamente
+      }));
+    }
+  
     setFormData((prevState) => ({
       ...prevState,
       publication_date: new Date().toISOString().split('T')[0], // Formato YYYY-MM-DD
@@ -214,6 +225,7 @@ function SubmitCar() {
 
       if (response.ok) {
         toast.success('Coche creado con éxito');
+        localStorage.removeItem('cachedCars');
         navigate(`/`);
       } else {
         toast.error('Error al crear el coche');
@@ -223,25 +235,85 @@ function SubmitCar() {
     }
   };
 
+  const brands = [
+    { label: 'Audi', value: 'audi' },
+    { label: 'BMW', value: 'bmw' },
+    { label: 'Chevrolet', value: 'chevrolet' },
+    { label: 'Citroën', value: 'citroen' },
+    { label: 'Ford', value: 'ford' },
+    { label: 'Honda', value: 'honda' },
+    { label: 'Hyundai', value: 'hyundai' },
+    { label: 'Jeep', value: 'jeep' },
+    { label: 'Kia', value: 'kia' },
+    { label: 'Lexus', value: 'lexus' },
+    { label: 'Mazda', value: 'mazda' },
+    { label: 'Mercedes-Benz', value: 'mercedes' },
+    { label: 'Mitsubishi', value: 'mitsubishi' },
+    { label: 'Nissan', value: 'nissan' },
+    { label: 'Peugeot', value: 'peugeot' },
+    { label: 'Porsche', value: 'porsche' },
+    { label: 'Renault', value: 'renault' },
+    { label: 'Seat', value: 'seat' },
+    { label: 'Skoda', value: 'skoda' },
+    { label: 'Toyota', value: 'toyota' },
+    { label: 'Volkswagen', value: 'volkswagen' },
+    { label: 'Volvo', value: 'volvo' },
+    { label: 'Ferrari', value: 'ferrari' },
+    { label: 'Lamborghini', value: 'lamborghini' },
+    { label: 'Aston Martin', value: 'aston_martin' },
+    { label: 'Bentley', value: 'bentley' },
+    { label: 'Bugatti', value: 'bugatti' },
+    { label: 'McLaren', value: 'mclaren' },
+    { label: 'Rolls-Royce', value: 'rolls_royce' },
+    { label: 'Tesla', value: 'tesla' },
+    { label: 'Jaguar', value: 'jaguar' },
+    { label: 'Land Rover', value: 'land_rover' },
+    { label: 'Subaru', value: 'subaru' },
+    { label: 'Alfa Romeo', value: 'alfa_romeo' },
+    { label: 'Fiat', value: 'fiat' },
+    { label: 'Mini', value: 'mini' },
+    { label: 'Smart', value: 'smart' },
+    { label: 'Peugeot', value: 'peugeot' },
+    { label: 'Opel', value: 'opel' },
+    { label: 'Suzuki', value: 'suzuki' },
+    { label: 'Chrysler', value: 'chrysler' },
+    { label: 'Dodge', value: 'dodge' },
+    { label: 'GMC', value: 'gmc' },
+    { label: 'Lincoln', value: 'lincoln' },
+    { label: 'Buick', value: 'buick' },
+    { label: 'Ram', value: 'ram' },
+    { label: 'Acura', value: 'acura' },
+    { label: 'Genesis', value: 'genesis' },
+    { label: 'Infiniti', value: 'infiniti' },
+    { label: 'Land Rover', value: 'land_rover' },
+    { label: 'Maserati', value: 'maserati' }
+  ];  
+
+  const handleBrandChange = (selectedOption) => {
+    setFormData({
+      ...formData,
+      brand: selectedOption ? selectedOption.value : ''
+    });
+  };
+
   return (
     <div className="w-9/10 max-w-2xl mx-auto bg-black text-white p-8 rounded-lg shadow-lg m-5">
       <h2 className="text-3xl font-bold text-center text-white-300 mb-6">Introduce los detalles del coche</h2>
       
       <form onSubmit={handleSubmit}>
-        {/* Marca */}
-        <div className="mb-4">
-          <label htmlFor="brand" className="block text-lg font-medium mb-2">Marca:</label>
-          <input
-            id="brand"
-            type="text"
-            name="brand"
-            value={formData.brand}
-            required
-            onChange={handleChange}
-            className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-            placeholder="Marca del coche"
-          />
-        </div>
+       {/* Marca */}
+      <div className="mb-4">
+        <label htmlFor="brand" className="block text-lg font-medium mb-2">Marca:</label>
+        <Select
+          id="brand"
+          name="brand"
+          value={brands.find((brand) => brand.value === formData.brand)} // Esto selecciona el valor actual
+          options={brands}
+          onChange={handleBrandChange}  // Maneja el cambio
+          placeholder="Selecciona la marca"
+          className="w-full p-3 rounded-lg bg-gray-800 text-black focus:outline-none focus:ring-2 focus:ring-red-500"
+        />
+      </div>
 
         {/* Modelo */}
         <div className="mb-4">

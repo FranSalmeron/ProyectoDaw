@@ -7,5 +7,6 @@ export const ROUTES = {
     CHATS: "/chats/:userId",
     CHAT: "/chat/:userId/:carId/:buyerId",
     BUY_CAR: "/buy_car",
+    CAR_LIST: "/car_list",
   };
   
