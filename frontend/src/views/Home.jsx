@@ -5,34 +5,37 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'leaflet/dist/leaflet.css';
 import { carList } from '../helpers/carHelper';
 import { useCars } from '../context/CarContext';
+import { useFavorites } from '../context/FavoriteContext';
 import { useNavigate } from "react-router-dom";
-import { addFavorite, removeFavorite } from '../helpers/favoriteHelper'; // Importar las funciones necesarias
+import { addFavorite, getFavorites, removeFavorite } from '../helpers/favoriteHelper'; // Importar las funciones necesarias
 import { getUserIdFromToken } from '../helpers/decodeToken';
 
 const Home = () => {
   const { cars, addCars } = useCars();
+  const { favorites, addFavorites, removeFromData } = useFavorites();
   const [position, setPosition] = useState([37.1775, -3.5986]);
   const [loading, setLoading] = useState(true);
-  const [favorites, setFavorites] = useState([]); // Para manejar los favoritos del usuario
   const navigate = useNavigate();
 
   // Obtener el userId del token
   const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
 
   useEffect(() => {
-    const getCars = async () => {
+    const getCarsAndFavorites = async () => {
       setLoading(true);
       try {
-        await carList(addCars);
+        // Obtener favoritos primero
+        await getFavorites(userId, addFavorites); // Se obtiene y se agregan al contexto
+        // Luego obtener los coches
+        await carList(addCars); // Se agregan los coches al contexto
         setLoading(false);
       } catch (error) {
-        toast.error('No se pudieron cargar los coches. Intenta más tarde.');
+        toast.error('No se pudieron cargar los coches o los favoritos. Intenta más tarde.');
         setLoading(false);
       }
     };
 
-    getCars();
-
+    getCarsAndFavorites();
     // Obtener la ubicación geográfica
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -51,7 +54,6 @@ const Home = () => {
 
   }, []); // Solo se ejecuta cuando el componente se monta
 
-  // El componente ahora solo muestra la imagen sin redimensionarla
   const CarImage = ({ car }) => {
     return (
       <div className="relative w-full h-48 overflow-hidden">
@@ -89,25 +91,34 @@ const Home = () => {
   const carsAvailable = Array.isArray(cars) && cars.length > 0;
 
   const isFavorite = (carId) => {
-    return favorites.some(fav => fav.car.id === carId); // Compara el ID del coche con los favoritos
+    // Aplanar el array de favoritos en caso de que esté anidado
+    const flatFavorites = favorites.flat();
+  
+    // Buscar el coche en los favoritos a través de su ID
+    return flatFavorites.some(fav => fav.car && fav.car.id === carId);
   };
-
+  
   const handleFavoriteClick = async (e, carId) => {
     e.stopPropagation(); // Prevenir que el clic del corazón dispare el clic de la tarjeta
-    if (isFavorite(carId)) {
-      // Si el coche ya es favorito, lo eliminamos
-      const favorite = favorites.find(fav => fav.car.id === carId);
-      if (favorite) {
-        await removeFavorite(userId, carId);  // Pasar el userId y carId en lugar de favorite.id
-        setFavorites(favorites.filter(fav => fav.car.id !== carId)); // Actualiza el estado
-      }
+  
+    // Buscamos si el coche ya es favorito mediante `isFavorite`
+    const favorite = favorites.flat().find(fav => fav.car.id === carId);
+    console.log(favorite);
+    
+    if (favorite) {
+      // Si ya es favorito, eliminamos usando el `favoriteId`
+      await removeFavorite(userId, favorite.id, removeFromData); // Usamos `favorite.id` para eliminar correctamente
     } else {
       // Si el coche no es favorito, lo añadimos
-      await addFavorite(userId, carId);  // Añadir a favoritos
-      setFavorites([...favorites, { car: cars.find(car => car.id === carId) }]); // Actualiza el estado con el nuevo favorito
+      const car = cars.find(car => car.id === carId); // Encontramos el coche
+      if (car) {
+        // Añadimos el coche a favoritos usando el `car`
+        await addFavorite(userId, { car }, addFavorites); // Añadir el coche como favorito
+      }
     }
-  };  
-
+  };
+  
+  
   return (
     <>
       <ToastContainer />

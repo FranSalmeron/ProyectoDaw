@@ -14,11 +14,11 @@ class Car
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
-    #[Groups('car_list')] 
+    #[Groups(['car_list', 'car_favorite_list'])] 
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-    #[Groups('car_list')] 
+    #[Groups('car_list',)] 
     private ?string $brand = null;
 
     #[ORM\Column(length: 100)]
@@ -83,8 +83,9 @@ class Car
     private ?bool $CarSold = null;
 
     #[ORM\ManyToOne(inversedBy: 'cars')]
-    #[Groups('car_list')]
-    private ?User $User = null;
+    #[Groups('car_list')] 
+    private ?User $user = null; 
+
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 6)]
     #[Groups('car_list')] 
@@ -97,9 +98,6 @@ class Car
     #[ORM\Column(length: 255)]
     #[Groups('car_list')]
     private ?string $city = null;
-
-    #[ORM\OneToMany(mappedBy: 'car', targetEntity: CarFavorite::class)]
-    private $favorites;
 
     public function getId(): ?int
     {
@@ -285,12 +283,12 @@ class Car
 
     public function getUser(): ?User
     {
-        return $this->User;
+        return $this->user;
     }
 
     public function setUser(?User $User): static
     {
-        $this->User = $User;
+        $this->user = $User;
 
         return $this;
     }

@@ -115,7 +115,7 @@ const CarDetails = () => {
             {/* Información del coche */}
             <div className="car-info mt-6">
                 <h1 className="text-3xl font-semibold text-gray-800 mb-2">{car.brand} {car.model}</h1>
-                <h2 className="text-lg text-gray-500 mb-4">Vendedor: {car.User.name}</h2>
+                <h2 className="text-lg text-gray-500 mb-4">Vendedor: {car.user.name}</h2>
 
                 {/* Información del coche */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

@@ -6,6 +6,8 @@ use App\Repository\CarFavoriteRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Car;
 use App\Entity\User;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: CarFavoriteRepository::class)]
 class CarFavorite
@@ -13,17 +15,19 @@ class CarFavorite
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('car_favorite_list')]
     private ?int $id = null;
 
-    // Relación con la entidad Car
     #[ORM\ManyToOne(targetEntity: Car::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('car_favorite_list')]
     private ?Car $car = null;
 
-    // Relación con la entidad User
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('car_favorite_list')]
     private ?User $user = null;
+
 
     public function getId(): ?int
     {

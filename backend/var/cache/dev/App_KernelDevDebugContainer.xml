@@ -574,13 +574,6 @@
         <argument type="service" id=".service_locator.jIxfAsi.App\Controller\MainController"/>
       </call>
     </service>
-    <service id="App\Controller\ReviewController" class="App\Controller\ReviewController" public="true" autowire="true" autoconfigure="true">
-      <tag name="controller.service_arguments"/>
-      <tag name="container.service_subscriber"/>
-      <call method="setContainer">
-        <argument type="service" id=".service_locator.jIxfAsi.App\Controller\ReviewController"/>
-      </call>
-    </service>
     <service id="App\Controller\TransactionController" class="App\Controller\TransactionController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
@@ -605,9 +598,6 @@
       <tag name="form.type"/>
     </service>
     <service id="App\Form\ChatType" class="App\Form\ChatType" autowire="true" autoconfigure="true">
-      <tag name="form.type"/>
-    </service>
-    <service id="App\Form\ReviewType" class="App\Form\ReviewType" autowire="true" autoconfigure="true">
       <tag name="form.type"/>
     </service>
     <service id="App\Form\TransactionType" class="App\Form\TransactionType" autowire="true" autoconfigure="true">
@@ -1444,7 +1434,6 @@
         <argument>App\Form\CarType</argument>
         <argument>App\Form\ChatMessageType</argument>
         <argument>App\Form\ChatType</argument>
-        <argument>App\Form\ReviewType</argument>
         <argument>App\Form\TransactionType</argument>
         <argument>App\Form\UserType</argument>
         <argument>Symfony\Component\Form\Extension\Core\Type\FormType</argument>
@@ -3733,7 +3722,7 @@
       <argument type="service" id="form.registry"/>
     </service>
     <service id="form.extension" class="Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension">
-      <argument type="service" id=".service_locator.5Ia8Je6"/>
+      <argument type="service" id=".service_locator.40EtNSa"/>
       <argument type="collection">
         <argument key="Symfony\Component\Form\Extension\Core\Type\FormType" type="iterator">
           <argument type="service" id="form.type_extension.form.transformation_failure_handling"/>
@@ -8005,9 +7994,6 @@
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\MainController" class="App\Controller\MainController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\MainController" class="App\Controller\MainController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\MainController" class="App\Controller\MainController" autowire="true" autoconfigure="true" abstract="true"/>
-    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\ReviewController" class="App\Controller\ReviewController" autowire="true" abstract="true"/>
-    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\ReviewController" class="App\Controller\ReviewController" autowire="true" abstract="true"/>
-    <service id=".abstract.instanceof.App\Controller\ReviewController" class="App\Controller\ReviewController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\TransactionController" class="App\Controller\TransactionController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\TransactionController" class="App\Controller\TransactionController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\TransactionController" class="App\Controller\TransactionController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -8022,8 +8008,6 @@
     <service id=".abstract.instanceof.App\Form\ChatMessageType" class="App\Form\ChatMessageType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\ChatType" class="App\Form\ChatType" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Form\ChatType" class="App\Form\ChatType" autowire="true" autoconfigure="true" abstract="true"/>
-    <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\ReviewType" class="App\Form\ReviewType" autowire="true" abstract="true"/>
-    <service id=".abstract.instanceof.App\Form\ReviewType" class="App\Form\ReviewType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\TransactionType" class="App\Form\TransactionType" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Form\TransactionType" class="App\Form\TransactionType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\UserType" class="App\Form\UserType" autowire="true" abstract="true"/>
@@ -8575,25 +8559,6 @@
         <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
       </argument>
     </service>
-    <service id=".service_locator.ZdZsDwP" class="Symfony\Component\DependencyInjection\ServiceLocator">
-      <tag name="container.service_locator"/>
-      <argument type="collection">
-        <argument key="reviewRepository" type="service_closure" id="App\Repository\ReviewRepository"/>
-      </argument>
-    </service>
-    <service id=".service_locator..1epvCf" class="Symfony\Component\DependencyInjection\ServiceLocator">
-      <tag name="container.service_locator"/>
-      <argument type="collection">
-        <argument key="review" type="service_closure" id=".errored..service_locator..1epvCf.App\Entity\Review"/>
-      </argument>
-    </service>
-    <service id=".service_locator.Yhx7W1n" class="Symfony\Component\DependencyInjection\ServiceLocator">
-      <tag name="container.service_locator"/>
-      <argument type="collection">
-        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
-        <argument key="review" type="service_closure" id=".errored..service_locator.Yhx7W1n.App\Entity\Review"/>
-      </argument>
-    </service>
     <service id=".service_locator.wG7eXdf" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -8639,7 +8604,7 @@
         <argument key="user" type="service_closure" id=".errored..service_locator.GPGtF8v.App\Entity\User"/>
       </argument>
     </service>
-    <service id=".service_locator.q2mL73Z" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.6qT2bRI" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\CarController::delete" type="service_closure" id=".service_locator.BA3xq_G"/>
@@ -8660,11 +8625,6 @@
         <argument key="App\Controller\ChatController::show" type="service_closure" id=".service_locator.zRENt0_"/>
         <argument key="App\Controller\ChatMessageController::sendMessage" type="service_closure" id=".service_locator.vQ105EG"/>
         <argument key="App\Controller\ChatMessageController::show" type="service_closure" id=".service_locator.HKN.4cP"/>
-        <argument key="App\Controller\ReviewController::delete" type="service_closure" id=".service_locator.Yhx7W1n"/>
-        <argument key="App\Controller\ReviewController::edit" type="service_closure" id=".service_locator.Yhx7W1n"/>
-        <argument key="App\Controller\ReviewController::index" type="service_closure" id=".service_locator.ZdZsDwP"/>
-        <argument key="App\Controller\ReviewController::new" type="service_closure" id=".service_locator.aKM6MDa"/>
-        <argument key="App\Controller\ReviewController::show" type="service_closure" id=".service_locator..1epvCf"/>
         <argument key="App\Controller\TransactionController::delete" type="service_closure" id=".service_locator.Dhg828p"/>
         <argument key="App\Controller\TransactionController::edit" type="service_closure" id=".service_locator.Dhg828p"/>
         <argument key="App\Controller\TransactionController::index" type="service_closure" id=".service_locator.wG7eXdf"/>
@@ -8697,11 +8657,6 @@
         <argument key="App\Controller\ChatController:show" type="service_closure" id=".service_locator.zRENt0_"/>
         <argument key="App\Controller\ChatMessageController:sendMessage" type="service_closure" id=".service_locator.vQ105EG"/>
         <argument key="App\Controller\ChatMessageController:show" type="service_closure" id=".service_locator.HKN.4cP"/>
-        <argument key="App\Controller\ReviewController:delete" type="service_closure" id=".service_locator.Yhx7W1n"/>
-        <argument key="App\Controller\ReviewController:edit" type="service_closure" id=".service_locator.Yhx7W1n"/>
-        <argument key="App\Controller\ReviewController:index" type="service_closure" id=".service_locator.ZdZsDwP"/>
-        <argument key="App\Controller\ReviewController:new" type="service_closure" id=".service_locator.aKM6MDa"/>
-        <argument key="App\Controller\ReviewController:show" type="service_closure" id=".service_locator..1epvCf"/>
         <argument key="App\Controller\TransactionController:delete" type="service_closure" id=".service_locator.Dhg828p"/>
         <argument key="App\Controller\TransactionController:edit" type="service_closure" id=".service_locator.Dhg828p"/>
         <argument key="App\Controller\TransactionController:index" type="service_closure" id=".service_locator.wG7eXdf"/>
@@ -8775,14 +8730,13 @@
       <argument type="service" id="debug.argument_resolver.not_tagged_controller.inner"/>
       <argument type="service" id="debug.stopwatch"/>
     </service>
-    <service id=".service_locator.5Ia8Je6" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.40EtNSa" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Form\CarFavoriteType" type="service_closure" id="App\Form\CarFavoriteType"/>
         <argument key="App\Form\CarType" type="service_closure" id="App\Form\CarType"/>
         <argument key="App\Form\ChatMessageType" type="service_closure" id="App\Form\ChatMessageType"/>
         <argument key="App\Form\ChatType" type="service_closure" id="App\Form\ChatType"/>
-        <argument key="App\Form\ReviewType" type="service_closure" id="App\Form\ReviewType"/>
         <argument key="App\Form\TransactionType" type="service_closure" id="App\Form\TransactionType"/>
         <argument key="App\Form\UserType" type="service_closure" id="App\Form\UserType"/>
         <argument key="Symfony\Bridge\Doctrine\Form\Type\EntityType" type="service_closure" id="form.type.entity"/>
@@ -9183,12 +9137,6 @@
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.jIxfAsi" method="withContext"/>
     </service>
-    <service id=".service_locator.jIxfAsi.App\Controller\ReviewController" class="Symfony\Component\DependencyInjection\ServiceLocator">
-      <tag name="container.service_locator_context" id="App\Controller\ReviewController"/>
-      <argument>App\Controller\ReviewController</argument>
-      <argument type="service" id="service_container"/>
-      <factory service=".service_locator.jIxfAsi" method="withContext"/>
-    </service>
     <service id=".service_locator.jIxfAsi.App\Controller\TransactionController" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="App\Controller\TransactionController"/>
       <argument>App\Controller\TransactionController</argument>
@@ -9431,12 +9379,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
-      <argument type="service" id=".service_locator.q2mL73Z"/>
+      <argument type="service" id=".service_locator.6qT2bRI"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
-      <argument type="service" id=".service_locator.q2mL73Z"/>
+      <argument type="service" id=".service_locator.6qT2bRI"/>
     </service>
     <service id="debug.traced.messenger.bus.default.inner" class="Symfony\Component\Messenger\MessageBus">
       <argument type="iterator">
@@ -9513,8 +9461,6 @@
     <service id=".errored..service_locator.6JWk_Yv.App\Entity\CarFavorite" class="App\Entity\CarFavorite"/>
     <service id=".errored..service_locator.uWQT4Qu.App\Entity\Chat" class="App\Entity\Chat"/>
     <service id=".errored..service_locator.HKN.4cP.App\Entity\ChatMessage" class="App\Entity\ChatMessage"/>
-    <service id=".errored..service_locator..1epvCf.App\Entity\Review" class="App\Entity\Review"/>
-    <service id=".errored..service_locator.Yhx7W1n.App\Entity\Review" class="App\Entity\Review"/>
     <service id=".errored..service_locator.3PHq.pi.App\Entity\Transaction" class="App\Entity\Transaction"/>
     <service id=".errored..service_locator.Dhg828p.App\Entity\Transaction" class="App\Entity\Transaction"/>
     <service id=".errored..service_locator.4T4EJFR.App\Entity\User" class="App\Entity\User"/>
@@ -10746,7 +10692,7 @@
     <service id="sensio_framework_extra.security.expression_language" alias="sensio_framework_extra.security.expression_language.default"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.gSv9zYw" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.q2mL73Z"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.6qT2bRI"/>
     <service id="doctrine.id_generator_locator" alias=".service_locator.KLVvNIq"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="Psr\Log\LoggerInterface $requestLogger" alias="monolog.logger.request"/>
@@ -10775,13 +10721,12 @@
     <service id=".service_locator.wS1gHQp" alias=".service_locator._nS7eWw"/>
     <service id=".service_locator.XTefk6W" alias=".service_locator.PLZrMx9"/>
     <service id=".service_locator.xZfTEW0" alias=".service_locator.vQ105EG"/>
-    <service id=".service_locator.tkfU4P3" alias=".service_locator.Yhx7W1n"/>
     <service id=".service_locator.PbPEf8m" alias=".service_locator.Dhg828p"/>
     <service id=".service_locator.YUNSPEp" alias=".service_locator.mK6IRPJ"/>
     <service id=".service_locator.b76MKMg" alias=".service_locator.GPGtF8v"/>
-    <service id=".service_locator.EHDDobq" alias=".service_locator.q2mL73Z"/>
+    <service id=".service_locator.529Jj92" alias=".service_locator.6qT2bRI"/>
     <service id=".service_locator.wKF4yn1" alias=".service_locator.19_mNxd"/>
-    <service id=".service_locator.ZO2atEu" alias=".service_locator.5Ia8Je6"/>
+    <service id=".service_locator.zp9pmzf" alias=".service_locator.40EtNSa"/>
     <service id=".service_locator.XW18Svm" alias=".service_locator.TcKhdzh"/>
     <service id=".service_locator.O24_MAy" alias=".service_locator.yY.p4P7"/>
     <service id=".service_locator._eRAkJb" alias=".service_locator.jIxfAsi"/>
@@ -10859,9 +10804,6 @@
     <service id=".service_locator.ylKiwKz" alias=".service_locator.uWQT4Qu"/>
     <service id=".service_locator.Dm19DLc" alias=".service_locator.HKN.4cP"/>
     <service id=".service_locator.tGVdHiA" alias=".service_locator.vQ105EG"/>
-    <service id=".service_locator.B7NtJU4" alias=".service_locator.ZdZsDwP"/>
-    <service id=".service_locator.El5467y" alias=".service_locator..1epvCf"/>
-    <service id=".service_locator.NqX0Dw7" alias=".service_locator.Yhx7W1n"/>
     <service id=".service_locator.BWZtrCs" alias=".service_locator.wG7eXdf"/>
     <service id=".service_locator.14ioAux" alias=".service_locator.3PHq.pi"/>
     <service id=".service_locator.CGUjc55" alias=".service_locator.Dhg828p"/>

@@ -31,8 +31,8 @@ class CarFavoriteController extends AbstractController
     #[Route('/{userId}/favorites', name: 'app_car_favorite_user_favorites', methods: ['GET'])]
     public function getUserFavorites(int $userId, CarFavoriteRepository $carFavoriteRepository): Response
     {
-        // Buscar los favoritos por userId
-        $favorites = $carFavoriteRepository->findBy(['user' => $userId]);
+        // Usamos el nuevo método con QueryBuilder para obtener los favoritos con los coches
+        $favorites = $carFavoriteRepository->findByUserIdWithCar($userId);
 
         if (empty($favorites)) {
             return $this->json([
@@ -41,10 +41,11 @@ class CarFavoriteController extends AbstractController
             ], Response::HTTP_NOT_FOUND);
         }
 
+        // Serializamos los favoritos, incluyendo la información del coche asociado
         return $this->json([
             'status' => 'ok',
-            'data' => $favorites
-        ]);
+            'data' => $favorites,
+        ], 200, [], ['groups' => 'car_favorite_list']);
     }
 
     #[Route('/new', name: 'app_car_favorite_new', methods: ['POST'])]
@@ -146,14 +147,11 @@ class CarFavoriteController extends AbstractController
         ]);
     }
 
-    #[Route('/favorite/{userId}/{carId}', name: 'app_car_favorite_delete', methods: ['DELETE'])]
-    public function delete(int $userId, int $carId, CarFavoriteRepository $carFavoriteRepository, EntityManagerInterface $entityManager): Response
+    #[Route('/{favoriteId}/delete', name: 'app_car_favorite_delete', methods: ['DELETE'])]
+    public function delete(int $favoriteId, CarFavoriteRepository $carFavoriteRepository, EntityManagerInterface $entityManager): Response
     {
-        // Buscar el favorito con los IDs proporcionados
-        $carFavorite = $carFavoriteRepository->findOneBy([
-            'user' => $userId,
-            'car' => $carId,
-        ]);
+        // Buscar el favorito por su ID
+        $carFavorite = $carFavoriteRepository->find($favoriteId);
 
         if (!$carFavorite) {
             return $this->json([

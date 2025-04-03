@@ -5,7 +5,7 @@
 #### Crear y configurar el router (Hecho)
 #### Cerrar sesion (Hecho)
 #### Crear pagina global de coches y añadir filtros (Hecho)
-#### Crear Favoritos (Pendiente arreglar helper y poner en home, detailsCar y en CarList)
+#### Crear Favoritos (Pendiente arreglar helper y poner en home, detailsCar y en CarList) Pendiente actualizar icono.
 #### Eliminar de favoritos
 #### Pagina de perfil
 #### Editar nombre, cambiar contraseña y esas cosas

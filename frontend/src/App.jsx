@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { CarProvider } from './context/CarContext';
 import { ChatProvider } from './context/ChatContext';
 import { RouterProvider } from "react-router-dom";
+import { FavoriteProvider } from './context/FavoriteContext';
 import { router } from "./routes/router";
 import { isTokenExpired } from './helpers/decodeToken';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -23,7 +24,9 @@ function App() {
         <div className="bg-gray-300">
             <CarProvider>
                 <ChatProvider>
-                    <RouterProvider router={router} />
+                    <FavoriteProvider>
+                        <RouterProvider router={router} />
+                    </FavoriteProvider>
                 </ChatProvider>
             </CarProvider>
         </div>

@@ -1,33 +1,27 @@
 import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
 
-// creamos el contexto.
+// Creamos el contexto
 const favoriteContext = createContext();
 
 export function FavoriteProvider({ children }) {
-  const [favorites, setfavorites] = useState([]); 
+  const [favorites, setFavorites] = useState([]); // Mantenemos un solo array plano
 
-  const addFavorites = (newfavorite) => {
-    // Verififavorite si el favorite ya está en el estado
-    if (favorites.some((p) => p?.id === newfavorite.id)) {
+  const addFavorites = (newFavorite) => {
+    // Verificamos si el coche ya está en favoritos
+    if (favorites.some((p) => p?.id === newFavorite.id)) {
       return;
     }
-    // Añadir el nuevo favorite al estado
-    setfavorites((prevfavorites) => [...prevfavorites, newfavorite]);
+    
+    // Añadir el nuevo favorito al array
+    setFavorites((prevFavorites) => [...prevFavorites, newFavorite]);
   };
 
   const removeFromData = (favoriteId) => {
-    setfavorites((prevfavorites) => prevfavorites.filter((p) => p?.id !== favoriteId));
-    toast.info("favorite eliminado de la data", {
-      style: {
-        background: "blue",
-        color: "white",
-        border: "1px solid black",
-      },
-      icon: "🗑️",
-    });
+    // Filtramos el array para eliminar el favorito
+    setFavorites((prevFavorites) => prevFavorites.filter((p) => p?.id !== favoriteId));
   };
-
+  
   return (
     <favoriteContext.Provider value={{ favorites, addFavorites, removeFromData }}>
       {children}
@@ -35,11 +29,11 @@ export function FavoriteProvider({ children }) {
   );
 }
 
-//// ------------ Hook para consumir el contexto ------------
+// Hook para consumir el contexto
 export const useFavorites = () => {
   const context = useContext(favoriteContext);
   if (context === undefined) {
-    throw new Error("usefavorite debe ser usado dentro de un favoriteProvider");
+    throw new Error("useFavorites debe ser usado dentro de un FavoriteProvider");
   }
   return context;
 };

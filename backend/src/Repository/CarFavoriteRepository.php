@@ -1,10 +1,12 @@
 <?php
+// CarFavoriteRepository.php
 
 namespace App\Repository;
 
 use App\Entity\CarFavorite;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @extends ServiceEntityRepository<CarFavorite>
@@ -21,28 +23,15 @@ class CarFavoriteRepository extends ServiceEntityRepository
         parent::__construct($registry, CarFavorite::class);
     }
 
-//    /**
-//     * @return CarFavorite[] Returns an array of CarFavorite objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?CarFavorite
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    // Método para obtener los favoritos de un usuario con la relación Car cargada
+    public function findByUserIdWithCar(int $userId): array
+    {
+        return $this->createQueryBuilder('cf')
+            ->leftJoin('cf.car', 'car') 
+            ->addSelect('car')          
+            ->where('cf.user = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getResult();
+    }
 }

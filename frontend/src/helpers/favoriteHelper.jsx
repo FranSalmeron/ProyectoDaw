@@ -5,28 +5,24 @@ const symfonyUrl = import.meta.env.VITE_API_URL;
 // Obtener los favoritos de un usuario específico
 export const getFavorites = async (userId, addFavoritesToContext) => {
   try {
-    // Primero revisamos si los favoritos están almacenados en localStorage
-    const storedFavorites = localStorage.getItem(`favorites_${userId}`);
+    // Revisar favoritos en localStorage, si no, obtenerlos desde la API
+    const storedFavorites = JSON.parse(localStorage.getItem(`favorites_${userId}`)) || [];
     
-    // Si hay favoritos en localStorage, los usamos
-    if (storedFavorites) {
-      const favorites = JSON.parse(storedFavorites);
-      favorites.forEach(favorite => addFavoritesToContext(favorite));  // Añadimos los favoritos al contexto
-      return favorites;  // Retornamos los favoritos del localStorage
-    } else {
-      // Si no están en localStorage, llamamos a la API para obtenerlos
-      console.log('No hay favoritos en localStorage. Llamando a la API...');
-      const favorites = await fetchFavoritesFromApi(userId);
-      // Al recibir los favoritos, los almacenamos en localStorage
-      localStorage.setItem(`favorites_${userId}`, JSON.stringify(favorites));
-      favorites.forEach(favorite => addFavoritesToContext(favorite));  // Añadimos los favoritos al contexto
-      return favorites;  // Retornamos los favoritos obtenidos de la API
+    // Si están en localStorage, añadimos al contexto directamente
+    if (storedFavorites.length > 0) {
+      addFavoritesToContext(storedFavorites); 
     }
+    
+    // Si no están en localStorage, llamamos a la API
+    const favorites = await fetchFavoritesFromApi(userId);
+    localStorage.setItem(`favorites_${userId}`, JSON.stringify(favorites)); // Guardamos en localStorage
+    addFavoritesToContext(favorites); // Añadimos al contexto
   } catch (error) {
     console.error('Error al obtener favoritos:', error);
     toast.error('Error al obtener los favoritos.');
   }
 };
+
 
 // Función para obtener los favoritos desde la API de un usuario específico
 const fetchFavoritesFromApi = async (userId) => {
@@ -52,25 +48,21 @@ const fetchFavoritesFromApi = async (userId) => {
 // Función para añadir un coche a los favoritos
 export const addFavorite = async (userId, favorite, addFavoritesToContext) => {
   try {
-    // Obtenemos los favoritos actuales desde localStorage
     const storedFavorites = JSON.parse(localStorage.getItem(`favorites_${userId}`)) || [];
-
-    // Verificamos si el coche ya está en los favoritos
+    
+    // Si el coche ya está en favoritos, no hacemos nada
     if (storedFavorites.some(fav => fav.id === favorite.id)) {
       toast.info('Este coche ya está en tus favoritos.');
       return;
     }
 
-    // Si no está en favoritos, lo agregamos
+    // Agregar al array de favoritos y actualizar localStorage
     storedFavorites.push(favorite);
     localStorage.setItem(`favorites_${userId}`, JSON.stringify(storedFavorites));
 
-    // Añadimos el nuevo favorito al contexto
+    // Añadir al contexto y llamar a la API para guardar el favorito
     addFavoritesToContext(favorite);
-
-    // Llamamos a la API para agregar el favorito en el servidor
     await addFavoriteToApi(userId, favorite);
-
     toast.success('Coche añadido a favoritos');
   } catch (error) {
     console.error('Error al agregar favorito:', error);
@@ -78,15 +70,19 @@ export const addFavorite = async (userId, favorite, addFavoritesToContext) => {
   }
 };
 
+
 // Función para añadir un favorito a la base de datos (API)
 const addFavoriteToApi = async (userId, favorite) => {
   try {
-    const response = await fetch(`${symfonyUrl}/favorite/${userId}/new`, {
+    const response = await fetch(`${symfonyUrl}/favorite/new`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(favorite),
+      body: JSON.stringify({
+        user_id: userId,
+        car_id: favorite.car.id, // Asegúrate de que car.id esté disponible y correcto
+      }),
     });
 
     if (!response.ok) {
@@ -106,22 +102,20 @@ const addFavoriteToApi = async (userId, favorite) => {
   }
 };
 
+
 // Función para eliminar un favorito desde el localStorage y la API
-export const removeFavorite = async (userId, carId, removeFavoriteFromContext) => {
+export const removeFavorite = async (userId, favoriteId, removeFavoritesFromContext) => {
   try {
     const storedFavorites = JSON.parse(localStorage.getItem(`favorites_${userId}`)) || [];
-    const updatedFavorites = storedFavorites.filter(fav => fav.id !== favoriteId);
+    const newFavorites = storedFavorites.filter(fav => fav.id !== favoriteId);
 
-    // Actualizamos el localStorage con los nuevos favoritos
-    localStorage.setItem(`favorites_${userId}`, JSON.stringify(updatedFavorites));
+    // Actualizamos localStorage con la nueva lista de favoritos
+    localStorage.setItem(`favorites_${userId}`, JSON.stringify(newFavorites));
 
-    // Eliminamos el favorito del contexto
-    removeFavoriteFromContext(favoriteId);
-
-    // Llamamos a la API para eliminar el favorito en el servidor
-    await removeFavoriteFromApi(userId, favoriteId);
-
-    toast.info('Coche eliminado de favoritos');
+    // Eliminar del contexto
+    removeFavoritesFromContext(favoriteId);
+    await removeFavoriteFromApi(favoriteId);
+    toast.success('Coche eliminado de favoritos');
   } catch (error) {
     console.error('Error al eliminar favorito:', error);
     toast.error('Error al eliminar coche de favoritos.');
@@ -129,9 +123,10 @@ export const removeFavorite = async (userId, carId, removeFavoriteFromContext) =
 };
 
 // Función para eliminar un favorito desde la base de datos (API)
-const removeFavoriteFromApi = async (userId, carId) => {
+const removeFavoriteFromApi = async (favoriteId) => {
   try {
-    const response = await fetch(`${symfonyUrl}/favorite/${userId}/${carId}`, {
+    // Enviamos una solicitud DELETE a la API para eliminar el favorito usando el id del favorito
+    const response = await fetch(`${symfonyUrl}/favorite/${favoriteId}/delete`, {
       method: 'DELETE',
     });
 
