@@ -60,6 +60,7 @@ const getUserIdFromToken = () => {
         const refreshSuccess = await refreshTokenHandler(localStorage.getItem('refreshToken'));
         if (refreshSuccess) {
           toast.info("Token regenerado");
+          window.location.reload();
           return false; // El token ha sido refrescado correctamente, por lo tanto no está expirado
         }
         return true; // El token ha expirado y no se pudo refrescar

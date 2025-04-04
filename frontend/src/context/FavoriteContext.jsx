@@ -8,13 +8,13 @@ export function FavoriteProvider({ children }) {
   const [favorites, setFavorites] = useState([]); // Mantenemos un solo array plano
 
   const addFavorites = (newFavorite) => {
-    // Verificamos si el coche ya está en favoritos
-    if (favorites.some((p) => p?.id === newFavorite.id)) {
-      return;
-    }
+      // Verificamos si el coche ya está en favoritos
+      if (favorites.some((p) => p?.car?.id === newFavorite.car.id)) {
+        return; // Si ya está en favoritos, no hacemos nada
+      }
     
-    // Añadir el nuevo favorito al array
-    setFavorites((prevFavorites) => [...prevFavorites, newFavorite]);
+      // Añadimos el nuevo favorito al array, asegurándonos de agregar un único objeto
+      setFavorites((prevFavorites) => [...prevFavorites, newFavorite]);    
   };
 
   const removeFromData = (favoriteId) => {

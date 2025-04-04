@@ -19,7 +19,10 @@ const Home = () => {
 
   // Obtener el userId del token
   const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
-
+  
+  useEffect(() => {
+  }, [favorites]);
+  
   useEffect(() => {
     const getCarsAndFavorites = async () => {
       setLoading(true);
@@ -36,6 +39,7 @@ const Home = () => {
     };
 
     getCarsAndFavorites();
+
     // Obtener la ubicación geográfica
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -91,33 +95,39 @@ const Home = () => {
   const carsAvailable = Array.isArray(cars) && cars.length > 0;
 
   const isFavorite = (carId) => {
-    // Aplanar el array de favoritos en caso de que esté anidado
-    const flatFavorites = favorites.flat();
-  
     // Buscar el coche en los favoritos a través de su ID
-    return flatFavorites.some(fav => fav.car && fav.car.id === carId);
+    return favorites.some(fav => fav.car && fav.car.id === carId);
   };
   
   const handleFavoriteClick = async (e, carId) => {
     e.stopPropagation(); // Prevenir que el clic del corazón dispare el clic de la tarjeta
-  
-    // Buscamos si el coche ya es favorito mediante `isFavorite`
-    const favorite = favorites.flat().find(fav => fav.car.id === carId);
-    console.log(favorite);
-    
-    if (favorite) {
-      // Si ya es favorito, eliminamos usando el `favoriteId`
-      await removeFavorite(userId, favorite.id, removeFromData); // Usamos `favorite.id` para eliminar correctamente
-    } else {
-      // Si el coche no es favorito, lo añadimos
-      const car = cars.find(car => car.id === carId); // Encontramos el coche
-      if (car) {
-        // Añadimos el coche a favoritos usando el `car`
-        await addFavorite(userId, { car }, addFavorites); // Añadir el coche como favorito
+
+    try {
+      if (isFavorite(carId)) {
+        // Si el coche ya es favorito, lo eliminamos
+          const currentFavorite = favorites.find(fav => fav.car && fav.car.id === carId);
+          const remove = await removeFavorite(userId, currentFavorite.id, removeFromData);  // Pasar el userId y carId en lugar de favorite.id
+          if(remove) {
+            toast.success('Coche eliminado de favoritos.');
+            return;
+          }
+          toast.error('Error al eliminar el coche de favoritos.');
+          return;
+        }
+        else {
+        // Si el coche no es favorito, lo añadimos
+        const add = await addFavorite(userId, carId, addFavorites);  // Añadir a favoritos
+        console.log(add);
+        if(!add) {
+          toast.error('Error al añadir el coche a favoritos.');
+        }
+        toast.success('Coche añadido a favoritos.');
       }
+    } catch (error) {
+      console.error('Error al manejar el clic en favoritos:', error);
+      toast.error('Error al manejar el clic en favoritos.');
     }
-  };
-  
+  };  
   
   return (
     <>

@@ -49,7 +49,7 @@ class CarFavoriteController extends AbstractController
     }
 
     #[Route('/new', name: 'app_car_favorite_new', methods: ['POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, CarRepository $carRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, CarRepository $carRepository, CarFavoriteRepository $carFavoriteRepository): Response
     {
         // Creamos el nuevo favorito a partir de los datos del request
         $data = json_decode($request->getContent(), true);
@@ -60,11 +60,12 @@ class CarFavoriteController extends AbstractController
                 'message' => 'No data provided'
             ], Response::HTTP_BAD_REQUEST);
         }
+
         $carFavorite = new CarFavorite();
 
+        // Validamos si existe un 'user_id' en los datos
         if (isset($data['user_id'])) {
-            // Aquí puedes buscar al usuario por su id, si es necesario
-            // Por ejemplo, si tienes una entidad User relacionada:
+            // Buscamos al usuario por su ID
             $user = $userRepository->find($data['user_id']);
             if ($user) {
                 $carFavorite->setUser($user);
@@ -74,10 +75,16 @@ class CarFavoriteController extends AbstractController
                     'message' => 'User not found'
                 ], Response::HTTP_NOT_FOUND);
             }
+        } else {
+            return $this->json([
+                'status' => 'error',
+                'message' => 'User ID is required'
+            ], Response::HTTP_BAD_REQUEST);
         }
 
+        // Validamos si existe un 'car_id' en los datos
         if (isset($data['car_id'])) {
-            // Si es necesario, puedes buscar el coche por su id, de forma similar al usuario
+            // Buscamos el coche por su ID
             $car = $carRepository->find($data['car_id']);
             if ($car) {
                 $carFavorite->setCar($car);
@@ -90,16 +97,52 @@ class CarFavoriteController extends AbstractController
         } else {
             return $this->json([
                 'status' => 'error',
-                'message' => 'Required fields missing: car_id'
+                'message' => 'Car ID is required'
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $entityManager->persist($carFavorite);
-        $entityManager->flush();
+        // Verificamos si el favorito ya existe
+        $existingFavorite = $carFavoriteRepository->findOneBy([
+            'user' => $carFavorite->getUser(),
+            'car' => $carFavorite->getCar(),
+        ]);
 
+        if ($existingFavorite) {
+            return $this->json([
+                'status' => 'error',
+                'message' => 'This car is already in the favorites list for this user'
+            ], Response::HTTP_CONFLICT); // 409 Conflict
+        }
+
+        // Persistimos el nuevo favorito en la base de datos
+        try {
+            $entityManager->persist($carFavorite);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return $this->json([
+                'status' => 'error',
+                'message' => 'Failed to save favorite',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        // Creamos la respuesta con el favorito recién añadido
+        $carFavorites = []; // Lista de favoritos
+
+        $carFavorites[] = [
+            'id' => $carFavorite->getId(),
+            'user' => [
+                'id' => $carFavorite->getUser()->getId(),
+            ],
+            'car' => [
+                'id' => $carFavorite->getCar()->getId(),
+            ],
+        ];
+
+        // Respondiendo con el favorito recién añadido
         return $this->json([
             'status' => 'ok',
-            'message' => 'Car favorite created successfully',
+            'data' => $carFavorites,
         ], Response::HTTP_CREATED);
     }
 
