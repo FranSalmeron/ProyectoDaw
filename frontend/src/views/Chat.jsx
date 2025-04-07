@@ -3,11 +3,12 @@ import { toast } from 'react-toastify';
 import { createChat } from '../helpers/chatHelper';
 import { loadMessages, sendMessage, pollTaskStatus } from '../helpers/chatMessageHelper';
 import { getUserIdFromToken } from '../helpers/decodeToken';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Chat = () => {
   // Extraemos los parámetros de la URL
-  const { userId, carId, buyerId } = useParams();
+  const location = useLocation();
+  const { userId, carId, buyerId } = location.state;
   
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');

@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import RootLayout from "../layouts/RootLayout";
-import { Home, BuyCar, CarDetails, Chat, Chats, Login, Register, SubmitCar, ErrorPage, CarList } from "../views/indexViews";
+import { Home, BuyCar, CarDetails, Chat, Chats, Login, Register, SubmitCar, ErrorPage, CarFavorites } from "../views/indexViews";
 import { ROUTES } from "./paths";
 
 export const router = createBrowserRouter([
@@ -33,6 +33,10 @@ export const router = createBrowserRouter([
         element: <SubmitCar />,
       },
       {
+        path: ROUTES.CAR_FAVORITES, //"/car_favorites"
+        element: <CarFavorites />,
+      },
+      {
         path: ROUTES.CAR_DETAILS, //"/car_details"
         element: <CarDetails />,
       },
@@ -43,9 +47,6 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.BUY_CAR, //"/buy_car"
         element: <BuyCar />,
-      },{
-        path: ROUTES.CAR_LIST, //"/car_list"
-        element: <CarList />,
       },
     ],
   },

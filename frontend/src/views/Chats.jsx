@@ -38,8 +38,6 @@ const Chats = ({ userId = null }) => {
           }));
 
           setChatDetails(detailsWithCars); // Guardamos los detalles de los chats en el estado
-        } else {
-          toast.info('No tienes chats activos.');
         }
       } catch (error) {
         console.error('Error al obtener los chats:', error);
@@ -55,7 +53,13 @@ const Chats = ({ userId = null }) => {
 
   const handleChatClick = (chatDetailsItem) => {
     // Redirige a la página del chat
-    navigate(`/chat/${chatDetailsItem.seller?.id}/${chatDetailsItem.car?.id}/${chatDetailsItem.buyer?.id}`);
+      navigate("/chat", {
+          state: {
+              userId: chatDetailsItem.seller?.id,
+              carId: chatDetailsItem.car?.id,
+              buyerId: chatDetailsItem.buyer?.id
+          },
+      });
   };
 
   if (loading) {

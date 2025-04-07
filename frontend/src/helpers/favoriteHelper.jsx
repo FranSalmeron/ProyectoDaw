@@ -23,7 +23,6 @@ export const getFavorites = async (userId, addFavoritesToContext) => {
     });
   } catch (error) {
     console.error('Error al obtener favoritos:', error);
-    toast.error('Error al obtener los favoritos.');
   }
 };
 

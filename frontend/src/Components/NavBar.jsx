@@ -81,17 +81,6 @@ const NavBar = () => {
                         Inicio
                         </NavLink>
                     </li>
-                    <li>
-                        <NavLink
-                            to={ROUTES.CAR_LIST}
-                            className={({
-                            isActive,
-                            }) => `text-white  hover:text-red:100  
-                            ${isActive ? "font-bold" : ""}`}
-                        >
-                            Lista Coches
-                        </NavLink>
-                    </li>
                     {!userName ? (
                         <>
                             <li>
@@ -140,6 +129,17 @@ const NavBar = () => {
                             >
                                 Chats
                             </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
+                                    to={ROUTES.CAR_FAVORITES}
+                                    className={({
+                                    isActive,
+                                    }) => `text-white  hover:text-red:100  
+                                    ${isActive ? "font-bold" : ""}`}
+                                >
+                                    Favoritos
+                                </NavLink>
                             </li>
                             <li>
                                 <button onClick={handleLogout} className="text-white ">
