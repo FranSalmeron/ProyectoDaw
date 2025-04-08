@@ -52,4 +52,7 @@ return [
     'app_user_show' => [['id'], ['_controller' => 'App\\Controller\\UserController::show'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/user']], [], [], []],
     'app_user_edit' => [['id'], ['_controller' => 'App\\Controller\\UserController::edit'], [], [['text', '/edit'], ['variable', '/', '[^/]++', 'id', true], ['text', '/user']], [], [], []],
     'app_user_delete' => [['id'], ['_controller' => 'App\\Controller\\UserController::delete'], [], [['text', '/delete'], ['variable', '/', '[^/]++', 'id', true], ['text', '/user']], [], [], []],
+    'app_user_toggle_admin' => [['id'], ['_controller' => 'App\\Controller\\UserController::toggleAdmin'], [], [['text', '/toggle-admin'], ['variable', '/', '[^/]++', 'id', true], ['text', '/user']], [], [], []],
+    'app_user_toggle_banned' => [['id'], ['_controller' => 'App\\Controller\\UserController::toggleBanned'], [], [['text', '/toggle-banned'], ['variable', '/', '[^/]++', 'id', true], ['text', '/user']], [], [], []],
+    'app_user_info' => [['id'], ['_controller' => 'App\\Controller\\UserController::getUserInfo'], [], [['text', '/info'], ['variable', '/', '[^/]++', 'id', true], ['text', '/user']], [], [], []],
 ];

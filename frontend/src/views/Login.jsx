@@ -46,7 +46,8 @@ const Login = () => {
   };
 
   return (
-    <div class="w-9/10 max-w-md mx-auto bg-black text-white p-8 rounded-lg shadow-lg m-5">
+    <div class="bg-[#F5EFEB] min-h-screen p-5">
+    <div class="w-9/10 max-w-md mx-auto bg-[#2F4156] p-8 text-white rounded-lg shadow-lg ">
     <h1 class="text-3xl font-bold text-center text-white-500 mb-6">Iniciar sesión</h1>
     
     <form onSubmit={handleLogin}>
@@ -95,6 +96,7 @@ const Login = () => {
 
         {/* Contenedor para las notificaciones */}
         <ToastContainer />
+    </div>
     </div>
   );
 };

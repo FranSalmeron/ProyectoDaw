@@ -6,7 +6,10 @@ import Slider from "react-slick";
 import { getUserIdFromToken } from "../helpers/decodeToken";
 import { useNavigate, useLocation } from "react-router-dom";
 import { addFavorite, removeFavorite } from "../helpers/favoriteHelper";
-import { useFavorites } from "../context/FavoriteContext"
+import { useFavorites } from "../context/FavoriteContext";
+import { MapContainer, TileLayer,Marker } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 const CarDetails = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -101,6 +104,13 @@ const CarDetails = () => {
       navigate("/buy_car"); // Redirige a la página de compra
     }
   };
+
+  const carIcon = new L.Icon({
+    iconUrl: '/images/marcador.png',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32],
+  });
 
   // Función para manejar el clic en "Chatear"
   const handleChatClick = () => {
@@ -252,6 +262,19 @@ const CarDetails = () => {
             <p className="text-gray-500">{car.description}</p>
           </div>
         </div>
+      </div>
+
+      {/* Mapa para seleccionar ubicación */}
+      <div className="mb-4" style={{ height: "300px" }}>
+        <MapContainer
+          center={[car.lat, car.lon]}
+          zoom={13}
+          scrollWheelZoom={false}
+          style={{ height: "100%", width: "100%" }}
+        >
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <Marker position={[car.lat, car.lon]} icon={carIcon} />
+        </MapContainer>
       </div>
 
       {/* Botones de acción */}

@@ -152,11 +152,12 @@ const Chat = () => {
   }
 
   return (
-    <div className="chat-container p-4 max-w-3xl mx-auto">
+    <div className="min-h-screen bg-[#F5EFEB] p-4">
+    <div className="chat-container p-4 max-w-3xl mx-auto h-auto bg-white rounded-lg">
       <h2 className="text-2xl font-semibold mb-6">Chat</h2>
       <div className="messages-container space-y-4 mb-4 max-h-[400px] overflow-y-auto">
         {messages.map((message) => (
-          <div key={message.messageId} className={`message p-3 rounded-lg max-w-xs ${message.userId == currentUserId ? 'ml-auto bg-blue-500 text-white' : 'mr-auto bg-blue-100 text-gray-800'}`}>
+          <div key={message.messageId} className={`message p-3 rounded-lg max-w-xs ${message.userId == currentUserId ? 'ml-auto bg-[#9DB6CF] text-white' : 'mr-auto bg-[#D4E4ED] text-gray-800'}`}>
             <p>{message.content}</p>
             <small className="text-xs opacity-75">{new Date(message.messageDate).toLocaleTimeString()}</small>
           </div>
@@ -173,12 +174,13 @@ const Chat = () => {
         />
         <button
           onClick={sendMessageToChat}
-          className={`mt-2 p-2 text-white rounded-lg w-full ${isSending ? 'bg-gray-400' : 'bg-blue-500'} ${isSending ? 'cursor-not-allowed' : ''}`}
+          className={`mt-2 p-2 text-white rounded-lg w-full ${isSending ? 'bg-[#B6CADE]' : 'bg-[#43697a]'} ${isSending ? 'cursor-not-allowed' : ''}`}
           disabled={isSending}
         >
           {isSending ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : 'Enviar'}
         </button>
       </div>
+    </div>
     </div>
   );
 };

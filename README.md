@@ -8,15 +8,19 @@
 #### Crear Favoritos (Hecho)
 #### Eliminar de favoritos (Hecho)
 #### Pagina de Favoritos (Hecho)
-#### Pagina de perfil 
+#### Pagina de perfil (Hecho)
+#### cambiar formulario para poder modificar el maximo y minimo en vez de slider en kilometraje y precio
+#### UserContext
+#### Pagina de compra 
 #### Editar nombre, cambiar contraseña y esas cosas 
 #### Editar y borrar mensajes de chat
 #### Editar y borrar coches
 #### Pagina de About
+
 #### Crear y configurar todo lo que pueden hacer los administradores
 #### Arreglar JWT o dejarlos como ya esta.
 #### Optimizar codigo y velocidad de carga
-#### Crear, consultar y hacer un buen diseño de la pagina visual y esteticamente
+#### Crear, consultar y hacer un buen diseño de la pagina visual y esteticamente 
 #### Documentacion y cosas necesarias del proyecto.
 
 #### OPCIONAL valorar vendedores de coches

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';  
 import 'react-toastify/dist/ReactToastify.css'; 
-
-const symfonyUrl = import.meta.env.VITE_API_URL;
+import { createUser } from '../helpers/UserHelper';
 
 function Register() {
     const [name, setName] = useState('');
@@ -33,6 +32,8 @@ function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
+        // Validar el correo electrónico y el teléfono
         if (validateEmail(email) && validatePhone(phone)) {
             const userData = {
                 name,
@@ -40,32 +41,27 @@ function Register() {
                 address,
                 phone,
                 password,
-                roles
+                roles,
             };
-
-             // Enviar los datos al backend con fetch
-            const response = await fetch(`${symfonyUrl}/user/new`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
-            });
-
-            if (response.ok) {
-                const result = await response.json();
+    
+            try {
+                const result = await createUser(userData); 
+    
+                // Mostrar el mensaje de éxito
                 toast.success(result.message); 
-            } else {
-                const error = await response.json();
-                toast.error(error.error); 
+    
+            } catch (error) {
+                // Si hay un error en la creación, mostrarlo
+                toast.error(error.message || 'Error al crear el usuario'); 
             }
         } else {
-        toast.error('El correo electrónico no es válido o el numero de telefono');
+            toast.error('El correo electrónico no es válido o el número de teléfono no es válido.');
         }
     };
 
     return (
-        <div class="w-9/10 max-w-md mx-auto bg-black text-white p-8 rounded-lg shadow-lg m-5">
+        <div class="bg-[#F5EFEB] min-h-screen p-5">
+        <div class="w-9/10 max-w-md mx-auto bg-[#2F4156] text-white p-8 rounded-lg shadow-lg m-5">
         <h2 class="text-3xl font-bold text-center text-white-300 mb-6">Introduce tus datos</h2>
         
         <form onSubmit={handleSubmit}>
@@ -147,6 +143,7 @@ function Register() {
     
         {/* Contenedor para las notificaciones */}
         <ToastContainer />
+    </div>
     </div>
     )    
 }

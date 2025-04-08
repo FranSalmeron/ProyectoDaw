@@ -43,7 +43,6 @@ const fetchFavoritesFromApi = async (userId) => {
     }
   } catch (error) {
     console.error("Error al obtener los favoritos desde la API:", error);
-    toast.error('Error al obtener los favoritos desde la API.');
     return [];
   }
 };

@@ -8,5 +8,6 @@ export const ROUTES = {
     CHAT: "/chat",
     BUY_CAR: "/buy_car",
     CAR_FAVORITES: "/car_favorites", 
+    PROFILE: "/profile",
   };
   

@@ -27,6 +27,21 @@ const Home = () => {
   // Obtener el userId del token
   const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
 
+  const handleSliderChange = (e, field) => {
+    const value = Number(e.target.value); // El valor del slider
+    setFilters((prevFilters) => {
+      let updatedFilters = { ...prevFilters };
+      if (field === "seats") {
+        updatedFilters.seats[0] = value; // Actualiza el valor mínimo
+      } else if (field === "price") {
+        updatedFilters.price[0] = value; // Actualiza el valor mínimo del precio
+      } else if (field === "mileage") {
+        updatedFilters.mileage[0] = value; // Actualiza el valor mínimo del kilometraje
+      }
+      return updatedFilters;
+    });
+  };
+
   useEffect(() => {
     const getCarsAndFavorites = async () => {
       setLoading(true);
@@ -241,7 +256,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="flex flex-col sm:flex-row p-4">
+    <div className="flex flex-col sm:flex-row p-4 bg-[#F5EFEB]">
       <button
         className="sm:hidden bg-blue-500 text-white p-2 rounded-lg mb-4"
         onClick={() => setShowFilters(!showFilters)}
@@ -360,7 +375,7 @@ const Home = () => {
           {/* Agregar más décadas si es necesario */}
         </select>
 
-        {/* Filtro por número de asientos*/}
+        {/* Filtro por número de asientos */}
         <label className="block mb-2">Número de Asientos</label>
         <input
           type="range"
@@ -401,7 +416,7 @@ const Home = () => {
         <span>
           {filters.mileage[0]} km - {filters.mileage[1]} km
         </span>
-
+        
         {/* Botón de Limpiar Filtros */}
         <button
           onClick={handleClearFilters}
