@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useCars } from "../context/CarContext";
-import { carList } from "../helpers/carHelper"; // Importamos la función para obtener coches
+import { carList } from "../helpers/carHelper"; 
 import { toast } from "react-toastify";
 import CarCards from "../components/CarCards";
-import { useFavorites } from "../context/FavoriteContext"; // Importamos el contexto de favoritos
-import { getFavorites } from "../helpers/favoriteHelper"; // Importar las funciones necesarias
-import { getUserIdFromToken } from "../helpers/decodeToken"; // Importar la función para obtener el userId del token
+import { useFavorites } from "../context/FavoriteContext"; 
+import { getFavorites } from "../helpers/favoriteHelper"; 
+import { getUserIdFromToken } from "../helpers/decodeToken"; 
 
 const Home = () => {
-  const { cars, addCars } = useCars(); // Accedemos al contexto para obtener los coches y la función addCars
+  const { cars, addCars } = useCars(); 
   const { addFavorites, removeFromData } = useFavorites();
   const [filters, setFilters] = useState({
     city: "",
@@ -16,16 +16,88 @@ const Home = () => {
     brand: "",
     traction: "",
     fuelType: "",
-    seats: [1, 9], // Rango de asientos (mínimo 2, máximo 7)
-    price: [0, 50000], // Rango de precio predeterminado
-    mileage: [0, 200000], // Rango de kilometraje predeterminado
+    seats: [1, 9], 
+    price: { min: 0, max: 1000000 }, 
+    mileage: { min: 0, max: 500000 },  
   });
-  const [filteredCars, setFilteredCars] = useState([]); // Inicialmente mostramos todos los coches
-  const [showFilters, setShowFilters] = useState(false); // Para controlar la visibilidad de los filtros
+  const [filteredCars, setFilteredCars] = useState([]); 
+  const [showFilters, setShowFilters] = useState(false); 
   const [loading, setLoading] = useState(true);
 
-  // Obtener el userId del token
   const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
+
+  useEffect(() => {
+    const getCarsAndFavorites = async () => {
+      setLoading(true);
+      try {
+        await getFavorites(userId, addFavorites); 
+        await carList(addCars); 
+        setLoading(false);
+      } catch (error) {
+        toast.error("No se pudieron cargar los coches o los favoritos. Intenta más tarde.");
+        setLoading(false);
+      }
+    };
+
+    getCarsAndFavorites();
+  }, []); 
+
+  useEffect(() => {
+    setFilteredCars(cars);
+  }, [cars]); 
+
+  useEffect(() => {
+    const applyFilters = () => {
+      const filtered = cars.filter((car) => {
+        // Filtra por ciudad
+        const cityMatch = filters.city ? car.city.toLowerCase().includes(filters.city.toLowerCase()) : true;
+        
+        // Filtra por precio (min y max)
+        const priceMatch = car.price >= Number(filters.price.min) && car.price <= Number(filters.price.max);
+        
+        // Filtra por kilometraje (min y max)
+        const mileageMatch = car.mileage >= Number(filters.mileage.min) && car.mileage <= Number(filters.mileage.max);
+        
+        // Filtra por asientos
+        const seatsMatch = car.seats >= filters.seats[0] && car.seats <= filters.seats[1];
+        
+        // Filtra por categoría
+        const categoryMatch = filters.category ? car.category.toLowerCase().includes(filters.category.toLowerCase()) : true;
+        
+        // Filtra por marca
+        const brandMatch = filters.brand ? car.brand.toLowerCase().includes(filters.brand.toLowerCase()) : true;
+        
+        // Filtra por tracción
+        const tractionMatch = filters.traction ? car.traction.toLowerCase().includes(filters.traction.toLowerCase()) : true;
+        
+        // Filtra por tipo de combustible
+        const fuelTypeMatch = filters.fuelType ? car.fuelType.toLowerCase().includes(filters.fuelType.toLowerCase()) : true;
+        
+        // Filtra por modelo
+        const modelMatch = filters.model ? car.model.toLowerCase().includes(filters.model.toLowerCase()) : true;
+        
+        // Filtra por década
+        const decadeMatch = filters.decade ? car.manufacture_year >= filters.decade[0] && car.manufacture_year < filters.decade[1] : true;
+  
+        // Si todas las condiciones se cumplen, el coche pasa el filtro
+        return (
+          cityMatch &&
+          priceMatch &&
+          mileageMatch &&
+          seatsMatch &&
+          categoryMatch &&
+          brandMatch &&
+          tractionMatch &&
+          fuelTypeMatch &&
+          modelMatch &&
+          decadeMatch
+        );
+      });
+  
+      setFilteredCars(filtered);
+    };
+    applyFilters();
+  }, [filters, cars]);
 
   const handleSliderChange = (e, field) => {
     const value = Number(e.target.value); // El valor del slider
@@ -33,96 +105,10 @@ const Home = () => {
       let updatedFilters = { ...prevFilters };
       if (field === "seats") {
         updatedFilters.seats[0] = value; // Actualiza el valor mínimo
-      } else if (field === "price") {
-        updatedFilters.price[0] = value; // Actualiza el valor mínimo del precio
-      } else if (field === "mileage") {
-        updatedFilters.mileage[0] = value; // Actualiza el valor mínimo del kilometraje
       }
       return updatedFilters;
     });
   };
-
-  useEffect(() => {
-    const getCarsAndFavorites = async () => {
-      setLoading(true);
-      try {
-        // Obtener favoritos primero
-        await getFavorites(userId, addFavorites); // Se obtiene y se agregan al contexto
-        // Luego obtener los coches
-        await carList(addCars); // Se agregan los coches al contexto
-        setLoading(false);
-      } catch (error) {
-        toast.error(
-          "No se pudieron cargar los coches o los favoritos. Intenta más tarde."
-        );
-        setLoading(false);
-      }
-    };
-
-    getCarsAndFavorites();
-  }, []); // Solo se ejecuta cuando el componente se monta
-
-  useEffect(() => {
-    // Cuando los coches cambian, se actualiza la lista filtrada
-    setFilteredCars(cars);
-  }, [cars]); // Nos aseguramos de que los coches se actualicen si cambian
-
-  useEffect(() => {
-    // Aplicamos los filtros a los coches
-    const applyFilters = () => {
-      const filtered = cars.filter((car) => {
-        // Comprobamos todos los filtros
-        return (
-          // Filtro por ciudad
-          (filters.city
-            ? car.city.toLowerCase().includes(filters.city.toLowerCase())
-            : true) &&
-          // Filtro por precio
-          car.price >= filters.price[0] &&
-          car.price <= filters.price[1] &&
-          // Filtro por kilometraje
-          car.mileage >= filters.mileage[0] &&
-          car.mileage <= filters.mileage[1] &&
-          // Filtro por asientos
-          car.seats >= filters.seats[0] &&
-          car.seats <= filters.seats[1] &&
-          // Filtro por categoría
-          (filters.category
-            ? car.category
-                .toLowerCase()
-                .includes(filters.category.toLowerCase())
-            : true) &&
-          // Filtro por marca
-          (filters.brand
-            ? car.brand.toLowerCase().includes(filters.brand.toLowerCase())
-            : true) &&
-          // Filtro por tracción
-          (filters.traction
-            ? car.traction
-                .toLowerCase()
-                .includes(filters.traction.toLowerCase())
-            : true) &&
-          // Filtro por tipo de combustible
-          (filters.fuelType
-            ? car.fuelType
-                .toLowerCase()
-                .includes(filters.fuelType.toLowerCase())
-            : true) &&
-          // Filtro por modelo (búsqueda parcial)
-          (filters.model
-            ? car.model.toLowerCase().includes(filters.model.toLowerCase())
-            : true) &&
-          // Filtro por década
-          (filters.decade
-            ? car.manufacture_year >= filters.decade[0] &&
-              car.manufacture_year < filters.decade[1]
-            : true)
-        );
-      });
-      setFilteredCars(filtered);
-    };
-    applyFilters();
-  }, [filters, cars]); // Re-aplicamos los filtros cuando cambian
 
   const handleClearFilters = () => {
     setFilters({
@@ -132,8 +118,8 @@ const Home = () => {
       traction: "",
       fuelType: "",
       seats: [1, 9],
-      price: [0, 1000000],
-      mileage: [0, 200000],
+      price: { min: 0, max: 1000000 },
+      mileage: { min: 0, max: 500000 },
       model: "",
       decade: "",
     });
@@ -146,114 +132,8 @@ const Home = () => {
     });
   };
 
-  const cities = [
-    "Álava",
-    "Ávila",
-    "Alicante",
-    "Algeciras",
-    "Alcalá de Henares",
-    "Almería",
-    "Badalona",
-    "Badajoz",
-    "Barcelona",
-    "Bilbao",
-    "Burgos",
-    "Cádiz",
-    "Cáceres",
-    "Castellón de la Plana",
-    "Córdoba",
-    "Cuenca",
-    "Elche",
-    "Gerona",
-    "Granada",
-    "Gijón",
-    "Huelva",
-    "Huesca",
-    "La Coruña",
-    "La Rasa",
-    "La Rioja",
-    "L'Hospitalet de Llobregat",
-    "Lleida",
-    "Logroño",
-    "Madrid",
-    "Málaga",
-    "Marbella",
-    "Mataró",
-    "Melilla",
-    "Murcia",
-    "Madrid",
-    "Oviedo",
-    "Ourense",
-    "Pamplona",
-    "Pontevedra",
-    "Reus",
-    "Salamanca",
-    "San Cristóbal de La Laguna",
-    "San Sebastián",
-    "Santa Cruz de Tenerife",
-    "Segovia",
-    "Soria",
-    "Santander",
-    "Sevilla",
-    "Toledo",
-    "Terrassa",
-    "Valencia",
-    "Valladolid",
-    "Vigo",
-    "Zaragoza",
-  ];
-
-  const carBrands = [
-    "Acura",
-    "Alfa Romeo",
-    "Aston Martin",
-    "Audi",
-    "Bentley",
-    "BMW",
-    "Bugatti",
-    "Buick",
-    "Chevrolet",
-    "Chrysler",
-    "Citroën",
-    "Dodge",
-    "Fiat",
-    "Ford",
-    "Ferrari",
-    "Genesis",
-    "GMC",
-    "Honda",
-    "Hyundai",
-    "Infiniti",
-    "Jaguar",
-    "Jeep",
-    "Kia",
-    "Land Rover",
-    "Lamborghini",
-    "Lincoln",
-    "Lexus",
-    "Mazda",
-    "McLaren",
-    "Mercedes-Benz",
-    "Mini",
-    "Mitsubishi",
-    "Maserati",
-    "Nissan",
-    "Opel",
-    "Peugeot",
-    "Porsche",
-    "Ram",
-    "Renault",
-    "Rolls-Royce",
-    "Seat",
-    "Skoda",
-    "Smart",
-    "Subaru",
-    "Suzuki",
-    "Tesla",
-    "Toyota",
-    "Volkswagen",
-    "Volvo",
-  ];
+  const cities = ["Álava", "Ávila", "Alicante", "Algeciras", "Alcalá de Henares", "Almería", "Badalona", "Badajoz", "Barcelona", "Bilbao", "Burgos", "Cádiz", "Cáceres", "Castellón de la Plana", "Córdoba", "Cuenca", "Elche", "Gerona", "Granada", "Gijón", "Huelva", "Huesca", "La Coruña", "La Rasa", "La Rioja", "L'Hospitalet de Llobregat", "Lleida", "Logroño", "Madrid", "Málaga", "Marbella", "Mataró", "Melilla", "Murcia", "Madrid", "Oviedo", "Ourense", "Pamplona", "Pontevedra", "Reus", "Salamanca", "San Cristóbal de La Laguna", "San Sebastián", "Santa Cruz de Tenerife", "Segovia", "Soria", "Santander", "Sevilla", "Toledo", "Terrassa", "Valencia", "Valladolid", "Vigo", "Zaragoza"];
+  const carBrands = ["Acura", "Alfa Romeo", "Aston Martin", "Audi", "Bentley", "BMW", "Bugatti", "Buick", "Chevrolet", "Chrysler", "Citroën", "Dodge", "Fiat", "Ford", "Ferrari", "Genesis", "GMC", "Honda", "Hyundai", "Infiniti", "Jaguar", "Jeep", "Kia", "Land Rover", "Lamborghini", "Lincoln", "Lexus", "Mazda", "McLaren", "Mercedes-Benz", "Mini", "Mitsubishi", "Maserati", "Nissan", "Opel", "Peugeot", "Porsche", "Ram", "Renault", "Rolls-Royce", "Seat", "Skoda", "Smart", "Subaru", "Suzuki", "Tesla", "Toyota", "Volkswagen", "Volvo"];
 
   return (
     <div className="flex flex-col sm:flex-row p-4 bg-[#F5EFEB]">
@@ -265,11 +145,8 @@ const Home = () => {
       </button>
 
       <div
-        className={`w-full sm:w-1/4 bg-gray-100 p-4 rounded-lg shadow-lg mb-4 sm:mb-0 transition-all duration-300 ease-in-out ${
-          showFilters ? "block" : "hidden sm:block"
-        }`}
+        className={`w-full sm:w-1/4 bg-gray-100 p-4 rounded-lg shadow-lg mb-4 sm:mb-0 transition-all duration-300 ease-in-out ${showFilters ? "block" : "hidden sm:block"}`}
       >
-        {/* Filtros de búsqueda */}
         <h3 className="text-xl font-semibold mb-4">Filtros de Búsqueda</h3>
 
         {/* Filtro por modelo */}
@@ -293,10 +170,7 @@ const Home = () => {
         >
           <option value="">Seleccionar marca</option>
           {carBrands.map((brand, index) => (
-            <option
-              key={index}
-              value={brand.toLowerCase().replace(/\s+/g, "_")}
-            >
+            <option key={index} value={brand.toLowerCase().replace(/\s+/g, "_")}>
               {brand}
             </option>
           ))}
@@ -317,6 +191,48 @@ const Home = () => {
             </option>
           ))}
         </select>
+
+        {/* Filtro por precio */}
+        <label className="block mb-2">Rango de Precio</label>
+        <div className="flex mb-4">
+          <input
+            type="number"
+            name="priceMin"
+            value={filters.price.min}
+            onChange={(e) => setFilters({ ...filters, price: { ...filters.price, min: e.target.value } })}
+            className="p-2 border rounded w-1/2 mr-2"
+            placeholder="Mínimo"
+          />
+          <input
+            type="number"
+            name="priceMax"
+            value={filters.price.max}
+            onChange={(e) => setFilters({ ...filters, price: { ...filters.price, max: e.target.value } })}
+            className="p-2 border rounded w-1/2"
+            placeholder="Máximo"
+          />
+        </div>
+
+        {/* Filtro por kilometraje  */}
+        <label className="block mb-2">Rango de Kilometraje</label>
+        <div className="flex mb-4">
+          <input
+            type="number"
+            name="mileageMin"
+            value={filters.mileage.min}
+            onChange={(e) => setFilters({ ...filters, mileage: { ...filters.mileage, min: e.target.value } })}
+            className="p-2 border rounded w-1/2 mr-2"
+            placeholder="Mínimo"
+          />
+          <input
+            type="number"
+            name="mileageMax"
+            value={filters.mileage.max}
+            onChange={(e) => setFilters({ ...filters, mileage: { ...filters.mileage, max: e.target.value } })}
+            className="p-2 border rounded w-1/2"
+            placeholder="Máximo"
+          />
+        </div>
 
         {/* Filtro por tracción */}
         <label className="block mb-2">Tracción</label>
@@ -388,35 +304,7 @@ const Home = () => {
         <span>
           {filters.seats[0]} - {filters.seats[1]} Asientos
         </span>
-
-        {/* Rango de precios */}
-        <label className="block mb-2">Rango de Precio</label>
-        <input
-          type="range"
-          min="0"
-          max="1000000"
-          value={filters.price[0]}
-          onChange={(e) => handleSliderChange(e, "price")}
-          className="w-full"
-        />
-        <span>
-          {filters.price[0]} € - {filters.price[1]} €
-        </span>
-
-        {/* Rango de kilometraje */}
-        <label className="block mb-2">Rango de Kilometraje</label>
-        <input
-          type="range"
-          min="0"
-          max="200000"
-          value={filters.mileage[0]}
-          onChange={(e) => handleSliderChange(e, "mileage")}
-          className="w-full"
-        />
-        <span>
-          {filters.mileage[0]} km - {filters.mileage[1]} km
-        </span>
-        
+ 
         {/* Botón de Limpiar Filtros */}
         <button
           onClick={handleClearFilters}

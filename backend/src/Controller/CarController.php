@@ -121,7 +121,7 @@ class CarController extends AbstractController
         $car->setSeats($formData['seats']);
         $car->setDescription($formData['description']);
         $car->setCarCondition($formData['carCondition']);
-        $car->setCarSold($formData['carSold']);
+        $car->setCarSold(0);
         $car->setLat($formData['lat']);
         $car->setLon($formData['lon']);
         $car->setCity($formData['city']);

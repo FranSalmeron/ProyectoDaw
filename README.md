@@ -1,7 +1,7 @@
 # Proyecto DAW
 ## Tareas:
 
-#### Crear Contextos (Hecho coche y chat, favoritos)
+#### Crear Contextos (Hecho coche y chat, favoritos, Usuario)
 #### Crear y configurar el router (Hecho)
 #### Cerrar sesion (Hecho)
 #### Crear pagina global de coches y añadir filtros (Hecho)
@@ -9,18 +9,15 @@
 #### Eliminar de favoritos (Hecho)
 #### Pagina de Favoritos (Hecho)
 #### Pagina de perfil (Hecho)
-#### cambiar formulario para poder modificar el maximo y minimo en vez de slider en kilometraje y precio
-#### UserContext
-#### Pagina de compra 
+#### Pagina de compra (Hecho)
+#### Editar y borrar coches ()
 #### Editar nombre, cambiar contraseña y esas cosas 
-#### Editar y borrar mensajes de chat
-#### Editar y borrar coches
 #### Pagina de About
 
 #### Crear y configurar todo lo que pueden hacer los administradores
-#### Arreglar JWT o dejarlos como ya esta.
-#### Optimizar codigo y velocidad de carga
-#### Crear, consultar y hacer un buen diseño de la pagina visual y esteticamente 
+#### Arreglar JWT o dejarlos como ya esta. 
+#### Optimizar codigo y velocidad de carga (A medias)
+#### Crear, consultar y hacer un buen diseño de la pagina visual y esteticamente (A medias)
 #### Documentacion y cosas necesarias del proyecto.
 
 #### OPCIONAL valorar vendedores de coches

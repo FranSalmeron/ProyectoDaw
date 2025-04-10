@@ -13,6 +13,11 @@ const NavBar = () => {
     setIsMenuOpen(!isMenuOpen); // Alternar la visibilidad del menú
   };
 
+  // Función para cerrar el menú al seleccionar una opción
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("username");
     localStorage.removeItem("jwt");
@@ -22,10 +27,10 @@ const NavBar = () => {
   };
 
   return (
-    <nav class="bg-[#567C8D] p-4 relative z-20">
-      <div class="flex justify-between items-center relative">
+    <nav className="bg-[#567C8D] p-4 relative z-20">
+      <div className="flex justify-between items-center relative">
         {/* Menú desplegable */}
-        <button onClick={toggleMenu} class="text-white text-3xl absolute">
+        <button onClick={toggleMenu} className="text-white text-3xl absolute">
           &#9776; {/* Icono de hamburguesa */}
         </button>
 
@@ -44,7 +49,7 @@ const NavBar = () => {
           </NavLink>
         </div>
 
-        <div class="text-white absolute right-0">
+        <div className="text-white absolute right-0">
           {userName ? `Bienvenido, ${userName}` : "Bienvenido"}
           {userName == null && (
             <ul>
@@ -53,6 +58,7 @@ const NavBar = () => {
                   to={ROUTES.LOGIN}
                   className={({ isActive }) => `text-white  hover:text-red:100  
                                 ${isActive ? "font-bold" : ""}`}
+                  onClick={closeMenu} // Cerrar el menú al hacer clic
                 >
                   Logearse
                 </NavLink>
@@ -62,6 +68,7 @@ const NavBar = () => {
                   to={ROUTES.REGISTER}
                   className={({ isActive }) => `text-white  hover:text-red:100  
                                 ${isActive ? "font-bold" : ""}`}
+                  onClick={closeMenu} // Cerrar el menú al hacer clic
                 >
                   Registrarse
                 </NavLink>
@@ -73,14 +80,13 @@ const NavBar = () => {
 
       {/* Menú desplegable */}
       {isMenuOpen && (
-        <ul class="absolute top-16 left-4 bg-[#43697a] p-4 space-y-4 rounded-md shadow-lg z-20">
+        <ul className="absolute top-16 left-4 bg-[#43697a] p-4 space-y-4 rounded-md shadow-lg z-20">
           <li>
             <NavLink
               to={ROUTES.HOME}
               className={({ isActive }) => `text-white   
-                            ${isActive ? "font-bold hover:text-red:100" : ""}
-                            
-                            `}
+                            ${isActive ? "font-bold hover:text-red:100" : ""}`}
+              onClick={closeMenu} // Cerrar el menú al hacer clic
             >
               Inicio
             </NavLink>
@@ -92,6 +98,7 @@ const NavBar = () => {
                   to={ROUTES.LOGIN}
                   className={({ isActive }) => `text-white  hover:text-red:100  
                                 ${isActive ? "font-bold" : ""}`}
+                  onClick={closeMenu} // Cerrar el menú al hacer clic
                 >
                   Logearse
                 </NavLink>
@@ -101,6 +108,7 @@ const NavBar = () => {
                   to={ROUTES.REGISTER}
                   className={({ isActive }) => `text-white  hover:text-red:100  
                                 ${isActive ? "font-bold" : ""}`}
+                  onClick={closeMenu} // Cerrar el menú al hacer clic
                 >
                   Registrarse
                 </NavLink>
@@ -113,6 +121,7 @@ const NavBar = () => {
                   to={ROUTES.SUBMIT_CAR}
                   className={({ isActive }) => `text-white  hover:text-red:100
                                 ${isActive ? "font-bold" : ""}`}
+                  onClick={closeMenu} // Cerrar el menú al hacer clic
                 >
                   Vender Coche
                 </NavLink>
@@ -122,6 +131,7 @@ const NavBar = () => {
                   to={ROUTES.CHATS}
                   className={({ isActive }) => `text-white  hover:text-red:100  
                                 ${isActive ? "font-bold" : ""}`}
+                  onClick={closeMenu} // Cerrar el menú al hacer clic
                 >
                   Chats
                 </NavLink>
@@ -131,6 +141,7 @@ const NavBar = () => {
                   to={ROUTES.CAR_FAVORITES}
                   className={({ isActive }) => `text-white  hover:text-red:100  
                                     ${isActive ? "font-bold" : ""}`}
+                  onClick={closeMenu} // Cerrar el menú al hacer clic
                 >
                   Favoritos
                 </NavLink>
@@ -140,12 +151,19 @@ const NavBar = () => {
                   to={ROUTES.PROFILE}
                   className={({ isActive }) => `text-white  hover:text-red:100  
                                 ${isActive ? "font-bold" : ""}`}
+                  onClick={closeMenu} // Cerrar el menú al hacer clic
                 >
                   Perfil
                 </NavLink>
               </li>
               <li>
-                <button onClick={handleLogout} className="text-white ">
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    closeMenu(); // Cerrar el menú después de cerrar sesión
+                  }}
+                  className="text-white "
+                >
                   Cerrar sesión
                 </button>
               </li>

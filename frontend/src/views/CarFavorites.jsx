@@ -43,8 +43,8 @@ const CarFavorites = () => {
   }, [cars]); // Añadimos dependencias al useEffect
 
   return (
-    <div class="bg-[#F5EFEB] p-5">
-    <div className="w-full min-h-screen overflow-hidden"> 
+    <div class="bg-[#F5EFEB] p-5 min-h-screen">
+    <div className="w-full overflow-hidden"> 
       <h3 className="text-xl font-semibold mb-4">Mis Favoritos:</h3>
 
       {loading ? (

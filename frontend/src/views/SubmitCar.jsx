@@ -204,7 +204,12 @@ function SubmitCar() {
   // Manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
+    e.stopPropagation();
 
+    if (!formData.brand) {
+      toast.error("Por favor, selecciona una marca");
+      return;
+    }
     // Obtener la ciudad a partir de las coordenadas
     await fetchCity(formData.lat, formData.lon);
 
@@ -254,7 +259,7 @@ function SubmitCar() {
     { label: "Buick", value: "buick" },
     { label: "Chevrolet", value: "chevrolet" },
     { label: "Chrysler", value: "chrysler" },
-    { label: "Citroën", value: "citroen" },
+    { label: "Citroën", value: "citroen" }, 
     { label: "Dodge", value: "dodge" },
     { label: "Fiat", value: "fiat" },
     { label: "Ford", value: "ford" },
@@ -319,7 +324,7 @@ function SubmitCar() {
               id="brand"
               name="brand"
               value={formData.brand}
-              onChange={handleBrandChange}
+              onChange={(e) => handleBrandChange(e.target)}
               className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
             >
               <option value="">Selecciona la marca</option>
@@ -360,6 +365,8 @@ function SubmitCar() {
               id="manufacture_year"
               type="number"
               name="manufacture_year"
+              min="1900"
+              max={new Date().getFullYear()}
               required
               value={formData.manufacture_year}
               onChange={handleChange}
@@ -488,9 +495,9 @@ function SubmitCar() {
             >
               <option value="">Seleccione tipo de transmisión</option>
               <option value="manual">Manual</option>
-              <option value="automatic">Automática</option>
+              <option value="automatico">Automática</option>
               <option value="cvt">CVT</option>
-              <option value="semi_automatic">Semi-automática</option>
+              <option value="semi_automatico">Semi-automática</option>
             </select>
           </div>
 
@@ -661,7 +668,7 @@ function SubmitCar() {
           <div className="flex justify-center">
             <button
               type="submit"
-              className="w-full py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full py-3 bg-[#43697a] text-white rounded-lg hover:bg-[#567C8D] transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-500"
             >
               Añadir coche
             </button>

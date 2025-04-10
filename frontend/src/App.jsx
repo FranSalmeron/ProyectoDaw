@@ -4,6 +4,7 @@ import { CarProvider } from './context/CarContext';
 import { ChatProvider } from './context/ChatContext';
 import { RouterProvider } from "react-router-dom";
 import { FavoriteProvider } from './context/FavoriteContext';
+import { UserProvider } from './context/UserContext';
 import { router } from "./routes/router";
 import { isTokenExpired } from './helpers/decodeToken';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -25,8 +26,10 @@ function App() {
             <CarProvider>
                 <ChatProvider>
                     <FavoriteProvider>
-                        <RouterProvider router={router} />
-                        <ScrollUp />
+                        <UserProvider>
+                            <RouterProvider router={router} />
+                            <ScrollUp />
+                        </UserProvider>
                     </FavoriteProvider>
                 </ChatProvider>
             </CarProvider>

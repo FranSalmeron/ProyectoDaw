@@ -4,9 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Transaction;
 use App\Form\TransactionType;
+use App\Repository\CarRepository;
 use App\Repository\TransactionRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,25 +25,51 @@ class TransactionController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_transaction_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $transaction = new Transaction();
-        $form = $this->createForm(TransactionType::class, $transaction);
-        $form->handleRequest($request);
+    #[Route('/new', name: 'app_transaction_new', methods: ['POST'])]
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserRepository $userRepository,
+        CarRepository $carRepository
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($transaction);
-            $entityManager->flush();
+        $carId = $data['carId'] ?? null;
+        $userId = $data['userId'] ?? null;
+        $price = $data['price'] ?? null;
 
-            return $this->redirectToRoute('app_transaction_index', [], Response::HTTP_SEE_OTHER);
+        if (!$carId || !$userId || !$price) {
+            return new JsonResponse(['error' => 'Faltan datos en la solicitud'], Response::HTTP_BAD_REQUEST);
         }
 
-        return $this->renderForm('transaction/new.html.twig', [
-            'transaction' => $transaction,
-            'form' => $form,
-        ]);
+        $buyer = $userRepository->find($userId);
+        $car = $carRepository->find($carId);
+
+        if (!$buyer || !$car) {
+            return new JsonResponse(['error' => 'Usuario o coche no encontrados'], Response::HTTP_NOT_FOUND);
+        }
+
+        if ($car->isCarSold()) {
+            return new JsonResponse(['error' => 'Este coche ya fue vendido'], Response::HTTP_CONFLICT);
+        }
+
+        // Crear la transacción
+        $transaction = new Transaction();
+        $transaction->setBuyer($buyer);
+        $transaction->setCar($car);
+        $transaction->setPrice($price);
+        $transaction->setStatus('comprado');
+        $transaction->setTransactionDate(new \DateTime());
+
+        // Marcar el coche como vendido
+        $car->setCarSold(true);
+
+        $entityManager->persist($transaction);
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'Transacción creada y coche marcado como vendido'], Response::HTTP_CREATED);
     }
+
 
     #[Route('/{id}', name: 'app_transaction_show', methods: ['GET'])]
     public function show(Transaction $transaction): Response
@@ -71,8 +100,8 @@ class TransactionController extends AbstractController
     #[Route('/{id}', name: 'app_transaction_delete', methods: ['POST'])]
     public function delete(Request $request, Transaction $transaction, EntityManagerInterface $entityManager): Response
     {
-            $entityManager->remove($transaction);
-            $entityManager->flush();
+        $entityManager->remove($transaction);
+        $entityManager->flush();
 
         return $this->redirectToRoute('app_transaction_index', [], Response::HTTP_SEE_OTHER);
     }

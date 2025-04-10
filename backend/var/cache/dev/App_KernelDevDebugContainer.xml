@@ -8566,6 +8566,14 @@
         <argument key="transactionRepository" type="service_closure" id="App\Repository\TransactionRepository"/>
       </argument>
     </service>
+    <service id=".service_locator._nS7eWw" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="carRepository" type="service_closure" id="App\Repository\CarRepository"/>
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
+      </argument>
+    </service>
     <service id=".service_locator.3PHq.pi" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -8605,7 +8613,7 @@
         <argument key="user" type="service_closure" id=".errored..service_locator.GPGtF8v.App\Entity\User"/>
       </argument>
     </service>
-    <service id=".service_locator.xWv6hSm" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.lNxTgel" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\CarController::delete" type="service_closure" id=".service_locator.BA3xq_G"/>
@@ -8629,7 +8637,7 @@
         <argument key="App\Controller\TransactionController::delete" type="service_closure" id=".service_locator.Dhg828p"/>
         <argument key="App\Controller\TransactionController::edit" type="service_closure" id=".service_locator.Dhg828p"/>
         <argument key="App\Controller\TransactionController::index" type="service_closure" id=".service_locator.wG7eXdf"/>
-        <argument key="App\Controller\TransactionController::new" type="service_closure" id=".service_locator.aKM6MDa"/>
+        <argument key="App\Controller\TransactionController::new" type="service_closure" id=".service_locator._nS7eWw"/>
         <argument key="App\Controller\TransactionController::show" type="service_closure" id=".service_locator.3PHq.pi"/>
         <argument key="App\Controller\UserController::delete" type="service_closure" id=".service_locator.GPGtF8v"/>
         <argument key="App\Controller\UserController::edit" type="service_closure" id=".service_locator.GPGtF8v"/>
@@ -8664,7 +8672,7 @@
         <argument key="App\Controller\TransactionController:delete" type="service_closure" id=".service_locator.Dhg828p"/>
         <argument key="App\Controller\TransactionController:edit" type="service_closure" id=".service_locator.Dhg828p"/>
         <argument key="App\Controller\TransactionController:index" type="service_closure" id=".service_locator.wG7eXdf"/>
-        <argument key="App\Controller\TransactionController:new" type="service_closure" id=".service_locator.aKM6MDa"/>
+        <argument key="App\Controller\TransactionController:new" type="service_closure" id=".service_locator._nS7eWw"/>
         <argument key="App\Controller\TransactionController:show" type="service_closure" id=".service_locator.3PHq.pi"/>
         <argument key="App\Controller\UserController:delete" type="service_closure" id=".service_locator.GPGtF8v"/>
         <argument key="App\Controller\UserController:edit" type="service_closure" id=".service_locator.GPGtF8v"/>
@@ -9386,12 +9394,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
-      <argument type="service" id=".service_locator.xWv6hSm"/>
+      <argument type="service" id=".service_locator.lNxTgel"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
-      <argument type="service" id=".service_locator.xWv6hSm"/>
+      <argument type="service" id=".service_locator.lNxTgel"/>
     </service>
     <service id="debug.traced.messenger.bus.default.inner" class="Symfony\Component\Messenger\MessageBus">
       <argument type="iterator">
@@ -10699,7 +10707,7 @@
     <service id="sensio_framework_extra.security.expression_language" alias="sensio_framework_extra.security.expression_language.default"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.gSv9zYw" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.xWv6hSm"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.lNxTgel"/>
     <service id="doctrine.id_generator_locator" alias=".service_locator.KLVvNIq"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="Psr\Log\LoggerInterface $requestLogger" alias="monolog.logger.request"/>
@@ -10728,10 +10736,11 @@
     <service id=".service_locator.0inte5i" alias=".service_locator.Y5b4pHg"/>
     <service id=".service_locator.XTefk6W" alias=".service_locator.PLZrMx9"/>
     <service id=".service_locator.xZfTEW0" alias=".service_locator.vQ105EG"/>
+    <service id=".service_locator.wS1gHQp" alias=".service_locator._nS7eWw"/>
     <service id=".service_locator.PbPEf8m" alias=".service_locator.Dhg828p"/>
     <service id=".service_locator.YUNSPEp" alias=".service_locator.mK6IRPJ"/>
     <service id=".service_locator.b76MKMg" alias=".service_locator.GPGtF8v"/>
-    <service id=".service_locator.0aVszvZ" alias=".service_locator.xWv6hSm"/>
+    <service id=".service_locator.4VngbOT" alias=".service_locator.lNxTgel"/>
     <service id=".service_locator.wKF4yn1" alias=".service_locator.19_mNxd"/>
     <service id=".service_locator.zp9pmzf" alias=".service_locator.40EtNSa"/>
     <service id=".service_locator.XW18Svm" alias=".service_locator.TcKhdzh"/>
@@ -10812,6 +10821,7 @@
     <service id=".service_locator.Dm19DLc" alias=".service_locator.HKN.4cP"/>
     <service id=".service_locator.tGVdHiA" alias=".service_locator.vQ105EG"/>
     <service id=".service_locator.BWZtrCs" alias=".service_locator.wG7eXdf"/>
+    <service id=".service_locator.sPDdizg" alias=".service_locator._nS7eWw"/>
     <service id=".service_locator.14ioAux" alias=".service_locator.3PHq.pi"/>
     <service id=".service_locator.CGUjc55" alias=".service_locator.Dhg828p"/>
     <service id=".service_locator.HO7.gFw" alias=".service_locator.Q1F27w5"/>

@@ -7,7 +7,7 @@ import { getUserIdFromToken } from "../helpers/decodeToken";
 import { useNavigate, useLocation } from "react-router-dom";
 import { addFavorite, removeFavorite } from "../helpers/favoriteHelper";
 import { useFavorites } from "../context/FavoriteContext";
-import { MapContainer, TileLayer,Marker } from "react-leaflet";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -101,12 +101,12 @@ const CarDetails = () => {
       navigate("/login"); // Redirigir al login si no está autenticado
     } else {
       toast.success("Redirigiendo a la página de compra.");
-      navigate("/buy_car"); // Redirige a la página de compra
+      navigate("/buy_car",  { state: { car } }); // Redirige a la página de compra
     }
   };
 
   const carIcon = new L.Icon({
-    iconUrl: '/images/marcador.png',
+    iconUrl: "/images/marcador.png",
     iconSize: [32, 32],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
@@ -137,160 +137,162 @@ const CarDetails = () => {
   }
 
   return (
-    <div className="car-details p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-lg mt-6 mb-6">
-      {/* Carrusel de imágenes */}
-      <div className="car-images mb-6">
-        <Slider ref={sliderRef} {...settings}>
+    <div className="bg-[#F5EFEB] p-6">
+      <div className="car-details p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-lg mt-6 mb-6">
+        {/* Carrusel de imágenes */}
+        <div className="car-images mb-6">
+          <Slider ref={sliderRef} {...settings}>
+            {car.images.map((image, index) => (
+              <div key={index}>
+                <img
+                  src={image}
+                  alt={`Car image ${index + 1}`}
+                  className="w-full h-auto object-cover rounded-lg shadow-md"
+                />
+              </div>
+            ))}
+          </Slider>
+        </div>
+
+        {/* Fila de miniaturas de imágenes */}
+        <div className="image-thumbnails flex space-x-4 overflow-x-auto mb-6">
           {car.images.map((image, index) => (
-            <div key={index}>
+            <div
+              key={index}
+              className="w-20 h-20 cursor-pointer"
+              onClick={() => handleImageClick(index)} // Actualiza la imagen seleccionada
+            >
               <img
                 src={image}
-                alt={`Car image ${index + 1}`}
-                className="w-full h-auto object-cover rounded-lg shadow-md"
+                alt={`Thumbnail ${index + 1}`}
+                className={`w-full h-full object-cover rounded-lg hover:opacity-80 ${
+                  selectedImageIndex === index ? "border-4 border-blue-500" : ""
+                }`} // Resalta la miniatura seleccionada
               />
             </div>
           ))}
-        </Slider>
-      </div>
+        </div>
 
-      {/* Fila de miniaturas de imágenes */}
-      <div className="image-thumbnails flex space-x-4 overflow-x-auto mb-6">
-        {car.images.map((image, index) => (
-          <div
-            key={index}
-            className="w-20 h-20 cursor-pointer"
-            onClick={() => handleImageClick(index)} // Actualiza la imagen seleccionada
-          >
-            <img
-              src={image}
-              alt={`Thumbnail ${index + 1}`}
-              className={`w-full h-full object-cover rounded-lg hover:opacity-80 ${
-                selectedImageIndex === index ? "border-4 border-blue-500" : ""
-              }`} // Resalta la miniatura seleccionada
-            />
-          </div>
-        ))}
-      </div>
-
-      <div className="car-info mt-6">
-        {/* Fila con Marca, Modelo y el Icono de Favoritos */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-semibold text-gray-800 mb-2">
-              {car.brand} {car.model}
-            </h1>
-            <h2 className="text-lg text-gray-500 mb-4">
-              Vendedor: {car.user.name}
-            </h2>
-          </div>
-
-          {/* Icono de favoritos */}
-          {userId && (
+        <div className="car-info mt-6">
+          {/* Fila con Marca, Modelo y el Icono de Favoritos */}
+          <div className="flex items-center justify-between">
             <div>
-              <button
-                className="text-white cursor-pointer"
-                onClick={(e) => handleFavoriteClick(e, car.id)}
-              >
-                <img
-                  src={
-                    isFavorite(car.id)
-                      ? "/images/corazon-relleno.png"
-                      : "/images/corazon-vacio.png"
-                  }
-                  alt="Corazón"
-                  className="w-10 h-10"
-                />
-              </button>
+              <h1 className="text-3xl font-semibold text-gray-800 mb-2">
+                {car.brand} {car.model}
+              </h1>
+              <h2 className="text-lg text-gray-500 mb-4">
+                Vendedor: {car.user.name}
+              </h2>
             </div>
-          )}
+
+            {/* Icono de favoritos */}
+            {userId && (
+              <div>
+                <button
+                  className="text-white cursor-pointer"
+                  onClick={(e) => handleFavoriteClick(e, car.id)}
+                >
+                  <img
+                    src={
+                      isFavorite(car.id)
+                        ? "/images/corazon-relleno.png"
+                        : "/images/corazon-vacio.png"
+                    }
+                    alt="Corazón"
+                    className="w-10 h-10"
+                  />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Información del coche */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="car-detail-item">
+              <p className="text-gray-700 font-semibold">Ubicacion:</p>
+              <p className="text-gray-500">{car.city}</p>
+            </div>
+            <div className="car-detail-item">
+              <p className="text-gray-700 font-semibold">Precio:</p>
+              <p className="text-gray-500">{car.price} €</p>
+            </div>
+            <div className="car-detail-item">
+              <p className="text-gray-700 font-semibold">Año:</p>
+              <p className="text-gray-500">{car.manufacture_year}</p>
+            </div>
+            <div className="car-detail-item">
+              <p className="text-gray-700 font-semibold">Kilómetros:</p>
+              <p className="text-gray-500">{car.mileage} km</p>
+            </div>
+            <div className="car-detail-item">
+              <p className="text-gray-700 font-semibold">Combustible:</p>
+              <p className="text-gray-500">{car.fuelType}</p>
+            </div>
+            <div className="car-detail-item">
+              <p className="text-gray-700 font-semibold">Condición:</p>
+              <p className="text-gray-500">{car.CarCondition}</p>
+            </div>
+            <div className="car-detail-item">
+              <p className="text-gray-700 font-semibold">Tracción:</p>
+              <p className="text-gray-500">{car.traction}</p>
+            </div>
+            <div className="car-detail-item">
+              <p className="text-gray-700 font-semibold">Puertas:</p>
+              <p className="text-gray-500">{car.doors}</p>
+            </div>
+            <div className="car-detail-item">
+              <p className="text-gray-700 font-semibold">Asientos:</p>
+              <p className="text-gray-500">{car.seats}</p>
+            </div>
+            <div className="car-detail-item">
+              <p className="text-gray-700 font-semibold">Transmisión:</p>
+              <p className="text-gray-500">{car.transmission}</p>
+            </div>
+            <div className="car-detail-item">
+              <p className="text-gray-700 font-semibold">Color:</p>
+              <p className="text-gray-500">{car.color}</p>
+            </div>
+            <div className="car-detail-item">
+              <p className="text-gray-700 font-semibold">Fecha Publicación:</p>
+              <p className="text-gray-500">
+                {new Date(car.publication_date).toLocaleDateString()}
+              </p>
+            </div>
+            <div className="car-detail-item">
+              <p className="text-gray-700 font-semibold">Descripcion:</p>
+              <p className="text-gray-500">{car.description}</p>
+            </div>
+          </div>
         </div>
 
-        {/* Información del coche */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="car-detail-item">
-            <p className="text-gray-700 font-semibold">Ubicacion:</p>
-            <p className="text-gray-500">{car.city}</p>
-          </div>
-          <div className="car-detail-item">
-            <p className="text-gray-700 font-semibold">Precio:</p>
-            <p className="text-gray-500">{car.price} €</p>
-          </div>
-          <div className="car-detail-item">
-            <p className="text-gray-700 font-semibold">Año:</p>
-            <p className="text-gray-500">{car.manufacture_year}</p>
-          </div>
-          <div className="car-detail-item">
-            <p className="text-gray-700 font-semibold">Kilómetros:</p>
-            <p className="text-gray-500">{car.mileage} km</p>
-          </div>
-          <div className="car-detail-item">
-            <p className="text-gray-700 font-semibold">Combustible:</p>
-            <p className="text-gray-500">{car.fuelType}</p>
-          </div>
-          <div className="car-detail-item">
-            <p className="text-gray-700 font-semibold">Condición:</p>
-            <p className="text-gray-500">{car.CarCondition}</p>
-          </div>
-          <div className="car-detail-item">
-            <p className="text-gray-700 font-semibold">Tracción:</p>
-            <p className="text-gray-500">{car.traction}</p>
-          </div>
-          <div className="car-detail-item">
-            <p className="text-gray-700 font-semibold">Puertas:</p>
-            <p className="text-gray-500">{car.doors}</p>
-          </div>
-          <div className="car-detail-item">
-            <p className="text-gray-700 font-semibold">Asientos:</p>
-            <p className="text-gray-500">{car.seats}</p>
-          </div>
-          <div className="car-detail-item">
-            <p className="text-gray-700 font-semibold">Transmisión:</p>
-            <p className="text-gray-500">{car.transmission}</p>
-          </div>
-          <div className="car-detail-item">
-            <p className="text-gray-700 font-semibold">Color:</p>
-            <p className="text-gray-500">{car.color}</p>
-          </div>
-          <div className="car-detail-item">
-            <p className="text-gray-700 font-semibold">Fecha Publicación:</p>
-            <p className="text-gray-500">
-              {new Date(car.publication_date).toLocaleDateString()}
-            </p>
-          </div>
-          <div className="car-detail-item">
-            <p className="text-gray-700 font-semibold">Descripcion:</p>
-            <p className="text-gray-500">{car.description}</p>
-          </div>
+        {/* Mapa para seleccionar ubicación */}
+        <div className="mb-4" style={{ height: "300px" }}>
+          <MapContainer
+            center={[car.lat, car.lon]}
+            zoom={13}
+            scrollWheelZoom={false}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            <Marker position={[car.lat, car.lon]} icon={carIcon} />
+          </MapContainer>
         </div>
-      </div>
 
-      {/* Mapa para seleccionar ubicación */}
-      <div className="mb-4" style={{ height: "300px" }}>
-        <MapContainer
-          center={[car.lat, car.lon]}
-          zoom={13}
-          scrollWheelZoom={false}
-          style={{ height: "100%", width: "100%" }}
-        >
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          <Marker position={[car.lat, car.lon]} icon={carIcon} />
-        </MapContainer>
-      </div>
-
-      {/* Botones de acción */}
-      <div className="car-actions mt-6 flex justify-between">
-        <button
-          onClick={handleBuyClick}
-          className="btn bg-blue-500 text-white p-3 rounded-md w-1/3"
-        >
-          Comprar
-        </button>
-        <button
-          onClick={handleChatClick}
-          className="btn bg-green-500 text-white p-3 rounded-md w-1/3"
-        >
-          Chatear
-        </button>
+        {/* Botones de acción */}
+        <div className="car-actions mt-6 flex justify-between">
+          <button
+            onClick={handleBuyClick}
+            className="btn bg-[#43697a] text-white p-3 rounded-md w-1/3 hover:bg-[#567C8D]"
+          >
+            Comprar
+          </button>
+          <button
+            onClick={handleChatClick}
+            className="btn bg-[#0E566A] text-white p-3 rounded-md w-1/3 hover:bg-[#42AEB5]"
+          >
+            Chatear
+          </button>
+        </div>
       </div>
     </div>
   );
