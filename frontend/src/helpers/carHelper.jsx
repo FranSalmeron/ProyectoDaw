@@ -100,6 +100,7 @@ export const editCar = async (carId, carData) => {
         const result = await response.json();
 
         if (result.status === 'success') {
+            localStorage.removeItem('cachedCars'); // Limpiar caché al editar un coche
             toast.success("Coche editado correctamente");  
         } else {
             toast.error('Error al editar el coche');
@@ -124,6 +125,7 @@ export const deleteCar = async (carId) => {
             const result = await response.json();
 
             if (result.status === 'success') {
+                localStorage.removeItem('cachedCars');
                 toast.success("Coche eliminado correctamente");
             } else {
                 toast.error('Error al eliminar el coche');

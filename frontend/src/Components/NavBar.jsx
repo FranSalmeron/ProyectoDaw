@@ -148,6 +148,16 @@ const NavBar = () => {
               </li>
               <li>
                 <NavLink
+                  to={ROUTES.SEE_CARS}
+                  className={({ isActive }) => `text-white  hover:text-red:100  
+                                ${isActive ? "font-bold" : ""}`}
+                  onClick={closeMenu} // Cerrar el menú al hacer clic
+                >
+                  Ver mis coches
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
                   to={ROUTES.PROFILE}
                   className={({ isActive }) => `text-white  hover:text-red:100  
                                 ${isActive ? "font-bold" : ""}`}

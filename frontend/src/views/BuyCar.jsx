@@ -4,6 +4,7 @@ import { useUser } from "../context/UserContext";
 import { getUserInfo } from "../helpers/UserHelper";
 import { getUserIdFromToken } from "../helpers/decodeToken";
 import { buyCar } from "../helpers/BuyHelper";
+import { toast } from "react-toastify";
 
 const BuyCar = () => {
   const location = useLocation();
@@ -36,6 +37,10 @@ const BuyCar = () => {
   const handlePurchase = async () => {
     if (paymentStatus !== "idle") return; // prevenir múltiples clics
     setPaymentStatus("processing");
+    if(userId == car.user.id) {
+      toast.error("No puedes comprar tu propio coche");
+      return;
+    }
     await buyCar(car.id, userId, car.price);
     setTimeout(() => {
       setPaymentStatus("completed");
@@ -86,7 +91,7 @@ const BuyCar = () => {
           {paymentStatus === "idle" && (
             <button
               onClick={handlePurchase}
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+              className="px-4 py-2 bg-[#43697a] text-white rounded hover:bg-[#567C8D] transition"
             >
               Comprar
             </button>

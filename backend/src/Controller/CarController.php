@@ -257,26 +257,26 @@ class CarController extends AbstractController
         }
     }
 
-    #[Route('/{id}/delete', name: 'app_car_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_car_delete', methods: ['DELETE'])]
     public function delete(Request $request, Car $car, EntityManagerInterface $entityManager): Response
     {        
-            try {
-                // Eliminar el coche
-                $entityManager->remove($car);
-                $entityManager->flush();
-
-                // Retornar éxito
-                return new JsonResponse([
-                    'status' => 'correcto',
-                    'message' => 'Coche eliminado correctamente'
-                ], Response::HTTP_OK);
-            } catch (\Exception $e) {
-                // En caso de error, retornar error
-                return new JsonResponse([
-                    'status' => 'no',
-                    'message' => 'Error al eliminar el coche',
-                    'error' => $e->getMessage()
-                ], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
+        try {
+            // Eliminar el coche
+            $entityManager->remove($car);
+            $entityManager->flush();
+    
+            // Retornar éxito
+            return new JsonResponse([
+                'status' => 'correcto',
+                'message' => 'Coche eliminado correctamente'
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            // En caso de error, retornar error
+            return new JsonResponse([
+                'status' => 'no',
+                'message' => 'Error al eliminar el coche',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
-}
+}    

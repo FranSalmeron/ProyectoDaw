@@ -10,7 +10,8 @@
 #### Pagina de Favoritos (Hecho)
 #### Pagina de perfil (Hecho)
 #### Pagina de compra (Hecho)
-#### Editar y borrar coches ()
+#### Editar y borrar coches (Hecho)
+## IMPORTANTE, la cache de localStorage se borra en modificacion pero no el contexto haciendo que no se rendericen los cambios importante cambiar esto.
 #### Editar nombre, cambiar contraseña y esas cosas 
 #### Pagina de About
 

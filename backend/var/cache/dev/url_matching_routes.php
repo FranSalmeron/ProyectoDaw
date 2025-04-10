@@ -118,7 +118,7 @@ return [
         349 => [[['_route' => 'app_car_index_by_user', '_controller' => 'App\\Controller\\CarController::indexByUser'], ['id'], ['GET' => 0], null, false, true, null]],
         368 => [[['_route' => 'app_car_show', '_controller' => 'App\\Controller\\CarController::showById'], ['id'], ['GET' => 0], null, false, true, null]],
         384 => [[['_route' => 'app_car_edit', '_controller' => 'App\\Controller\\CarController::edit'], ['id'], ['PATCH' => 0], null, false, false, null]],
-        398 => [[['_route' => 'app_car_delete', '_controller' => 'App\\Controller\\CarController::delete'], ['id'], ['POST' => 0], null, false, false, null]],
+        398 => [[['_route' => 'app_car_delete', '_controller' => 'App\\Controller\\CarController::delete'], ['id'], ['DELETE' => 0], null, false, false, null]],
         431 => [[['_route' => 'app_chat_car_delete', '_controller' => 'App\\Controller\\ChatController::delete'], ['id'], ['DELETE' => 0], null, false, false, null]],
         444 => [[['_route' => 'app_chat_user_chats', '_controller' => 'App\\Controller\\ChatController::getUserChats'], ['userId'], ['GET' => 0], null, false, false, null]],
         488 => [[['_route' => 'app_car_favorite_user_favorites', '_controller' => 'App\\Controller\\CarFavoriteController::getUserFavorites'], ['userId'], ['GET' => 0], null, false, false, null]],

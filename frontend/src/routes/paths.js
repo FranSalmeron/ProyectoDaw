@@ -9,5 +9,6 @@ export const ROUTES = {
     BUY_CAR: "/buy_car",
     CAR_FAVORITES: "/car_favorites", 
     PROFILE: "/profile",
+    SEE_CARS: "/see_cars",
   };
   

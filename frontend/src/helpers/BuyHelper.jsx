@@ -1,6 +1,6 @@
 const symfonyUrl = import.meta.env.VITE_API_URL
 
-export const buyCar = async (carId, userId, price, email) => {
+export const buyCar = async (carId, userId, price) => {
     try {
         const response = await fetch(`${symfonyUrl}/transaction/new`, {
         method: "POST",
