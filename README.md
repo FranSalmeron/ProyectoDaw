@@ -1,6 +1,8 @@
 # Proyecto DAW
 ## Tareas:
 
+## IMPORTANTE, la cache de localStorage se borra en modificacion pero no el contexto haciendo que no se rendericen los cambios importante cambiar esto.
+
 #### Crear Contextos (Hecho coche y chat, favoritos, Usuario)
 #### Crear y configurar el router (Hecho)
 #### Cerrar sesion (Hecho)
@@ -11,8 +13,7 @@
 #### Pagina de perfil (Hecho)
 #### Pagina de compra (Hecho)
 #### Editar y borrar coches (Hecho)
-## IMPORTANTE, la cache de localStorage se borra en modificacion pero no el contexto haciendo que no se rendericen los cambios importante cambiar esto.
-#### Editar nombre, cambiar contraseña y esas cosas 
+#### Editar nombre, cambiar contraseña y esas cosas (Hecho)
 #### Pagina de About
 #### Pagina de Error.
 #### Crear y configurar todo lo que pueden hacer los administradores

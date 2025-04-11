@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';  
+import React, { useState } from 'react'; 
 import 'react-toastify/dist/ReactToastify.css'; 
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const SOCKET_URL = import.meta.env.VITE_API_URL;
 
@@ -93,9 +93,6 @@ const Login = () => {
 
         {/* Mensaje de error */}
         {error && <p class="text-red-500 text-center">{error}</p>}
-
-        {/* Contenedor para las notificaciones */}
-        <ToastContainer />
     </div>
     </div>
   );

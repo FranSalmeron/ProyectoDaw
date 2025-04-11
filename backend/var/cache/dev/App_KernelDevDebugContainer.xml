@@ -239,6 +239,7 @@
       <parameter>login</parameter>
       <parameter>refreshToken</parameter>
       <parameter>ChatMessageSend</parameter>
+      <parameter>UserChangePassword</parameter>
       <parameter>csrf_token</parameter>
       <parameter>ChatCreate</parameter>
       <parameter>api</parameter>
@@ -1185,7 +1186,7 @@
     <service id="console.command.event_dispatcher_debug" class="Symfony\Bundle\FrameworkBundle\Command\EventDispatcherDebugCommand">
       <tag name="console.command"/>
       <tag name="container.no_preload"/>
-      <argument type="service" id=".service_locator.4vAXMcx"/>
+      <argument type="service" id=".service_locator.k1zp18Y"/>
       <call method="setName">
         <argument>debug:event-dispatcher</argument>
       </call>
@@ -2485,6 +2486,14 @@
         <argument>kernel.response</argument>
         <argument type="collection">
           <argument type="service_closure" id="security.context_listener.0"/>
+          <argument>onKernelResponse</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>kernel.response</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.context_listener.1"/>
           <argument>onKernelResponse</argument>
         </argument>
         <argument>0</argument>
@@ -5628,11 +5637,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="security.firewall.map" class="Symfony\Bundle\SecurityBundle\Security\FirewallMap">
-      <argument type="service" id=".service_locator.Yzh4Yf1"/>
+      <argument type="service" id=".service_locator.K7rDYp9"/>
       <argument type="iterator">
         <argument key="security.firewall.map.context.login" type="service" id=".security.request_matcher.huI_Dm8"/>
         <argument key="security.firewall.map.context.refreshToken" type="service" id=".security.request_matcher.zUz4DiV"/>
         <argument key="security.firewall.map.context.ChatMessageSend" type="service" id=".security.request_matcher.N3f60VL"/>
+        <argument key="security.firewall.map.context.UserChangePassword" type="service" id=".security.request_matcher.pDsVPBi"/>
         <argument key="security.firewall.map.context.csrf_token" type="service" id=".security.request_matcher.KsvN9uG"/>
         <argument key="security.firewall.map.context.ChatCreate" type="service" id=".security.request_matcher.O05mk5k"/>
         <argument key="security.firewall.map.context.api" type="service" id=".security.request_matcher.rzSi_me"/>
@@ -5786,6 +5796,20 @@
         </argument>
         <argument>null</argument>
       </call>
+      <call method="add">
+        <argument type="service" id=".security.request_matcher.9yGlez9"/>
+        <argument type="collection">
+          <argument>ROLE_USER</argument>
+        </argument>
+        <argument>null</argument>
+      </call>
+      <call method="add">
+        <argument type="service" id=".security.request_matcher.ALvEFve"/>
+        <argument type="collection">
+          <argument>ROLE_ADMIN</argument>
+        </argument>
+        <argument>null</argument>
+      </call>
     </service>
     <service id="security.context_listener" class="Symfony\Component\Security\Http\Firewall\ContextListener">
       <tag name="monolog.logger" channel="security"/>
@@ -5893,6 +5917,7 @@
     </service>
     <service id="security.authenticator.managers_locator" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <argument type="collection">
+        <argument key="UserChangePassword" type="service_closure" id="security.authenticator.manager.UserChangePassword"/>
         <argument key="ChatCreate" type="service_closure" id="security.authenticator.manager.ChatCreate"/>
         <argument key="api" type="service_closure" id="security.authenticator.manager.api"/>
       </argument>
@@ -6009,9 +6034,12 @@
       <tag name="console.command" command="debug:firewall"/>
       <tag name="container.no_preload"/>
       <argument>%security.firewalls%</argument>
-      <argument type="service" id=".service_locator.Yzh4Yf1"/>
-      <argument type="service" id=".service_locator.4vAXMcx"/>
+      <argument type="service" id=".service_locator.K7rDYp9"/>
+      <argument type="service" id=".service_locator.k1zp18Y"/>
       <argument type="collection">
+        <argument key="UserChangePassword" type="collection">
+          <argument type="service" id="security.authenticator.jwt.UserChangePassword"/>
+        </argument>
         <argument key="ChatCreate" type="collection">
           <argument type="service" id="security.authenticator.jwt.ChatCreate"/>
         </argument>
@@ -6101,6 +6129,161 @@
       <argument>null</argument>
       <argument>null</argument>
       <argument type="service" id="security.firewall.map.config.ChatMessageSend"/>
+    </service>
+    <service id="security.firewall.map.config.UserChangePassword" class="Symfony\Bundle\SecurityBundle\Security\FirewallConfig">
+      <argument>UserChangePassword</argument>
+      <argument>security.user_checker</argument>
+      <argument>.security.request_matcher.pDsVPBi</argument>
+      <argument>true</argument>
+      <argument>false</argument>
+      <argument>security.user.provider.concrete.app_user_provider</argument>
+      <argument>UserChangePassword</argument>
+      <argument>security.authenticator.jwt.UserChangePassword</argument>
+      <argument>null</argument>
+      <argument>null</argument>
+      <argument type="collection">
+        <argument>jwt</argument>
+      </argument>
+      <argument>null</argument>
+    </service>
+    <service id=".security.request_matcher.pDsVPBi" class="Symfony\Component\HttpFoundation\RequestMatcher">
+      <argument>^/user/\d+/change-password</argument>
+    </service>
+    <service id="security.event_dispatcher.UserChangePassword" class="Symfony\Component\EventDispatcher\EventDispatcher">
+      <tag name="security.event_dispatcher.UserChangePassword">event_dispatcher.dispatcher</tag>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\LoginSuccessEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.session.UserChangePassword"/>
+          <argument>onSuccessfulLogin</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.user_checker.UserChangePassword"/>
+          <argument>preCheckCredentials</argument>
+        </argument>
+        <argument>256</argument>
+      </call>
+      <call method="addListener">
+        <argument>security.authentication.success</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.user_checker.UserChangePassword"/>
+          <argument>postCheckCredentials</argument>
+        </argument>
+        <argument>256</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.user_provider"/>
+          <argument>checkPassport</argument>
+        </argument>
+        <argument>1024</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.check_authenticator_credentials"/>
+          <argument>checkPassport</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\LoginSuccessEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.password_migrating"/>
+          <argument>onLoginSuccess</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.csrf_protection"/>
+          <argument>checkPassport</argument>
+        </argument>
+        <argument>512</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\LogoutEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.logout.listener.csrf_token_clearing"/>
+          <argument>onLogout</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+    </service>
+    <service id="security.context_listener.0" class="Symfony\Component\Security\Http\Firewall\ContextListener">
+      <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse"/>
+      <tag name="container.hot_path"/>
+      <argument type="service" id="security.untracked_token_storage"/>
+      <argument type="iterator">
+        <argument type="service" id="security.user.provider.concrete.app_user_provider"/>
+      </argument>
+      <argument>UserChangePassword</argument>
+      <argument type="service" id="monolog.logger.security" on-invalid="null"/>
+      <argument type="service" id="security.event_dispatcher.UserChangePassword"/>
+      <argument type="service" id="security.authentication.trust_resolver"/>
+      <argument type="collection">
+        <argument type="service" id="security.token_storage"/>
+        <argument>enableUsageTracking</argument>
+      </argument>
+    </service>
+    <service id="security.listener.session.UserChangePassword" class="Symfony\Component\Security\Http\EventListener\SessionStrategyListener">
+      <tag name="kernel.event_subscriber" dispatcher="security.event_dispatcher.UserChangePassword"/>
+      <argument type="service" id="security.authentication.session_strategy"/>
+    </service>
+    <service id="security.authenticator.jwt.UserChangePassword" class="Lexik\Bundle\JWTAuthenticationBundle\Security\Authenticator\JWTAuthenticator">
+      <argument type="service" id="lexik_jwt_authentication.jwt_manager"/>
+      <argument type="service" id="debug.event_dispatcher"/>
+      <argument type="service" id="lexik_jwt_authentication.extractor.chain_extractor"/>
+      <argument type="service" id="security.user.provider.concrete.app_user_provider"/>
+      <argument type="service" id="translator.data_collector" on-invalid="null"/>
+    </service>
+    <service id="security.authenticator.manager.UserChangePassword" class="Symfony\Component\Security\Http\Authentication\AuthenticatorManager">
+      <tag name="monolog.logger" channel="security"/>
+      <argument type="collection">
+        <argument type="service" id="security.authenticator.jwt.UserChangePassword"/>
+      </argument>
+      <argument type="service" id="security.token_storage"/>
+      <argument type="service" id="security.event_dispatcher.UserChangePassword"/>
+      <argument>UserChangePassword</argument>
+      <argument type="service" id="monolog.logger.security" on-invalid="null"/>
+      <argument>true</argument>
+      <argument>true</argument>
+      <argument type="collection"/>
+    </service>
+    <service id="debug.security.firewall.authenticator.UserChangePassword" class="Symfony\Component\Security\Http\Authenticator\Debug\TraceableAuthenticatorManagerListener">
+      <argument type="service" id="debug.security.firewall.authenticator.UserChangePassword.inner"/>
+    </service>
+    <service id="security.listener.user_checker.UserChangePassword" class="Symfony\Component\Security\Http\EventListener\UserCheckerListener">
+      <tag name="kernel.event_subscriber" dispatcher="security.event_dispatcher.UserChangePassword"/>
+      <argument type="service" id="security.user_checker"/>
+    </service>
+    <service id="security.exception_listener.UserChangePassword" class="Symfony\Component\Security\Http\Firewall\ExceptionListener">
+      <argument type="service" id="security.token_storage"/>
+      <argument type="service" id="security.authentication.trust_resolver"/>
+      <argument type="service" id="security.http_utils"/>
+      <argument>UserChangePassword</argument>
+      <argument type="service" id="security.authenticator.jwt.UserChangePassword"/>
+      <argument>null</argument>
+      <argument>null</argument>
+      <argument type="service" id="monolog.logger.security" on-invalid="null"/>
+      <argument>false</argument>
+    </service>
+    <service id="security.firewall.map.context.UserChangePassword" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext">
+      <argument type="iterator">
+        <argument type="service" id="security.channel_listener"/>
+        <argument type="service" id="security.context_listener.0"/>
+        <argument type="service" id="debug.security.firewall.authenticator.UserChangePassword"/>
+        <argument type="service" id="security.access_listener"/>
+      </argument>
+      <argument type="service" id="security.exception_listener.UserChangePassword"/>
+      <argument>null</argument>
+      <argument type="service" id="security.firewall.map.config.UserChangePassword"/>
     </service>
     <service id="security.firewall.map.config.csrf_token" class="Symfony\Bundle\SecurityBundle\Security\FirewallConfig">
       <argument>csrf_token</argument>
@@ -6211,7 +6394,7 @@
         <argument>0</argument>
       </call>
     </service>
-    <service id="security.context_listener.0" class="Symfony\Component\Security\Http\Firewall\ContextListener">
+    <service id="security.context_listener.1" class="Symfony\Component\Security\Http\Firewall\ContextListener">
       <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse"/>
       <tag name="container.hot_path"/>
       <argument type="service" id="security.untracked_token_storage"/>
@@ -6272,7 +6455,7 @@
     <service id="security.firewall.map.context.ChatCreate" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext">
       <argument type="iterator">
         <argument type="service" id="security.channel_listener"/>
-        <argument type="service" id="security.context_listener.0"/>
+        <argument type="service" id="security.context_listener.1"/>
         <argument type="service" id="debug.security.firewall.authenticator.ChatCreate"/>
         <argument type="service" id="security.access_listener"/>
       </argument>
@@ -6406,11 +6589,12 @@
       <argument>null</argument>
       <argument type="service" id="security.firewall.map.config.api"/>
     </service>
-    <service id=".service_locator.Yzh4Yf1" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.K7rDYp9" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="security.firewall.map.context.ChatCreate" type="service_closure" id="security.firewall.map.context.ChatCreate"/>
         <argument key="security.firewall.map.context.ChatMessageSend" type="service_closure" id="security.firewall.map.context.ChatMessageSend"/>
+        <argument key="security.firewall.map.context.UserChangePassword" type="service_closure" id="security.firewall.map.context.UserChangePassword"/>
         <argument key="security.firewall.map.context.api" type="service_closure" id="security.firewall.map.context.api"/>
         <argument key="security.firewall.map.context.csrf_token" type="service_closure" id="security.firewall.map.context.csrf_token"/>
         <argument key="security.firewall.map.context.login" type="service_closure" id="security.firewall.map.context.login"/>
@@ -6437,6 +6621,12 @@
     </service>
     <service id=".security.request_matcher.68M5fc7" class="Symfony\Component\HttpFoundation\RequestMatcher">
       <argument>^/message</argument>
+    </service>
+    <service id=".security.request_matcher.9yGlez9" class="Symfony\Component\HttpFoundation\RequestMatcher">
+      <argument>^/user/.*/change-password</argument>
+    </service>
+    <service id=".security.request_matcher.ALvEFve" class="Symfony\Component\HttpFoundation\RequestMatcher">
+      <argument>^/user/index</argument>
     </service>
     <service id="security.command.user_password_hash" class="Symfony\Component\PasswordHasher\Command\UserPasswordHashCommand">
       <tag name="console.command"/>
@@ -8613,7 +8803,15 @@
         <argument key="user" type="service_closure" id=".errored..service_locator.GPGtF8v.App\Entity\User"/>
       </argument>
     </service>
-    <service id=".service_locator.lNxTgel" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.akmE0pX" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="passwordHasher" type="service_closure" id="security.user_password_hasher"/>
+        <argument key="user" type="service_closure" id=".errored..service_locator.akmE0pX.App\Entity\User"/>
+      </argument>
+    </service>
+    <service id=".service_locator.7o.D3fE" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\CarController::delete" type="service_closure" id=".service_locator.BA3xq_G"/>
@@ -8639,6 +8837,7 @@
         <argument key="App\Controller\TransactionController::index" type="service_closure" id=".service_locator.wG7eXdf"/>
         <argument key="App\Controller\TransactionController::new" type="service_closure" id=".service_locator._nS7eWw"/>
         <argument key="App\Controller\TransactionController::show" type="service_closure" id=".service_locator.3PHq.pi"/>
+        <argument key="App\Controller\UserController::changePassword" type="service_closure" id=".service_locator.akmE0pX"/>
         <argument key="App\Controller\UserController::delete" type="service_closure" id=".service_locator.GPGtF8v"/>
         <argument key="App\Controller\UserController::edit" type="service_closure" id=".service_locator.GPGtF8v"/>
         <argument key="App\Controller\UserController::getUserInfo" type="service_closure" id=".service_locator.Q1F27w5"/>
@@ -8674,6 +8873,7 @@
         <argument key="App\Controller\TransactionController:index" type="service_closure" id=".service_locator.wG7eXdf"/>
         <argument key="App\Controller\TransactionController:new" type="service_closure" id=".service_locator._nS7eWw"/>
         <argument key="App\Controller\TransactionController:show" type="service_closure" id=".service_locator.3PHq.pi"/>
+        <argument key="App\Controller\UserController:changePassword" type="service_closure" id=".service_locator.akmE0pX"/>
         <argument key="App\Controller\UserController:delete" type="service_closure" id=".service_locator.GPGtF8v"/>
         <argument key="App\Controller\UserController:edit" type="service_closure" id=".service_locator.GPGtF8v"/>
         <argument key="App\Controller\UserController:getUserInfo" type="service_closure" id=".service_locator.Q1F27w5"/>
@@ -9230,11 +9430,12 @@
         <argument key="reverse_container" type="service_closure" id="reverse_container" on-invalid="ignore_uninitialized"/>
       </argument>
     </service>
-    <service id=".service_locator.4vAXMcx" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.k1zp18Y" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="event_dispatcher" type="service_closure" id="debug.event_dispatcher"/>
         <argument key="security.event_dispatcher.ChatCreate" type="service_closure" id="security.event_dispatcher.ChatCreate"/>
+        <argument key="security.event_dispatcher.UserChangePassword" type="service_closure" id="security.event_dispatcher.UserChangePassword"/>
         <argument key="security.event_dispatcher.api" type="service_closure" id="security.event_dispatcher.api"/>
       </argument>
     </service>
@@ -9345,6 +9546,9 @@
         </service>
       </argument>
     </service>
+    <service id="debug.security.firewall.authenticator.UserChangePassword.inner" class="Symfony\Component\Security\Http\Firewall\AuthenticatorManagerListener">
+      <argument type="service" id="security.authenticator.manager.UserChangePassword"/>
+    </service>
     <service id="debug.security.firewall.authenticator.ChatCreate.inner" class="Symfony\Component\Security\Http\Firewall\AuthenticatorManagerListener">
       <argument type="service" id="security.authenticator.manager.ChatCreate"/>
     </service>
@@ -9394,12 +9598,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
-      <argument type="service" id=".service_locator.lNxTgel"/>
+      <argument type="service" id=".service_locator.7o.D3fE"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
-      <argument type="service" id=".service_locator.lNxTgel"/>
+      <argument type="service" id=".service_locator.7o.D3fE"/>
     </service>
     <service id="debug.traced.messenger.bus.default.inner" class="Symfony\Component\Messenger\MessageBus">
       <argument type="iterator">
@@ -9480,6 +9684,7 @@
     <service id=".errored..service_locator.Dhg828p.App\Entity\Transaction" class="App\Entity\Transaction"/>
     <service id=".errored..service_locator.4T4EJFR.App\Entity\User" class="App\Entity\User"/>
     <service id=".errored..service_locator.GPGtF8v.App\Entity\User" class="App\Entity\User"/>
+    <service id=".errored..service_locator.akmE0pX.App\Entity\User" class="App\Entity\User"/>
     <service id=".console.command.about.lazy" class="Symfony\Component\Console\Command\LazyCommand">
       <argument>about</argument>
       <argument type="collection"/>
@@ -10591,11 +10796,13 @@
     <service id="security.firewall" alias="debug.security.firewall"/>
     <service id="security.user_providers" alias="security.user.provider.concrete.app_user_provider"/>
     <service id="Symfony\Component\Security\Core\User\UserProviderInterface" alias="security.user.provider.concrete.app_user_provider"/>
+    <service id="security.authentication.session_strategy.UserChangePassword" alias="security.authentication.session_strategy"/>
+    <service id="security.user_checker.UserChangePassword" alias="security.user_checker"/>
     <service id="security.authentication.session_strategy.ChatCreate" alias="security.authentication.session_strategy"/>
     <service id="security.user_checker.ChatCreate" alias="security.user_checker"/>
     <service id="security.authentication.session_strategy.api" alias="security.authentication.session_strategy_noop"/>
     <service id="security.user_checker.api" alias="security.user_checker"/>
-    <service id="security.firewall.context_locator" alias=".service_locator.Yzh4Yf1"/>
+    <service id="security.firewall.context_locator" alias=".service_locator.K7rDYp9"/>
     <service id="Symfony\Component\Security\Core\User\UserCheckerInterface" alias="security.user_checker"/>
     <service id="logger" alias="monolog.logger"/>
     <service id="Psr\Log\LoggerInterface" alias="monolog.logger"/>
@@ -10707,7 +10914,7 @@
     <service id="sensio_framework_extra.security.expression_language" alias="sensio_framework_extra.security.expression_language.default"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.gSv9zYw" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.lNxTgel"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.7o.D3fE"/>
     <service id="doctrine.id_generator_locator" alias=".service_locator.KLVvNIq"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="Psr\Log\LoggerInterface $requestLogger" alias="monolog.logger.request"/>
@@ -10728,7 +10935,7 @@
     <service id="api_platform.name_converter" alias="serializer.name_converter.metadata_aware"/>
     <service id=".service_locator.6DxUFLS" alias="messenger.receiver_locator"/>
     <service id=".service_locator.27KOu4H" alias="messenger.retry_strategy_locator"/>
-    <service id=".service_locator.1zSoslX" alias=".service_locator.Yzh4Yf1"/>
+    <service id=".service_locator.fd.WQEL" alias=".service_locator.K7rDYp9"/>
     <service id=".service_locator.bnaLdkn" alias="api_platform.serializer_locator"/>
     <service id=".service_locator.Xbsa8iG" alias="api_platform.filter_locator"/>
     <service id=".service_locator.0GV1BZZ" alias=".service_locator.gSv9zYw"/>
@@ -10740,7 +10947,8 @@
     <service id=".service_locator.PbPEf8m" alias=".service_locator.Dhg828p"/>
     <service id=".service_locator.YUNSPEp" alias=".service_locator.mK6IRPJ"/>
     <service id=".service_locator.b76MKMg" alias=".service_locator.GPGtF8v"/>
-    <service id=".service_locator.4VngbOT" alias=".service_locator.lNxTgel"/>
+    <service id=".service_locator.JwapolK" alias=".service_locator.akmE0pX"/>
+    <service id=".service_locator.5ZacFct" alias=".service_locator.7o.D3fE"/>
     <service id=".service_locator.wKF4yn1" alias=".service_locator.19_mNxd"/>
     <service id=".service_locator.zp9pmzf" alias=".service_locator.40EtNSa"/>
     <service id=".service_locator.XW18Svm" alias=".service_locator.TcKhdzh"/>
@@ -10772,6 +10980,7 @@
     <service id="var_dumper.cli_dumper" alias="var_dumper.contextualized_cli_dumper"/>
     <service id="twig.error_renderer.html.inner" alias="error_handler.error_renderer.html"/>
     <service id="security.access.decision_manager" alias="debug.security.access.decision_manager"/>
+    <service id="security.firewall.authenticator.UserChangePassword" alias="debug.security.firewall.authenticator.UserChangePassword"/>
     <service id="security.firewall.authenticator.ChatCreate" alias="debug.security.firewall.authenticator.ChatCreate"/>
     <service id="security.firewall.authenticator.api" alias="debug.security.firewall.authenticator.api"/>
     <service id="api_platform.serializer.context_builder" alias="api_platform.serializer.context_builder.filter"/>
@@ -10828,7 +11037,9 @@
     <service id=".service_locator.TmGMTFD" alias=".service_locator.mK6IRPJ"/>
     <service id=".service_locator.Zp0NSXM" alias=".service_locator.4T4EJFR"/>
     <service id=".service_locator.O99ujjA" alias=".service_locator.GPGtF8v"/>
+    <service id=".service_locator.y8hcufX" alias=".service_locator.akmE0pX"/>
     <service id=".service_locator.eAaUVIw" alias=".service_locator.jIxfAsi"/>
+    <service id=".service_locator.Oo3r0au" alias=".service_locator.k1zp18Y"/>
     <service id=".service_locator.u6DWx23" alias=".service_locator.cXsfP3P"/>
     <service id=".service_locator.pFwChgS" alias=".service_locator.UkE3SaZ"/>
     <service id=".service_locator.aa1PbBb" alias=".service_locator.nLgZj7R"/>

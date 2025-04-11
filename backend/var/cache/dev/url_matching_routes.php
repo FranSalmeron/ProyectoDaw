@@ -24,7 +24,7 @@ return [
         '/' => [[['_route' => 'app_main', '_controller' => 'App\\Controller\\MainController::main'], null, null, null, false, false, null]],
         '/transaction' => [[['_route' => 'app_transaction_index', '_controller' => 'App\\Controller\\TransactionController::index'], null, ['GET' => 0], null, true, false, null]],
         '/transaction/new' => [[['_route' => 'app_transaction_new', '_controller' => 'App\\Controller\\TransactionController::new'], null, ['POST' => 0], null, false, false, null]],
-        '/user' => [[['_route' => 'app_user_index', '_controller' => 'App\\Controller\\UserController::index'], null, ['GET' => 0], null, true, false, null]],
+        '/user/index' => [[['_route' => 'app_user_index', '_controller' => 'App\\Controller\\UserController::index'], null, ['GET' => 0], null, false, false, null]],
         '/user/new' => [[['_route' => 'app_user_new', '_controller' => 'App\\Controller\\UserController::new'], null, ['POST' => 0], null, false, false, null]],
     ],
     [ // $regexpList
@@ -99,6 +99,7 @@ return [
                             .'|banned(*:767)'
                         .')'
                         .'|info(*:780)'
+                        .'|change\\-password(*:804)'
                     .')'
                 .')'
             .')/?$}sDu',
@@ -137,8 +138,9 @@ return [
         729 => [[['_route' => 'app_user_delete', '_controller' => 'App\\Controller\\UserController::delete'], ['id'], ['POST' => 0], null, false, false, null]],
         753 => [[['_route' => 'app_user_toggle_admin', '_controller' => 'App\\Controller\\UserController::toggleAdmin'], ['id'], ['POST' => 0], null, false, false, null]],
         767 => [[['_route' => 'app_user_toggle_banned', '_controller' => 'App\\Controller\\UserController::toggleBanned'], ['id'], ['POST' => 0], null, false, false, null]],
-        780 => [
-            [['_route' => 'app_user_info', '_controller' => 'App\\Controller\\UserController::getUserInfo'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null],
+        780 => [[['_route' => 'app_user_info', '_controller' => 'App\\Controller\\UserController::getUserInfo'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        804 => [
+            [['_route' => 'user_change_password', '_controller' => 'App\\Controller\\UserController::changePassword'], ['id'], ['POST' => 0], null, false, false, null],
             [null, null, null, null, false, false, 0],
         ],
     ],

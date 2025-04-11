@@ -23,6 +23,10 @@ security:
             pattern: ^/ChatMessage/\d+/send  # El patrón para la ruta específica
             security: false  # Desactiva la seguridad para esta ruta
 
+        UserChangePassword:
+            pattern: ^/user/\d+/change-password  # El patrón para la ruta específica
+            jwt: ~ 
+            
         csrf-token:
             pattern: ^/csrf-token  # Excluye esta ruta del firewall JWT
             security: false  # Desactiva la seguridad para esta ruta
@@ -31,10 +35,6 @@ security:
             pattern:  ^/chat/create
             jwt: ~
         # Configuración para todas las rutas /api (excepto /api/login y /api/verify-token)
-        api:
-            pattern: ^/(api)
-            stateless: true
-            jwt: ~  # Esto habilita el autenticador JWT
 
     # Define todas las reglas de acceso en una sola sección
     access_control:
@@ -45,3 +45,5 @@ security:
         - { path: ^/api, roles: ROLE_USER }  # El resto de rutas requiere autenticación
         - { path: ^/chat, roles: ROLE_USER }  # Las rutas /chat requieren autenticación JWT
         - { path: ^/message, roles: ROLE_USER }  # Las rutas /message también requieren autenticación JWT
+        - { path: ^/user/.*/change-password, roles: ROLE_USER }
+        - { path: ^/user/index, roles: ROLE_ADMIN }

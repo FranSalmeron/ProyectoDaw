@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -14,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/user')]
 class UserController extends AbstractController
 {
-    #[Route('/', name: 'app_user_index', methods: ['GET'])]
+    #[Route('/index', name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
         $users = $userRepository->findAll();
@@ -120,7 +122,7 @@ class UserController extends AbstractController
 
         // Si el usuario ya tiene el rol de admin, lo eliminamos, si no lo tiene lo añadimos
         if (in_array('ROLE_ADMIN', $roles)) {
-            $roles = array_diff($roles, ['ROLE_ADMIN']); 
+            $roles = array_diff($roles, ['ROLE_ADMIN']);
         } else {
             $roles[] = 'ROLE_ADMIN';
         }
@@ -175,6 +177,38 @@ class UserController extends AbstractController
             'email' => $user->getEmail(),
             'phone' => $user->getPhone(),
             'roles' => $user->getRoles(),
+        ]);
+    }
+
+    #[Route('/{id}/change-password', name: 'user_change_password', methods: ['POST'])]
+    public function changePassword(
+        Request $request,
+        User $user,
+        UserPasswordHasherInterface $passwordHasher,
+        EntityManagerInterface $entityManager
+    ): Response {
+        // Obtener los datos del cuerpo de la solicitud
+        $data = json_decode($request->getContent(), true);
+
+        if (!$data || !isset($data['currentPassword']) || !isset($data['newPassword'])) {
+            return $this->json(['error' => 'Invalid data'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Verificar que la contraseña actual sea válida
+        if (!$passwordHasher->isPasswordValid($user, $data['currentPassword'])) {
+            return $this->json(['error' => 'Current password is incorrect'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Hashear la nueva contraseña
+        $hashedNewPassword = $passwordHasher->hashPassword($user, $data['newPassword']);
+        $user->setPassword($hashedNewPassword);
+
+        // Guardar los cambios en la base de datos
+        $entityManager->flush();
+
+        return $this->json([
+            'status' => 'ok',
+            'message' => 'Password changed successfully'
         ]);
     }
 }

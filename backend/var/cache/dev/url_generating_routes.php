@@ -47,7 +47,7 @@ return [
     'app_transaction_show' => [['id'], ['_controller' => 'App\\Controller\\TransactionController::show'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/transaction']], [], [], []],
     'app_transaction_edit' => [['id'], ['_controller' => 'App\\Controller\\TransactionController::edit'], [], [['text', '/edit'], ['variable', '/', '[^/]++', 'id', true], ['text', '/transaction']], [], [], []],
     'app_transaction_delete' => [['id'], ['_controller' => 'App\\Controller\\TransactionController::delete'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/transaction']], [], [], []],
-    'app_user_index' => [[], ['_controller' => 'App\\Controller\\UserController::index'], [], [['text', '/user/']], [], [], []],
+    'app_user_index' => [[], ['_controller' => 'App\\Controller\\UserController::index'], [], [['text', '/user/index']], [], [], []],
     'app_user_new' => [[], ['_controller' => 'App\\Controller\\UserController::new'], [], [['text', '/user/new']], [], [], []],
     'app_user_show' => [['id'], ['_controller' => 'App\\Controller\\UserController::show'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/user']], [], [], []],
     'app_user_edit' => [['id'], ['_controller' => 'App\\Controller\\UserController::edit'], [], [['text', '/edit'], ['variable', '/', '[^/]++', 'id', true], ['text', '/user']], [], [], []],
@@ -55,4 +55,5 @@ return [
     'app_user_toggle_admin' => [['id'], ['_controller' => 'App\\Controller\\UserController::toggleAdmin'], [], [['text', '/toggle-admin'], ['variable', '/', '[^/]++', 'id', true], ['text', '/user']], [], [], []],
     'app_user_toggle_banned' => [['id'], ['_controller' => 'App\\Controller\\UserController::toggleBanned'], [], [['text', '/toggle-banned'], ['variable', '/', '[^/]++', 'id', true], ['text', '/user']], [], [], []],
     'app_user_info' => [['id'], ['_controller' => 'App\\Controller\\UserController::getUserInfo'], [], [['text', '/info'], ['variable', '/', '[^/]++', 'id', true], ['text', '/user']], [], [], []],
+    'user_change_password' => [['id'], ['_controller' => 'App\\Controller\\UserController::changePassword'], [], [['text', '/change-password'], ['variable', '/', '[^/]++', 'id', true], ['text', '/user']], [], [], []],
 ];

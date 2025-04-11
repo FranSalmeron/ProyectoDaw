@@ -181,3 +181,27 @@ export const toggleBanned = async (userId) => {
     throw error;
   }
 };
+
+export const changeUserPassword = async (userId, currentPassword, newPassword) => {
+  try {
+    const response = await fetch(`${symfonyUrl}/user/${userId}/change-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
+      body: JSON.stringify({ currentPassword, newPassword }), // Enviar las contraseñas
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      return data;
+    } else {
+      throw new Error(data.error || "Error al cambiar la contraseña");
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
