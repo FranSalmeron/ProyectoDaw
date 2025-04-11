@@ -135,6 +135,7 @@ const ErrorPage = () => {
           backgroundImage: `url('/images/carretera.png')`,
           backgroundSize: `${backgroundDimensions.width}px ${backgroundDimensions.height / 2.5}px`, // Reducimos el ancho de la carretera un 10%
           backgroundPosition: "center",
+          width: `${backgroundDimensions.width}px`,
           height: `${backgroundDimensions.height}px`,
         }}
       >
