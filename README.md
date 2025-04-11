@@ -14,7 +14,7 @@
 ## IMPORTANTE, la cache de localStorage se borra en modificacion pero no el contexto haciendo que no se rendericen los cambios importante cambiar esto.
 #### Editar nombre, cambiar contraseña y esas cosas 
 #### Pagina de About
-
+#### Pagina de Error.
 #### Crear y configurar todo lo que pueden hacer los administradores
 #### Arreglar JWT o dejarlos como ya esta. 
 #### Optimizar codigo y velocidad de carga (A medias)
