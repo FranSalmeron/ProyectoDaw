@@ -56,6 +56,11 @@ const NavBar = () => {
               Inicio
             </NavLink>
           </li>
+          <li>
+            <NavLink to={ROUTES.ABOUT} onClick={closeMenu}>
+              Sobre Nosotros
+            </NavLink>
+          </li>
           {!userName ? (
             <>
               <li>

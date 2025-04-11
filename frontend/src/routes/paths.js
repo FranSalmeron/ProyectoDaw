@@ -10,5 +10,6 @@ export const ROUTES = {
     CAR_FAVORITES: "/car_favorites", 
     PROFILE: "/profile",
     SEE_CARS: "/see_cars",
+    ABOUT: "/about",
   };
   
