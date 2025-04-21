@@ -14,8 +14,8 @@
 #### Pagina de compra (Hecho)
 #### Editar y borrar coches (Hecho)
 #### Editar nombre, cambiar contraseña y esas cosas (Hecho)
-#### Pagina de About. 
-#### Pagina de Error.
+#### Pagina de About. (Hecho)
+#### Pagina de Error. (Hecho)
 #### Crear y configurar todo lo que pueden hacer los administradores
 #### Arreglar JWT o dejarlos como ya esta. 
 #### Optimizar codigo y velocidad de carga (A medias)
