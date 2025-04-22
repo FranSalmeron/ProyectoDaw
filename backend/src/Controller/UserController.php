@@ -19,13 +19,28 @@ class UserController extends AbstractController
     #[Route('/index', name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
+    
         $users = $userRepository->findAll();
-
+    
+        $data = array_map(function ($user) {
+            $roles = $user->getRoles();
+            return [
+                'id' => $user->getId(),
+                'name' => $user->getName(),
+                'email' => $user->getEmail(),
+                'address' => $user->getAddress(),
+                'phone' => $user->getPhone(),
+                'roles' => $roles,
+                'isAdmin' => in_array('ROLE_ADMIN', $roles),
+                'isBanned' => in_array('ROLE_BANNED', $roles),
+            ];
+        }, $users);
+    
         return $this->json([
             'status' => 'ok',
-            'users' => $users,
+            'users' => $data,
         ]);
-    }
+    }    
 
     #[Route('/new', name: 'app_user_new', methods: ['POST'])]
     public function new(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response

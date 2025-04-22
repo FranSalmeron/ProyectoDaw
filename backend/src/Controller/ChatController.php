@@ -24,27 +24,50 @@ class ChatController extends AbstractController
     }
 
     // Mostrar todos los chats
-    #[Route('/', name: 'app_chat_car_index', methods: ['GET'])]
+    #[Route('/index', name: 'app_chat_car_index', methods: ['GET'])]
     public function show(ChatRepository $chatRepository): Response
     {
         $chats = $chatRepository->findAll();
-
+    
         $chatsData = [];
         foreach ($chats as $chat) {
+            $car = $chat->getCar();
+    
+            // Construir URLs de las imágenes del coche
+            $imageBaseUrl = '/uploads/images/';
+            $carImages = [];
+            if ($car && $car->getImages()) {
+                foreach ($car->getImages() as $image) {
+                    $carImages[] = $imageBaseUrl . $image;
+                }
+            }
+    
             $chatsData[] = [
                 'chatId' => $chat->getId(),
-                'buyer' => $chat->getBuyer()->getId(),
-                'seller' => $chat->getSeller()->getId(),
-                'car' => $chat->getCar()->getId(),
+                'buyer' => [
+                    'id' => $chat->getBuyer()->getId(),
+                    'name' => $chat->getBuyer()->getName(),
+                ],
+                'seller' => [
+                    'id' => $chat->getSeller()->getId(),
+                    'name' => $chat->getSeller()->getName(),
+                ],
+                'car' => [
+                    'id' => $car->getId(),
+                    'images' => $carImages,
+                    'brand' => $car->getBrand(),
+                    'model' => $car->getModel(),
+                ],
                 'createdDate' => $chat->getCreatedDate()->format('Y-m-d H:i:s'),
             ];
         }
-
+    
         return $this->json([
             'success' => true,
             'chats' => $chatsData,
         ]);
     }
+    
 
     #[Route('/create', name: 'app_chat_car_create', methods: ['POST'])]
     public function createChat(Request $request, EntityManagerInterface $entityManager, ChatRepository $chatRepository): Response

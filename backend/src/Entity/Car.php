@@ -78,9 +78,9 @@ class Car
     #[Groups('car_list')] 
     private ?array $images = null;
 
-    #[ORM\Column(type: Types::BOOLEAN)]
+    #[ORM\Column(name: "car_status", type: Types::STRING, length: 50)]
     #[Groups('car_list')] 
-    private ?bool $CarSold = null;
+    private ?string $CarSold = null;
 
     #[ORM\ManyToOne(inversedBy: 'cars')]
     #[Groups('car_list')] 
@@ -270,16 +270,17 @@ class Car
         return $this;
     }
 
-    public function isCarSold(): ?bool
+    public function getCarSold(): ?string
     {
         return $this->CarSold;
     }
-
-    public function setCarSold(bool $CarSold): static
+    
+    public function setCarSold(string $CarSold): static
     {
         $this->CarSold = $CarSold;
         return $this;
     }
+    
 
     public function getUser(): ?User
     {

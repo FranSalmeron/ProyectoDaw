@@ -18,8 +18,12 @@ class MessageHandler implements MessageHandlerInterface
     private CacheInterface $cache;
     private LoggerInterface $logger;
 
-    public function __construct(ChatMessageRepository $chatMessageRepository, EntityManagerInterface $entityManager, CacheInterface $cache, LoggerInterface $logger)
-    {
+    public function __construct(
+        ChatMessageRepository $chatMessageRepository,
+        EntityManagerInterface $entityManager,
+        CacheInterface $cache,
+        LoggerInterface $logger
+    ) {
         $this->chatMessageRepository = $chatMessageRepository;
         $this->entityManager = $entityManager;
         $this->cache = $cache;
@@ -28,19 +32,24 @@ class MessageHandler implements MessageHandlerInterface
 
     public function __invoke(LoadMessagesMessage $message)
     {
-        $this->logger->info('taskId recibido en MessageHandler: ' . $message->getTaskId());
+        $taskId = $message->getTaskId();
+        $chatId = $message->getChatId();
+
+        $this->logger->info('🔄 taskId recibido en MessageHandler: ' . $taskId);
 
         // Recuperar el chat correspondiente
-        $chat = $this->entityManager->getRepository(Chat::class)->find($message->getChatId());
+        $chat = $this->entityManager->getRepository(Chat::class)->find($chatId);
 
         if (!$chat) {
-            // Emitir evento si el chat no existe
-            $this->logger->info('Chat no encontrado para taskId: ' . $message->getTaskId());
+            $this->logger->warning('❌ Chat no encontrado para taskId: ' . $taskId);
             return;
         }
 
         // Obtener todos los mensajes de ese chat (ordenados por fecha)
-        $messages = $this->chatMessageRepository->findBy(['chat' => $chat], ['messageDate' => 'ASC']);
+        $messages = $this->chatMessageRepository->findBy(
+            ['chat' => $chat],
+            ['messageDate' => 'ASC']
+        );
 
         // Preparar los mensajes para guardar en caché
         $data = [];
@@ -53,17 +62,17 @@ class MessageHandler implements MessageHandlerInterface
             ];
         }
 
-        // Borrar la caché previa para este taskId
-        $this->logger->info('Borrando caché para taskId: ' . $message->getTaskId());
-        $this->cache->delete($message->getTaskId());
+        $this->logger->info('📦 Preparando caché para taskId: ' . $taskId . ' con ' . count($data) . ' mensajes');
 
-        // Actualizar la caché con los nuevos mensajes
-        $this->cache->get($message->getTaskId(), function (ItemInterface $item) use ($data) {
-            $item->expiresAfter(3600); // Expira en 1 hora
-            return $data;  // Nuevos mensajes
+        // Eliminar caché previa si existe
+        $this->cache->delete($taskId);
+
+        // Guardar en caché aunque esté vacío
+        $this->cache->get($taskId, function (ItemInterface $item) use ($data) {
+            $item->expiresAfter(3600); // 1 hora de duración
+            return $data;
         });
 
-        // Log de la actualización de la caché
-        $this->logger->info('Caché actualizada para taskId: ' . $message->getTaskId());
+        $this->logger->info('✅ Caché actualizada para taskId: ' . $taskId);
     }
 }

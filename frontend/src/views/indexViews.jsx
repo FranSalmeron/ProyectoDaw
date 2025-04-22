@@ -11,3 +11,6 @@ export { default as CarFavorites} from './CarFavorites';
 export { default as Profile} from './Profile';
 export { default as SeeCars} from './SeeCars';
 export { default as About} from './About';
+export { default as Users} from './Users';
+export { default as Chat_list} from './Chat_list';
+export { default as Banned} from './Banned';

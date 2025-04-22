@@ -26,7 +26,13 @@ security:
         UserChangePassword:
             pattern: ^/user/\d+/change-password  # El patrón para la ruta específica
             jwt: ~ 
-            
+        
+        userIndex:
+            pattern: ^/user/index  # El patrón para la ruta específica
+            jwt: ~
+        ChatList:
+            pattern: ^/chat/index  # El patrón para la ruta específica
+            jwt: ~    
         csrf-token:
             pattern: ^/csrf-token  # Excluye esta ruta del firewall JWT
             security: false  # Desactiva la seguridad para esta ruta

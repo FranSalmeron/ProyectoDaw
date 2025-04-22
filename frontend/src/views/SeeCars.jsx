@@ -37,7 +37,6 @@ const SeeCars = () => {
        
   return (
     <div>
-        Mis coches:
         <CarCards cars={myCars} loading={loading} addFavorites={addFavorites} removeFromData={removeFromData} showEditDeleteButtons={true}  />
         
     </div>

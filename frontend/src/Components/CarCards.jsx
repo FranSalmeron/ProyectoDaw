@@ -7,6 +7,7 @@ import { useFavorites } from "../context/FavoriteContext";
 import { getUserIdFromToken } from "../helpers/decodeToken";
 import EditCarForm from "./EditCarForm";
 import { deleteCar } from "../helpers/CarHelper";
+import { isAdmin } from "../helpers/decodeToken";
 
 const CarImage = ({ car }) => {
   return (
@@ -30,7 +31,7 @@ const CarCards = ({
   removeFromData,
   showEditDeleteButtons,
 }) => {
-  const [selectedCar, setSelectedCar] = useState('')
+  const [selectedCar, setSelectedCar] = useState("");
   const { favorites } = useFavorites();
   const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
   const navigate = useNavigate();
@@ -102,19 +103,39 @@ const CarCards = ({
         <p>Cargando Coches...</p>
       ) : cars && cars.length > 0 ? (
         <ul className="space-y-6">
-          {/* Filtramos los coches que ya están vendidos */}
+          {/* Filtramos los coches según si son subidos o baneados */}
           {cars
-            .filter((car) => !car.CarSold)
+            .filter((car) => {
+              if (isAdmin()) {
+                // Administradores pueden ver coches subidos o baneados o el mismo usuario
+                return car.CarSold == "subido" || car.CarSold == "baneado";
+              }
+              if (userId == car.user.id) {
+                // Los usuarios normales ven coches subidos o baneados que ellos han subido
+                return car.CarSold == "subido" || car.CarSold == "baneado";
+              }
+              // Usuarios normales solo ven coches subidos
+              return car.CarSold == "subido" ;
+            })
             .map((car, index) => (
               <li
                 key={index}
-                className="bg-white p-4 shadow-md rounded-lg relative"
+                className={`bg-white p-4 shadow-md rounded-lg relative ${
+                  car.CarSold === "baneado" ? "border-2 border-red-500" : ""
+                }`}
               >
                 <div
                   className="cursor-pointer"
                   onClick={() => navigate(`/car_details`, { state: { car } })}
                 >
-                  {/* Primer fila: Marca, Modelo y Precio */}
+                  {/* 🚫 Alerta si está baneado */}
+                  {car.CarSold === "baneado" && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-2">
+                      🚫 Este coche ha sido baneado por un administrador.
+                    </div>
+                  )}
+
+                  {/* Imagen */}
                   <div className="flex w-full mb-4">
                     <div className="flex-1">
                       <h4 className="text-lg font-semibold">
@@ -128,7 +149,7 @@ const CarCards = ({
                     </div>
                   </div>
 
-                  {/* Segunda fila: Imagen y Características */}
+                  {/* Imagen y Características */}
                   <div className="flex w-full">
                     <div className="w-50 h-auto mr-4">
                       <CarImage car={car} />

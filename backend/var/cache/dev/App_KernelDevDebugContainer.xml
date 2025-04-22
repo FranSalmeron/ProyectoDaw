@@ -240,9 +240,10 @@
       <parameter>refreshToken</parameter>
       <parameter>ChatMessageSend</parameter>
       <parameter>UserChangePassword</parameter>
+      <parameter>userIndex</parameter>
+      <parameter>ChatList</parameter>
       <parameter>csrf_token</parameter>
       <parameter>ChatCreate</parameter>
-      <parameter>api</parameter>
     </parameter>
     <parameter key="lexik_jwt_authentication.authenticator_manager_enabled">true</parameter>
     <parameter key="monolog.use_microseconds">true</parameter>
@@ -1186,7 +1187,7 @@
     <service id="console.command.event_dispatcher_debug" class="Symfony\Bundle\FrameworkBundle\Command\EventDispatcherDebugCommand">
       <tag name="console.command"/>
       <tag name="container.no_preload"/>
-      <argument type="service" id=".service_locator.k1zp18Y"/>
+      <argument type="service" id=".service_locator.jhC.VRS"/>
       <call method="setName">
         <argument>debug:event-dispatcher</argument>
       </call>
@@ -2494,6 +2495,22 @@
         <argument>kernel.response</argument>
         <argument type="collection">
           <argument type="service_closure" id="security.context_listener.1"/>
+          <argument>onKernelResponse</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>kernel.response</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.context_listener.2"/>
+          <argument>onKernelResponse</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>kernel.response</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.context_listener.3"/>
           <argument>onKernelResponse</argument>
         </argument>
         <argument>0</argument>
@@ -5637,15 +5654,16 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="security.firewall.map" class="Symfony\Bundle\SecurityBundle\Security\FirewallMap">
-      <argument type="service" id=".service_locator.K7rDYp9"/>
+      <argument type="service" id=".service_locator.gcVH11s"/>
       <argument type="iterator">
         <argument key="security.firewall.map.context.login" type="service" id=".security.request_matcher.huI_Dm8"/>
         <argument key="security.firewall.map.context.refreshToken" type="service" id=".security.request_matcher.zUz4DiV"/>
         <argument key="security.firewall.map.context.ChatMessageSend" type="service" id=".security.request_matcher.N3f60VL"/>
         <argument key="security.firewall.map.context.UserChangePassword" type="service" id=".security.request_matcher.pDsVPBi"/>
+        <argument key="security.firewall.map.context.userIndex" type="service" id=".security.request_matcher.X8Qgzn9"/>
+        <argument key="security.firewall.map.context.ChatList" type="service" id=".security.request_matcher.xkdLkU4"/>
         <argument key="security.firewall.map.context.csrf_token" type="service" id=".security.request_matcher.KsvN9uG"/>
         <argument key="security.firewall.map.context.ChatCreate" type="service" id=".security.request_matcher.O05mk5k"/>
-        <argument key="security.firewall.map.context.api" type="service" id=".security.request_matcher.rzSi_me"/>
       </argument>
     </service>
     <service id="security.firewall.context" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext" abstract="true">
@@ -5918,8 +5936,9 @@
     <service id="security.authenticator.managers_locator" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <argument type="collection">
         <argument key="UserChangePassword" type="service_closure" id="security.authenticator.manager.UserChangePassword"/>
+        <argument key="userIndex" type="service_closure" id="security.authenticator.manager.userIndex"/>
+        <argument key="ChatList" type="service_closure" id="security.authenticator.manager.ChatList"/>
         <argument key="ChatCreate" type="service_closure" id="security.authenticator.manager.ChatCreate"/>
-        <argument key="api" type="service_closure" id="security.authenticator.manager.api"/>
       </argument>
     </service>
     <service id="security.user_authenticator" class="Symfony\Bundle\SecurityBundle\Security\UserAuthenticator">
@@ -6034,17 +6053,20 @@
       <tag name="console.command" command="debug:firewall"/>
       <tag name="container.no_preload"/>
       <argument>%security.firewalls%</argument>
-      <argument type="service" id=".service_locator.K7rDYp9"/>
-      <argument type="service" id=".service_locator.k1zp18Y"/>
+      <argument type="service" id=".service_locator.gcVH11s"/>
+      <argument type="service" id=".service_locator.jhC.VRS"/>
       <argument type="collection">
         <argument key="UserChangePassword" type="collection">
           <argument type="service" id="security.authenticator.jwt.UserChangePassword"/>
         </argument>
+        <argument key="userIndex" type="collection">
+          <argument type="service" id="security.authenticator.jwt.userIndex"/>
+        </argument>
+        <argument key="ChatList" type="collection">
+          <argument type="service" id="security.authenticator.jwt.ChatList"/>
+        </argument>
         <argument key="ChatCreate" type="collection">
           <argument type="service" id="security.authenticator.jwt.ChatCreate"/>
-        </argument>
-        <argument key="api" type="collection">
-          <argument type="service" id="security.authenticator.jwt.api"/>
         </argument>
       </argument>
       <argument>false</argument>
@@ -6285,6 +6307,316 @@
       <argument>null</argument>
       <argument type="service" id="security.firewall.map.config.UserChangePassword"/>
     </service>
+    <service id="security.firewall.map.config.userIndex" class="Symfony\Bundle\SecurityBundle\Security\FirewallConfig">
+      <argument>userIndex</argument>
+      <argument>security.user_checker</argument>
+      <argument>.security.request_matcher.X8Qgzn9</argument>
+      <argument>true</argument>
+      <argument>false</argument>
+      <argument>security.user.provider.concrete.app_user_provider</argument>
+      <argument>userIndex</argument>
+      <argument>security.authenticator.jwt.userIndex</argument>
+      <argument>null</argument>
+      <argument>null</argument>
+      <argument type="collection">
+        <argument>jwt</argument>
+      </argument>
+      <argument>null</argument>
+    </service>
+    <service id=".security.request_matcher.X8Qgzn9" class="Symfony\Component\HttpFoundation\RequestMatcher">
+      <argument>^/user/index</argument>
+    </service>
+    <service id="security.event_dispatcher.userIndex" class="Symfony\Component\EventDispatcher\EventDispatcher">
+      <tag name="security.event_dispatcher.userIndex">event_dispatcher.dispatcher</tag>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\LoginSuccessEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.session.userIndex"/>
+          <argument>onSuccessfulLogin</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.user_checker.userIndex"/>
+          <argument>preCheckCredentials</argument>
+        </argument>
+        <argument>256</argument>
+      </call>
+      <call method="addListener">
+        <argument>security.authentication.success</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.user_checker.userIndex"/>
+          <argument>postCheckCredentials</argument>
+        </argument>
+        <argument>256</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.user_provider"/>
+          <argument>checkPassport</argument>
+        </argument>
+        <argument>1024</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.check_authenticator_credentials"/>
+          <argument>checkPassport</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\LoginSuccessEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.password_migrating"/>
+          <argument>onLoginSuccess</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.csrf_protection"/>
+          <argument>checkPassport</argument>
+        </argument>
+        <argument>512</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\LogoutEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.logout.listener.csrf_token_clearing"/>
+          <argument>onLogout</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+    </service>
+    <service id="security.context_listener.1" class="Symfony\Component\Security\Http\Firewall\ContextListener">
+      <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse"/>
+      <tag name="container.hot_path"/>
+      <argument type="service" id="security.untracked_token_storage"/>
+      <argument type="iterator">
+        <argument type="service" id="security.user.provider.concrete.app_user_provider"/>
+      </argument>
+      <argument>userIndex</argument>
+      <argument type="service" id="monolog.logger.security" on-invalid="null"/>
+      <argument type="service" id="security.event_dispatcher.userIndex"/>
+      <argument type="service" id="security.authentication.trust_resolver"/>
+      <argument type="collection">
+        <argument type="service" id="security.token_storage"/>
+        <argument>enableUsageTracking</argument>
+      </argument>
+    </service>
+    <service id="security.listener.session.userIndex" class="Symfony\Component\Security\Http\EventListener\SessionStrategyListener">
+      <tag name="kernel.event_subscriber" dispatcher="security.event_dispatcher.userIndex"/>
+      <argument type="service" id="security.authentication.session_strategy"/>
+    </service>
+    <service id="security.authenticator.jwt.userIndex" class="Lexik\Bundle\JWTAuthenticationBundle\Security\Authenticator\JWTAuthenticator">
+      <argument type="service" id="lexik_jwt_authentication.jwt_manager"/>
+      <argument type="service" id="debug.event_dispatcher"/>
+      <argument type="service" id="lexik_jwt_authentication.extractor.chain_extractor"/>
+      <argument type="service" id="security.user.provider.concrete.app_user_provider"/>
+      <argument type="service" id="translator.data_collector" on-invalid="null"/>
+    </service>
+    <service id="security.authenticator.manager.userIndex" class="Symfony\Component\Security\Http\Authentication\AuthenticatorManager">
+      <tag name="monolog.logger" channel="security"/>
+      <argument type="collection">
+        <argument type="service" id="security.authenticator.jwt.userIndex"/>
+      </argument>
+      <argument type="service" id="security.token_storage"/>
+      <argument type="service" id="security.event_dispatcher.userIndex"/>
+      <argument>userIndex</argument>
+      <argument type="service" id="monolog.logger.security" on-invalid="null"/>
+      <argument>true</argument>
+      <argument>true</argument>
+      <argument type="collection"/>
+    </service>
+    <service id="debug.security.firewall.authenticator.userIndex" class="Symfony\Component\Security\Http\Authenticator\Debug\TraceableAuthenticatorManagerListener">
+      <argument type="service" id="debug.security.firewall.authenticator.userIndex.inner"/>
+    </service>
+    <service id="security.listener.user_checker.userIndex" class="Symfony\Component\Security\Http\EventListener\UserCheckerListener">
+      <tag name="kernel.event_subscriber" dispatcher="security.event_dispatcher.userIndex"/>
+      <argument type="service" id="security.user_checker"/>
+    </service>
+    <service id="security.exception_listener.userIndex" class="Symfony\Component\Security\Http\Firewall\ExceptionListener">
+      <argument type="service" id="security.token_storage"/>
+      <argument type="service" id="security.authentication.trust_resolver"/>
+      <argument type="service" id="security.http_utils"/>
+      <argument>userIndex</argument>
+      <argument type="service" id="security.authenticator.jwt.userIndex"/>
+      <argument>null</argument>
+      <argument>null</argument>
+      <argument type="service" id="monolog.logger.security" on-invalid="null"/>
+      <argument>false</argument>
+    </service>
+    <service id="security.firewall.map.context.userIndex" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext">
+      <argument type="iterator">
+        <argument type="service" id="security.channel_listener"/>
+        <argument type="service" id="security.context_listener.1"/>
+        <argument type="service" id="debug.security.firewall.authenticator.userIndex"/>
+        <argument type="service" id="security.access_listener"/>
+      </argument>
+      <argument type="service" id="security.exception_listener.userIndex"/>
+      <argument>null</argument>
+      <argument type="service" id="security.firewall.map.config.userIndex"/>
+    </service>
+    <service id="security.firewall.map.config.ChatList" class="Symfony\Bundle\SecurityBundle\Security\FirewallConfig">
+      <argument>ChatList</argument>
+      <argument>security.user_checker</argument>
+      <argument>.security.request_matcher.xkdLkU4</argument>
+      <argument>true</argument>
+      <argument>false</argument>
+      <argument>security.user.provider.concrete.app_user_provider</argument>
+      <argument>ChatList</argument>
+      <argument>security.authenticator.jwt.ChatList</argument>
+      <argument>null</argument>
+      <argument>null</argument>
+      <argument type="collection">
+        <argument>jwt</argument>
+      </argument>
+      <argument>null</argument>
+    </service>
+    <service id=".security.request_matcher.xkdLkU4" class="Symfony\Component\HttpFoundation\RequestMatcher">
+      <argument>^/chat/index</argument>
+    </service>
+    <service id="security.event_dispatcher.ChatList" class="Symfony\Component\EventDispatcher\EventDispatcher">
+      <tag name="security.event_dispatcher.ChatList">event_dispatcher.dispatcher</tag>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\LoginSuccessEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.session.ChatList"/>
+          <argument>onSuccessfulLogin</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.user_checker.ChatList"/>
+          <argument>preCheckCredentials</argument>
+        </argument>
+        <argument>256</argument>
+      </call>
+      <call method="addListener">
+        <argument>security.authentication.success</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.user_checker.ChatList"/>
+          <argument>postCheckCredentials</argument>
+        </argument>
+        <argument>256</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.user_provider"/>
+          <argument>checkPassport</argument>
+        </argument>
+        <argument>1024</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.check_authenticator_credentials"/>
+          <argument>checkPassport</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\LoginSuccessEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.password_migrating"/>
+          <argument>onLoginSuccess</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.listener.csrf_protection"/>
+          <argument>checkPassport</argument>
+        </argument>
+        <argument>512</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Security\Http\Event\LogoutEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="security.logout.listener.csrf_token_clearing"/>
+          <argument>onLogout</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+    </service>
+    <service id="security.context_listener.2" class="Symfony\Component\Security\Http\Firewall\ContextListener">
+      <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse"/>
+      <tag name="container.hot_path"/>
+      <argument type="service" id="security.untracked_token_storage"/>
+      <argument type="iterator">
+        <argument type="service" id="security.user.provider.concrete.app_user_provider"/>
+      </argument>
+      <argument>ChatList</argument>
+      <argument type="service" id="monolog.logger.security" on-invalid="null"/>
+      <argument type="service" id="security.event_dispatcher.ChatList"/>
+      <argument type="service" id="security.authentication.trust_resolver"/>
+      <argument type="collection">
+        <argument type="service" id="security.token_storage"/>
+        <argument>enableUsageTracking</argument>
+      </argument>
+    </service>
+    <service id="security.listener.session.ChatList" class="Symfony\Component\Security\Http\EventListener\SessionStrategyListener">
+      <tag name="kernel.event_subscriber" dispatcher="security.event_dispatcher.ChatList"/>
+      <argument type="service" id="security.authentication.session_strategy"/>
+    </service>
+    <service id="security.authenticator.jwt.ChatList" class="Lexik\Bundle\JWTAuthenticationBundle\Security\Authenticator\JWTAuthenticator">
+      <argument type="service" id="lexik_jwt_authentication.jwt_manager"/>
+      <argument type="service" id="debug.event_dispatcher"/>
+      <argument type="service" id="lexik_jwt_authentication.extractor.chain_extractor"/>
+      <argument type="service" id="security.user.provider.concrete.app_user_provider"/>
+      <argument type="service" id="translator.data_collector" on-invalid="null"/>
+    </service>
+    <service id="security.authenticator.manager.ChatList" class="Symfony\Component\Security\Http\Authentication\AuthenticatorManager">
+      <tag name="monolog.logger" channel="security"/>
+      <argument type="collection">
+        <argument type="service" id="security.authenticator.jwt.ChatList"/>
+      </argument>
+      <argument type="service" id="security.token_storage"/>
+      <argument type="service" id="security.event_dispatcher.ChatList"/>
+      <argument>ChatList</argument>
+      <argument type="service" id="monolog.logger.security" on-invalid="null"/>
+      <argument>true</argument>
+      <argument>true</argument>
+      <argument type="collection"/>
+    </service>
+    <service id="debug.security.firewall.authenticator.ChatList" class="Symfony\Component\Security\Http\Authenticator\Debug\TraceableAuthenticatorManagerListener">
+      <argument type="service" id="debug.security.firewall.authenticator.ChatList.inner"/>
+    </service>
+    <service id="security.listener.user_checker.ChatList" class="Symfony\Component\Security\Http\EventListener\UserCheckerListener">
+      <tag name="kernel.event_subscriber" dispatcher="security.event_dispatcher.ChatList"/>
+      <argument type="service" id="security.user_checker"/>
+    </service>
+    <service id="security.exception_listener.ChatList" class="Symfony\Component\Security\Http\Firewall\ExceptionListener">
+      <argument type="service" id="security.token_storage"/>
+      <argument type="service" id="security.authentication.trust_resolver"/>
+      <argument type="service" id="security.http_utils"/>
+      <argument>ChatList</argument>
+      <argument type="service" id="security.authenticator.jwt.ChatList"/>
+      <argument>null</argument>
+      <argument>null</argument>
+      <argument type="service" id="monolog.logger.security" on-invalid="null"/>
+      <argument>false</argument>
+    </service>
+    <service id="security.firewall.map.context.ChatList" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext">
+      <argument type="iterator">
+        <argument type="service" id="security.channel_listener"/>
+        <argument type="service" id="security.context_listener.2"/>
+        <argument type="service" id="debug.security.firewall.authenticator.ChatList"/>
+        <argument type="service" id="security.access_listener"/>
+      </argument>
+      <argument type="service" id="security.exception_listener.ChatList"/>
+      <argument>null</argument>
+      <argument type="service" id="security.firewall.map.config.ChatList"/>
+    </service>
     <service id="security.firewall.map.config.csrf_token" class="Symfony\Bundle\SecurityBundle\Security\FirewallConfig">
       <argument>csrf_token</argument>
       <argument>security.user_checker</argument>
@@ -6394,7 +6726,7 @@
         <argument>0</argument>
       </call>
     </service>
-    <service id="security.context_listener.1" class="Symfony\Component\Security\Http\Firewall\ContextListener">
+    <service id="security.context_listener.3" class="Symfony\Component\Security\Http\Firewall\ContextListener">
       <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse"/>
       <tag name="container.hot_path"/>
       <argument type="service" id="security.untracked_token_storage"/>
@@ -6455,7 +6787,7 @@
     <service id="security.firewall.map.context.ChatCreate" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext">
       <argument type="iterator">
         <argument type="service" id="security.channel_listener"/>
-        <argument type="service" id="security.context_listener.1"/>
+        <argument type="service" id="security.context_listener.3"/>
         <argument type="service" id="debug.security.firewall.authenticator.ChatCreate"/>
         <argument type="service" id="security.access_listener"/>
       </argument>
@@ -6463,142 +6795,17 @@
       <argument>null</argument>
       <argument type="service" id="security.firewall.map.config.ChatCreate"/>
     </service>
-    <service id="security.firewall.map.config.api" class="Symfony\Bundle\SecurityBundle\Security\FirewallConfig">
-      <argument>api</argument>
-      <argument>security.user_checker</argument>
-      <argument>.security.request_matcher.rzSi_me</argument>
-      <argument>true</argument>
-      <argument>true</argument>
-      <argument>security.user.provider.concrete.app_user_provider</argument>
-      <argument>null</argument>
-      <argument>security.authenticator.jwt.api</argument>
-      <argument>null</argument>
-      <argument>null</argument>
-      <argument type="collection">
-        <argument>jwt</argument>
-      </argument>
-      <argument>null</argument>
-    </service>
-    <service id=".security.request_matcher.rzSi_me" class="Symfony\Component\HttpFoundation\RequestMatcher">
-      <argument>^/(api)</argument>
-    </service>
-    <service id="security.event_dispatcher.api" class="Symfony\Component\EventDispatcher\EventDispatcher">
-      <tag name="security.event_dispatcher.api">event_dispatcher.dispatcher</tag>
-      <call method="addListener">
-        <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="security.listener.user_checker.api"/>
-          <argument>preCheckCredentials</argument>
-        </argument>
-        <argument>256</argument>
-      </call>
-      <call method="addListener">
-        <argument>security.authentication.success</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="security.listener.user_checker.api"/>
-          <argument>postCheckCredentials</argument>
-        </argument>
-        <argument>256</argument>
-      </call>
-      <call method="addListener">
-        <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="security.listener.user_provider"/>
-          <argument>checkPassport</argument>
-        </argument>
-        <argument>1024</argument>
-      </call>
-      <call method="addListener">
-        <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="security.listener.check_authenticator_credentials"/>
-          <argument>checkPassport</argument>
-        </argument>
-        <argument>0</argument>
-      </call>
-      <call method="addListener">
-        <argument>Symfony\Component\Security\Http\Event\LoginSuccessEvent</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="security.listener.password_migrating"/>
-          <argument>onLoginSuccess</argument>
-        </argument>
-        <argument>0</argument>
-      </call>
-      <call method="addListener">
-        <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="security.listener.csrf_protection"/>
-          <argument>checkPassport</argument>
-        </argument>
-        <argument>512</argument>
-      </call>
-      <call method="addListener">
-        <argument>Symfony\Component\Security\Http\Event\LogoutEvent</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="security.logout.listener.csrf_token_clearing"/>
-          <argument>onLogout</argument>
-        </argument>
-        <argument>0</argument>
-      </call>
-    </service>
-    <service id="security.authenticator.jwt.api" class="Lexik\Bundle\JWTAuthenticationBundle\Security\Authenticator\JWTAuthenticator">
-      <argument type="service" id="lexik_jwt_authentication.jwt_manager"/>
-      <argument type="service" id="debug.event_dispatcher"/>
-      <argument type="service" id="lexik_jwt_authentication.extractor.chain_extractor"/>
-      <argument type="service" id="security.user.provider.concrete.app_user_provider"/>
-      <argument type="service" id="translator.data_collector" on-invalid="null"/>
-    </service>
-    <service id="security.authenticator.manager.api" class="Symfony\Component\Security\Http\Authentication\AuthenticatorManager">
-      <tag name="monolog.logger" channel="security"/>
-      <argument type="collection">
-        <argument type="service" id="security.authenticator.jwt.api"/>
-      </argument>
-      <argument type="service" id="security.token_storage"/>
-      <argument type="service" id="security.event_dispatcher.api"/>
-      <argument>api</argument>
-      <argument type="service" id="monolog.logger.security" on-invalid="null"/>
-      <argument>true</argument>
-      <argument>true</argument>
-      <argument type="collection"/>
-    </service>
-    <service id="debug.security.firewall.authenticator.api" class="Symfony\Component\Security\Http\Authenticator\Debug\TraceableAuthenticatorManagerListener">
-      <argument type="service" id="debug.security.firewall.authenticator.api.inner"/>
-    </service>
-    <service id="security.listener.user_checker.api" class="Symfony\Component\Security\Http\EventListener\UserCheckerListener">
-      <tag name="kernel.event_subscriber" dispatcher="security.event_dispatcher.api"/>
-      <argument type="service" id="security.user_checker"/>
-    </service>
-    <service id="security.exception_listener.api" class="Symfony\Component\Security\Http\Firewall\ExceptionListener">
-      <argument type="service" id="security.token_storage"/>
-      <argument type="service" id="security.authentication.trust_resolver"/>
-      <argument type="service" id="security.http_utils"/>
-      <argument>api</argument>
-      <argument type="service" id="security.authenticator.jwt.api"/>
-      <argument>null</argument>
-      <argument>null</argument>
-      <argument type="service" id="monolog.logger.security" on-invalid="null"/>
-      <argument>true</argument>
-    </service>
-    <service id="security.firewall.map.context.api" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext">
-      <argument type="iterator">
-        <argument type="service" id="security.channel_listener"/>
-        <argument type="service" id="debug.security.firewall.authenticator.api"/>
-        <argument type="service" id="security.access_listener"/>
-      </argument>
-      <argument type="service" id="security.exception_listener.api"/>
-      <argument>null</argument>
-      <argument type="service" id="security.firewall.map.config.api"/>
-    </service>
-    <service id=".service_locator.K7rDYp9" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.gcVH11s" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="security.firewall.map.context.ChatCreate" type="service_closure" id="security.firewall.map.context.ChatCreate"/>
+        <argument key="security.firewall.map.context.ChatList" type="service_closure" id="security.firewall.map.context.ChatList"/>
         <argument key="security.firewall.map.context.ChatMessageSend" type="service_closure" id="security.firewall.map.context.ChatMessageSend"/>
         <argument key="security.firewall.map.context.UserChangePassword" type="service_closure" id="security.firewall.map.context.UserChangePassword"/>
-        <argument key="security.firewall.map.context.api" type="service_closure" id="security.firewall.map.context.api"/>
         <argument key="security.firewall.map.context.csrf_token" type="service_closure" id="security.firewall.map.context.csrf_token"/>
         <argument key="security.firewall.map.context.login" type="service_closure" id="security.firewall.map.context.login"/>
         <argument key="security.firewall.map.context.refreshToken" type="service_closure" id="security.firewall.map.context.refreshToken"/>
+        <argument key="security.firewall.map.context.userIndex" type="service_closure" id="security.firewall.map.context.userIndex"/>
       </argument>
     </service>
     <service id=".security.request_matcher.Ud1TEPV" class="Symfony\Component\HttpFoundation\RequestMatcher">
@@ -9430,13 +9637,14 @@
         <argument key="reverse_container" type="service_closure" id="reverse_container" on-invalid="ignore_uninitialized"/>
       </argument>
     </service>
-    <service id=".service_locator.k1zp18Y" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.jhC.VRS" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="event_dispatcher" type="service_closure" id="debug.event_dispatcher"/>
         <argument key="security.event_dispatcher.ChatCreate" type="service_closure" id="security.event_dispatcher.ChatCreate"/>
+        <argument key="security.event_dispatcher.ChatList" type="service_closure" id="security.event_dispatcher.ChatList"/>
         <argument key="security.event_dispatcher.UserChangePassword" type="service_closure" id="security.event_dispatcher.UserChangePassword"/>
-        <argument key="security.event_dispatcher.api" type="service_closure" id="security.event_dispatcher.api"/>
+        <argument key="security.event_dispatcher.userIndex" type="service_closure" id="security.event_dispatcher.userIndex"/>
       </argument>
     </service>
     <service id=".service_locator.XWmhzGa" class="Symfony\Component\DependencyInjection\ServiceLocator">
@@ -9549,11 +9757,14 @@
     <service id="debug.security.firewall.authenticator.UserChangePassword.inner" class="Symfony\Component\Security\Http\Firewall\AuthenticatorManagerListener">
       <argument type="service" id="security.authenticator.manager.UserChangePassword"/>
     </service>
+    <service id="debug.security.firewall.authenticator.userIndex.inner" class="Symfony\Component\Security\Http\Firewall\AuthenticatorManagerListener">
+      <argument type="service" id="security.authenticator.manager.userIndex"/>
+    </service>
+    <service id="debug.security.firewall.authenticator.ChatList.inner" class="Symfony\Component\Security\Http\Firewall\AuthenticatorManagerListener">
+      <argument type="service" id="security.authenticator.manager.ChatList"/>
+    </service>
     <service id="debug.security.firewall.authenticator.ChatCreate.inner" class="Symfony\Component\Security\Http\Firewall\AuthenticatorManagerListener">
       <argument type="service" id="security.authenticator.manager.ChatCreate"/>
-    </service>
-    <service id="debug.security.firewall.authenticator.api.inner" class="Symfony\Component\Security\Http\Firewall\AuthenticatorManagerListener">
-      <argument type="service" id="security.authenticator.manager.api"/>
     </service>
     <service id="api_platform.serializer.context_builder.filter.inner" class="ApiPlatform\Serializer\SerializerContextBuilder">
       <argument type="service" id="api_platform.metadata.resource.metadata_factory.cached"/>
@@ -10798,11 +11009,13 @@
     <service id="Symfony\Component\Security\Core\User\UserProviderInterface" alias="security.user.provider.concrete.app_user_provider"/>
     <service id="security.authentication.session_strategy.UserChangePassword" alias="security.authentication.session_strategy"/>
     <service id="security.user_checker.UserChangePassword" alias="security.user_checker"/>
+    <service id="security.authentication.session_strategy.userIndex" alias="security.authentication.session_strategy"/>
+    <service id="security.user_checker.userIndex" alias="security.user_checker"/>
+    <service id="security.authentication.session_strategy.ChatList" alias="security.authentication.session_strategy"/>
+    <service id="security.user_checker.ChatList" alias="security.user_checker"/>
     <service id="security.authentication.session_strategy.ChatCreate" alias="security.authentication.session_strategy"/>
     <service id="security.user_checker.ChatCreate" alias="security.user_checker"/>
-    <service id="security.authentication.session_strategy.api" alias="security.authentication.session_strategy_noop"/>
-    <service id="security.user_checker.api" alias="security.user_checker"/>
-    <service id="security.firewall.context_locator" alias=".service_locator.K7rDYp9"/>
+    <service id="security.firewall.context_locator" alias=".service_locator.gcVH11s"/>
     <service id="Symfony\Component\Security\Core\User\UserCheckerInterface" alias="security.user_checker"/>
     <service id="logger" alias="monolog.logger"/>
     <service id="Psr\Log\LoggerInterface" alias="monolog.logger"/>
@@ -10935,7 +11148,7 @@
     <service id="api_platform.name_converter" alias="serializer.name_converter.metadata_aware"/>
     <service id=".service_locator.6DxUFLS" alias="messenger.receiver_locator"/>
     <service id=".service_locator.27KOu4H" alias="messenger.retry_strategy_locator"/>
-    <service id=".service_locator.fd.WQEL" alias=".service_locator.K7rDYp9"/>
+    <service id=".service_locator.JRJkDaK" alias=".service_locator.gcVH11s"/>
     <service id=".service_locator.bnaLdkn" alias="api_platform.serializer_locator"/>
     <service id=".service_locator.Xbsa8iG" alias="api_platform.filter_locator"/>
     <service id=".service_locator.0GV1BZZ" alias=".service_locator.gSv9zYw"/>
@@ -10981,8 +11194,9 @@
     <service id="twig.error_renderer.html.inner" alias="error_handler.error_renderer.html"/>
     <service id="security.access.decision_manager" alias="debug.security.access.decision_manager"/>
     <service id="security.firewall.authenticator.UserChangePassword" alias="debug.security.firewall.authenticator.UserChangePassword"/>
+    <service id="security.firewall.authenticator.userIndex" alias="debug.security.firewall.authenticator.userIndex"/>
+    <service id="security.firewall.authenticator.ChatList" alias="debug.security.firewall.authenticator.ChatList"/>
     <service id="security.firewall.authenticator.ChatCreate" alias="debug.security.firewall.authenticator.ChatCreate"/>
-    <service id="security.firewall.authenticator.api" alias="debug.security.firewall.authenticator.api"/>
     <service id="api_platform.serializer.context_builder" alias="api_platform.serializer.context_builder.filter"/>
     <service id="api_platform.metadata.property.name_collection_factory.xml.inner" alias="api_platform.metadata.property.name_collection_factory.property_info"/>
     <service id="api_platform.metadata.resource.name_collection_factory.annotation.inner" alias="api_platform.metadata.resource.name_collection_factory.xml"/>
@@ -11039,7 +11253,7 @@
     <service id=".service_locator.O99ujjA" alias=".service_locator.GPGtF8v"/>
     <service id=".service_locator.y8hcufX" alias=".service_locator.akmE0pX"/>
     <service id=".service_locator.eAaUVIw" alias=".service_locator.jIxfAsi"/>
-    <service id=".service_locator.Oo3r0au" alias=".service_locator.k1zp18Y"/>
+    <service id=".service_locator.OKaCpR6" alias=".service_locator.jhC.VRS"/>
     <service id=".service_locator.u6DWx23" alias=".service_locator.cXsfP3P"/>
     <service id=".service_locator.pFwChgS" alias=".service_locator.UkE3SaZ"/>
     <service id=".service_locator.aa1PbBb" alias=".service_locator.nLgZj7R"/>

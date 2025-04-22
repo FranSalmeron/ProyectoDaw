@@ -106,34 +106,32 @@ class ChatMessageController extends AbstractController
         ]);
     }
 
-
-    // Consultar el estado de la tarea (polling)
+ 
     #[Route('/task/{taskId}', name: 'app_check_task_status', methods: ['GET'])]
     public function checkTaskStatus(string $taskId): JsonResponse
     {
-        // Consultar el estado de la tarea en la cache
-        $data = $this->cache->get($taskId, function () {
-            return null; // Si la tarea no existe, retorna null
+        // Este truco devuelve null si no existe sin sobrescribir la caché
+        $hasData = false;
+        $data = $this->cache->get($taskId, function (ItemInterface $item) use (&$hasData) {
+            $hasData = false; // No está presente, no sobrescribimos
+            // No guardamos nada nuevo aquí
+            $item->expiresAfter(0); // Expira inmediatamente si llega aquí
+            return null;
         });
-
-        // Registrar el estado de la caché
-        if ($data) {
-            $this->logger->info('Datos cargados de la caché para taskId: ' . $taskId);
-        } else {
-            $this->logger->info('No se encontraron datos en caché para taskId: ' . $taskId);
-        }
-
-        // Si la tarea está completa, devolvemos los mensajes
-        if ($data) {
+    
+        if ($data !== null) {
+            $this->logger->info('✅ Datos cargados de la caché para taskId: ' . $taskId);
             return new JsonResponse([
                 'status' => 'completed',
                 'data' => $data,
             ]);
+        } else {
+            $this->logger->info('⏳ No se encontraron datos en caché para taskId: ' . $taskId);
+            return new JsonResponse(['status' => 'pending']);
         }
-
-        // Si la tarea sigue pendiente, devolver el estado pendiente
-        return new JsonResponse(['status' => 'pending']);
     }
+    
+    
 
 
     // Iniciar carga de mensajes en background (asíncrono)

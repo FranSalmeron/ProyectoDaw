@@ -16,10 +16,13 @@
 #### Editar nombre, cambiar contraseña y esas cosas (Hecho)
 #### Pagina de About. (Hecho)
 #### Pagina de Error. (Hecho)
-#### Crear y configurar todo lo que pueden hacer los administradores
+#### Crear y configurar todo lo que pueden hacer los administradores (Usuarios, Chats, Coches)
+#### Pagina para usuarios baneados. (Hecho)
+#### Crear Spinner de carga y eso ()
 #### Arreglar JWT o dejarlos como ya esta. 
 #### Optimizar codigo y velocidad de carga (A medias)
 #### Crear, consultar y hacer un buen diseño de la pagina visual y esteticamente (A medias)
+#### Despliegue de la pagina (Dominio,github,otras opciones a elegir)
 #### Documentacion y cosas necesarias del proyecto.
 
 #### OPCIONAL valorar vendedores de coches

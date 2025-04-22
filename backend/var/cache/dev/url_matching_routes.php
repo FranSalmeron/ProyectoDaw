@@ -19,7 +19,7 @@ return [
         '/car/new' => [[['_route' => 'app_car_new', '_controller' => 'App\\Controller\\CarController::new'], null, ['POST' => 0], null, false, false, null]],
         '/favorite' => [[['_route' => 'app_car_favorite_index', '_controller' => 'App\\Controller\\CarFavoriteController::index'], null, ['GET' => 0], null, true, false, null]],
         '/favorite/new' => [[['_route' => 'app_car_favorite_new', '_controller' => 'App\\Controller\\CarFavoriteController::new'], null, ['POST' => 0], null, false, false, null]],
-        '/chat' => [[['_route' => 'app_chat_car_index', '_controller' => 'App\\Controller\\ChatController::show'], null, ['GET' => 0], null, true, false, null]],
+        '/chat/index' => [[['_route' => 'app_chat_car_index', '_controller' => 'App\\Controller\\ChatController::show'], null, ['GET' => 0], null, false, false, null]],
         '/chat/create' => [[['_route' => 'app_chat_car_create', '_controller' => 'App\\Controller\\ChatController::createChat'], null, ['POST' => 0], null, false, false, null]],
         '/' => [[['_route' => 'app_main', '_controller' => 'App\\Controller\\MainController::main'], null, null, null, false, false, null]],
         '/transaction' => [[['_route' => 'app_transaction_index', '_controller' => 'App\\Controller\\TransactionController::index'], null, ['GET' => 0], null, true, false, null]],

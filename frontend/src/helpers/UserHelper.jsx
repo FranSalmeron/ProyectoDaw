@@ -3,7 +3,7 @@ const symfonyUrl = import.meta.env.VITE_API_URL;
 // Función para obtener todos los usuarios, jwt y solo accesible a admin
 export const getUsers = async () => {
   try {
-    const response = await fetch(`${symfonyUrl}/user/`, {
+    const response = await fetch(`${symfonyUrl}/user/index`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

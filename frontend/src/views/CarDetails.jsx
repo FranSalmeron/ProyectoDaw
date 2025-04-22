@@ -10,6 +10,8 @@ import { useFavorites } from "../context/FavoriteContext";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { isAdmin } from "../helpers/decodeToken";
+import { editCar } from "../helpers/CarHelper";
 
 const CarDetails = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -20,8 +22,7 @@ const CarDetails = () => {
   const { favorites, addFavorites, removeFromData } = useFavorites();
   const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
 
-  // Obtenemos el coche desde el state de la navegación
-  const car = location.state?.car;
+  const [car, setCar] = useState(location.state?.car);
 
   // Mostrar el toast solo si el coche no está disponible y asegurarse de que solo se muestre una vez
   useEffect(() => {
@@ -88,6 +89,33 @@ const CarDetails = () => {
     sliderRef.current.slickGoTo(index);
   };
 
+  const handleBanClick = async () => {
+    try {
+      const newCarData = {
+        carSold: car.CarSold == "baneado" ? "subido" : "baneado", // Cambia entre "baneado" y "subido"
+      };
+
+      // Actualizar el estado local del coche de inmediato
+      setCar((prevCar) => ({
+        ...prevCar,
+        CarSold: newCarData.carSold,
+      }));
+
+      // Simular la llamada a la API para actualizar el coche
+      const result = await editCar(car.id, newCarData);
+      if (result) {
+        const message =
+          newCarData.carSold == "baneado"
+            ? "Coche baneado correctamente."
+            : "Coche desbaneado correctamente.";
+        toast.success(message);
+      }
+    } catch (error) {
+      console.error("Error al banear el coche: ", error);
+      toast.error("Error al banear el coche.");
+    }
+  };
+
   // Verificar si el usuario está autenticado
   const isAuthenticated = () => {
     const token = localStorage.getItem("jwt");
@@ -101,7 +129,7 @@ const CarDetails = () => {
       navigate("/login"); // Redirigir al login si no está autenticado
     } else {
       toast.success("Redirigiendo a la página de compra.");
-      navigate("/buy_car",  { state: { car } }); // Redirige a la página de compra
+      navigate("/buy_car", { state: { car } }); // Redirige a la página de compra
     }
   };
 
@@ -119,7 +147,6 @@ const CarDetails = () => {
       navigate("/login"); // Redirige al login si no está autenticado
     } else {
       const currentUserId = getUserIdFromToken();
-
       navigate("/chat", {
         state: {
           userId: currentUserId,
@@ -172,7 +199,11 @@ const CarDetails = () => {
             </div>
           ))}
         </div>
-
+        {car.user.roles.includes("ROLE_BANNED") && (
+          <div className="text-red-600 font-semibold">
+            ⚠ Este vendedor ha sido baneado y podría no responder.
+          </div>
+        )}
         <div className="car-info mt-6">
           {/* Fila con Marca, Modelo y el Icono de Favoritos */}
           <div className="flex items-center justify-between">
@@ -286,6 +317,16 @@ const CarDetails = () => {
           >
             Comprar
           </button>
+          {isAdmin() && (
+            <div className="mb-4">
+              <button
+                onClick={handleBanClick}
+                className="btn bg-red-600 text-white p-3 rounded-md w-full hover:bg-red-700"
+              >
+                {car.CarSold == "baneado" ? "Desbanear Coche" : "Banear Coche"}
+              </button>
+            </div>
+          )}
           <button
             onClick={handleChatClick}
             className="btn bg-[#0E566A] text-white p-3 rounded-md w-1/3 hover:bg-[#42AEB5]"

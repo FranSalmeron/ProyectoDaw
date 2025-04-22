@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { ROUTES } from "../routes/paths";
+import { isAdmin } from "../helpers/decodeToken";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,10 +12,7 @@ const NavBar = () => {
   const closeMenu = () => setIsMenuOpen(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("username");
-    localStorage.removeItem("jwt");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("cachedChats");
+    localStorage.clear();
     navigate(ROUTES.HOME);
   };
 
@@ -23,7 +21,10 @@ const NavBar = () => {
       {/* NAVBAR FIJO ARRIBA */}
       <nav className="bg-[#567C8D] p-4 sticky top-0 z-40">
         <div className="flex justify-between items-center relative">
-          <button onClick={toggleMenu} className="text-white text-3xl absolute z-50">
+          <button
+            onClick={toggleMenu}
+            className="text-white text-3xl absolute z-50"
+          >
             {isMenuOpen ? "✕" : "☰"}
           </button>
 
@@ -48,7 +49,7 @@ const NavBar = () => {
         className={`absolute left-0 w-64 bg-[#43697a] p-6 shadow-lg transition-transform duration-300 ease-in-out ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
-        style={{ top: '100%' }} // Justo debajo del navbar
+        style={{ top: "100%" }} // Justo debajo del navbar
       >
         <ul className="space-y-4 text-white">
           <li>
@@ -101,8 +102,27 @@ const NavBar = () => {
                   Perfil
                 </NavLink>
               </li>
+              {isAdmin() && (
+                <>
+                  <li>
+                    <NavLink to={ROUTES.USERS} onClick={closeMenu}>
+                      Gestión de Usuarios
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to={ROUTES.CHATS_LIST} onClick={closeMenu}>
+                      Lista de Chats
+                    </NavLink>
+                  </li>
+                </>
+              )}
               <li>
-                <button onClick={() => { handleLogout(); closeMenu(); }}>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    closeMenu();
+                  }}
+                >
                   Cerrar sesión
                 </button>
               </li>

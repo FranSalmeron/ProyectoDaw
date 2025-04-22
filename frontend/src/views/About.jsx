@@ -2,7 +2,7 @@ import React from 'react';
 
 const About = () => {
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
+    <div className="max-w-full mx-auto px-6 py-10 bg-[#F5EFEB]">
       {/* Header */}
       <header className="text-center mb-16">
         <h1 className="text-4xl font-semibold text-gray-800">Sobre Nosotros</h1>
@@ -87,11 +87,6 @@ const About = () => {
           <li><strong>Dirección:</strong> Calle Automotriz 123, Ciudad, País</li>
         </ul>
       </section>
-
-      {/* Footer */}
-      <footer className="text-center py-6 border-t border-gray-300">
-        <p className="text-lg text-gray-600">© 2025 RenovAuto. Todos los derechos reservados.</p>
-      </footer>
     </div>
   );
 };

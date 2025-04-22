@@ -21,7 +21,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column]
-    #[Groups(['user_id'])]
+    #[Groups(['user_id', 'car_list'])]
     private array $roles = ['ROLE_USER'];
 
     /**

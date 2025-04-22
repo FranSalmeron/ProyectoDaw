@@ -4,6 +4,7 @@ import { createChat } from '../helpers/chatHelper';
 import { loadMessages, sendMessage, pollTaskStatus } from '../helpers/chatMessageHelper';
 import { getUserIdFromToken } from '../helpers/decodeToken';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { isAdmin } from '../helpers/decodeToken';
 
 const Chat = () => {
   // Extraemos los parámetros de la URL
@@ -17,12 +18,13 @@ const Chat = () => {
   const [isSending, setIsSending] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [taskId, setTaskId] = useState(null);
+  const navigate = useNavigate();
 
   const MAX_CHARACTERS = 500;
   const currentUserId = getUserIdFromToken();
   const messagesEndRef = useRef(null);
 
-  const navigate = useNavigate(); // Usamos el hook navigate
+  const canWrite = currentUserId == userId || currentUserId == buyerId;
 
   // **Crear el chat si no existe**
   useEffect(() => {
@@ -110,7 +112,7 @@ const Chat = () => {
     setIsSending(true);
 
     try {
-      const response = await sendMessage(chatId, currentUserId, messageInput, taskId);
+      const response = await sendMessage(chatId, userId, messageInput, taskId);
       setMessageInput('');
       if (response && response.success) {
         setMessages((prevMessages) => [
@@ -118,7 +120,7 @@ const Chat = () => {
           {
             messageId: Date.now(),
             content: messageInput,
-            userId: currentUserId,
+            userId: userId,
             messageDate: new Date().toISOString(),
           },
         ]);
@@ -153,34 +155,55 @@ const Chat = () => {
 
   return (
     <div className="min-h-screen bg-[#F5EFEB] p-4">
-    <div className="chat-container p-4 max-w-3xl mx-auto h-auto bg-white rounded-lg">
-      <h2 className="text-2xl font-semibold mb-6">Chat</h2>
-      <div className="messages-container space-y-4 mb-4 max-h-[400px] overflow-y-auto">
-        {messages.map((message) => (
-          <div key={message.messageId} className={`message p-3 rounded-lg max-w-xs ${message.userId == currentUserId ? 'ml-auto bg-[#9DB6CF] text-white' : 'mr-auto bg-[#D4E4ED] text-gray-800'}`}>
-            <p>{message.content}</p>
-            <small className="text-xs opacity-75">{new Date(message.messageDate).toLocaleTimeString()}</small>
+      <div className="chat-container p-4 max-w-3xl mx-auto h-auto bg-white rounded-lg">
+        <h2 className="text-2xl font-semibold mb-6">Chat</h2>
+        <div className="messages-container space-y-4 mb-4 max-h-[400px] overflow-y-auto">
+          {messages.map((message) => (
+            <div
+              key={message.messageId}
+              className={`message p-3 rounded-lg max-w-xs ${
+                message.userId == userId
+                  ? 'ml-auto bg-[#9DB6CF] text-white'
+                  : 'mr-auto bg-[#D4E4ED] text-gray-800'
+              }`}
+            >
+              <p>{message.content}</p>
+              <small className="text-xs opacity-75">
+                {new Date(message.messageDate).toLocaleTimeString()}
+              </small>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+  
+        {canWrite ? (
+          <div className="mt-4">
+            <textarea
+              value={messageInput}
+              onChange={(e) => setMessageInput(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-lg"
+              placeholder="Escribe un mensaje..."
+            />
+            <button
+              onClick={sendMessageToChat}
+              className={`mt-2 p-2 text-white rounded-lg w-full ${
+                isSending ? 'bg-[#B6CADE]' : 'bg-[#43697a]'
+              } ${isSending ? 'cursor-not-allowed' : ''}`}
+              disabled={isSending}
+            >
+              {isSending ? (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                'Enviar'
+              )}
+            </button>
           </div>
-        ))}
-        <div ref={messagesEndRef} />
+        ) : (
+          <div className="text-center text-gray-400 mt-4 italic">
+            No puedes enviar mensajes en este chat.
+          </div>
+        )}
       </div>
-
-      <div className="mt-4">
-        <textarea
-          value={messageInput}
-          onChange={(e) => setMessageInput(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded-lg"
-          placeholder="Escribe un mensaje..."
-        />
-        <button
-          onClick={sendMessageToChat}
-          className={`mt-2 p-2 text-white rounded-lg w-full ${isSending ? 'bg-[#B6CADE]' : 'bg-[#43697a]'} ${isSending ? 'cursor-not-allowed' : ''}`}
-          disabled={isSending}
-        >
-          {isSending ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : 'Enviar'}
-        </button>
-      </div>
-    </div>
     </div>
   );
 };

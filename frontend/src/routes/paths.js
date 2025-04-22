@@ -11,5 +11,8 @@ export const ROUTES = {
     PROFILE: "/profile",
     SEE_CARS: "/see_cars",
     ABOUT: "/about",
+    USERS: "/users",
+    CHATS_LIST: "/chats_list",
+    BANNED: "/banned",
   };
   

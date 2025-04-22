@@ -1,109 +1,98 @@
 import { toast } from "react-toastify";
 
-const symfonyUrl = import.meta.env.VITE_API_URL
+const symfonyUrl = import.meta.env.VITE_API_URL;
 
 const getUserIdFromToken = () => {
-    const token = localStorage.getItem('jwt');
-    if (!token) {
-      console.error('No se encontró el token JWT.');
-      return null;
-    }
-  
-    const tokenParts = token.split('.');
-  
-    // Verifica si el token tiene la estructura correcta (header.payload.signature)
-    if (tokenParts.length !== 3) {
-      console.error('El token JWT no tiene el formato correcto.');
-      return null;
-    }
-  
-    try {
-      // Decodifica la parte del payload del token
-      const payload = JSON.parse(atob(tokenParts[1]));
-  
-      // Verifica si el campo 'userId' o 'username' está presente
-      if (payload && (payload.userId || payload.username)) {
-        // Si el campo 'userId' está presente, devuélvelo. Si no, usa 'username'.
-        return payload.userId || payload.username;
-      } else {
-        console.error('No se encontró el campo `userId` ni `username` en el token. Payload:', payload);
-        return null;
+  const token = localStorage.getItem("jwt");
+  if (!token) return null;
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload?.userId || payload?.username || null;
+  } catch (error) {
+    console.error("Error al decodificar el token JWT:", error);
+    return null;
+  }
+};
+
+const isAdmin = () => {
+  const token = localStorage.getItem("jwt");
+  if (!token) return false;
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return Array.isArray(payload?.roles) && payload.roles.includes("ROLE_ADMIN");
+  } catch (error) {
+    console.error("Error al verificar el rol admin:", error);
+    return false;
+  }
+};
+
+
+const isBanned = () => {
+  const token = localStorage.getItem("jwt");
+  if (!token) return false;
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return Array.isArray(payload?.roles) && payload.roles.includes("ROLE_BANNED");
+  } catch (error) {
+    console.error("Error al verificar el rol admin:", error);
+    return false;
+  }
+};
+
+const isTokenExpired = async (token) => {
+  if (!token) return false;
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    const currentTime = Math.floor(Date.now() / 1000);
+
+    if (payload.exp && payload.exp < currentTime) {
+      toast.info("Regenerando token");
+      const refreshSuccess = await refreshTokenHandler(localStorage.getItem("refreshToken"));
+      if (refreshSuccess) {
+        toast.info("Token regenerado");
+        window.location.reload();
+        return false;
       }
-    } catch (error) {
-      console.error('Error al decodificar el token JWT:', error);
-      return null;
+      return true;
     }
-  };
-  const isTokenExpired = async (token) => {
-    if (!token) {
-      console.error('No se encontró el token JWT.');
+
+    return false;
+  } catch (error) {
+    console.error("Error al verificar expiración del token:", error);
+    const refreshSuccess = await refreshTokenHandler(localStorage.getItem("refreshToken"));
+    return refreshSuccess ? false : true;
+  }
+};
+
+const refreshTokenHandler = async (refreshToken) => {
+  if (!refreshToken) return false;
+
+  try {
+    const response = await fetch(`${symfonyUrl}/api/refreshToken`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ refreshToken }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.token) {
+      localStorage.setItem("jwt", data.token);
+      return true;
+    } else {
+      console.error("Fallo al refrescar el token");
       return false;
     }
-  
-    const tokenParts = token.split('.');
-  
-    // Verifica si el token tiene la estructura correcta (header.payload.signature)
-    if (tokenParts.length !== 3) {
-      console.error('El token JWT no tiene el formato correcto.');
-      return true; // Si el token no tiene formato válido, lo consideramos expirado
-    }
-  
-    try {
-      // Decodifica la parte del payload del token
-      const payload = JSON.parse(atob(tokenParts[1]));
-  
-      // Verifica si el campo 'exp' (expiración) está presente en el payload y si ha expirado
-      const currentTime = Math.floor(Date.now() / 1000); // Obtener el tiempo actual en segundos
-      if (payload.exp && payload.exp < currentTime) {
-        // Si el token ha expirado, intenta refrescarlo
-        toast.info("Regenerando token");
-        const refreshSuccess = await refreshTokenHandler(localStorage.getItem('refreshToken'));
-        if (refreshSuccess) {
-          toast.info("Token regenerado");
-          window.location.reload();
-          return false; // El token ha sido refrescado correctamente, por lo tanto no está expirado
-        }
-        return true; // El token ha expirado y no se pudo refrescar
-      }
-  
-      return false; // El token no ha expirado
-    } catch (error) {
-      console.error('Error al decodificar el token JWT:', error);
-      const refreshSuccess = await refreshTokenHandler(localStorage.getItem('refreshToken'));
-      return refreshSuccess ? false : true;
-    }
-  };
-  
-  const refreshTokenHandler = async (refreshToken) => {
-    if (!refreshToken) {
-      console.error('No se encontró el refresh token.');
-      return false; // Si no hay refresh token, no podemos refrescar el JWT
-    }
-  
-    try {
-      const response = await fetch(`${symfonyUrl}/api/refreshToken`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ refreshToken: refreshToken }),
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok && data.token) {
-        // Si el refresh token es válido y el backend devuelve un nuevo JWT
-        localStorage.setItem('jwt', data.token); // Guardamos el nuevo JWT
-        return true; // El refresh token fue exitoso
-      } else {
-        console.error('Refresh token no válido o fallo en la respuesta del servidor.');
-        return false; // El refresh token no es válido
-      }
-    } catch (error) {
-      console.error('Error al intentar refrescar el token:', error);
-      return false; // Hubo un error al intentar refrescar el token
-    }
-  };
-  
-  export { isTokenExpired, getUserIdFromToken };
-  
+  } catch (error) {
+    console.error("Error al refrescar el token:", error);
+    return false;
+  }
+};
+
+export { getUserIdFromToken, isTokenExpired, refreshTokenHandler, isAdmin, isBanned };

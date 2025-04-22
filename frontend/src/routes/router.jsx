@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import RootLayout from "../layouts/RootLayout";
-import { Home, BuyCar, CarDetails, Chat, Chats, Login, Register, SubmitCar, ErrorPage, CarFavorites, Profile, SeeCars, About } from "../views/indexViews";
+import { Home, BuyCar, CarDetails, Chat, Chats, Login, Register, SubmitCar, ErrorPage, CarFavorites, Profile, SeeCars, About, Users, Chat_list, Banned } from "../views/indexViews";
 import { ROUTES } from "./paths";
 
 export const router = createBrowserRouter([
@@ -59,6 +59,18 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.SEE_CARS, //"/see_cars"
         element: <SeeCars />,
+      },
+      {
+        path: ROUTES.USERS, //"/users"
+        element: <Users />,
+      },
+      {
+        path: ROUTES.CHATS_LIST, //"/chats_list"
+        element: <Chat_list />,
+      },
+      {
+        path: ROUTES.BANNED, //"/banned"
+        element: <Banned />,
       },
     ],
   },

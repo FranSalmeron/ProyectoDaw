@@ -49,9 +49,10 @@ class TransactionController extends AbstractController
             return new JsonResponse(['error' => 'Usuario o coche no encontrados'], Response::HTTP_NOT_FOUND);
         }
 
-        if ($car->isCarSold()) {
-            return new JsonResponse(['error' => 'Este coche ya fue vendido'], Response::HTTP_CONFLICT);
+        if ($car->getCarSold() !== 'subido') {
+            return new JsonResponse(['error' => 'Este coche no está disponible para la compra'], Response::HTTP_CONFLICT);
         }
+        
 
         // Crear la transacción
         $transaction = new Transaction();
@@ -62,7 +63,8 @@ class TransactionController extends AbstractController
         $transaction->setTransactionDate(new \DateTime());
 
         // Marcar el coche como vendido
-        $car->setCarSold(true);
+        $car->setCarSold('comprado');
+
 
         $entityManager->persist($transaction);
         $entityManager->flush();

@@ -33,7 +33,7 @@ return [
     'app_car_favorite_show' => [['id'], ['_controller' => 'App\\Controller\\CarFavoriteController::show'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/favorite']], [], [], []],
     'app_car_favorite_edit' => [['id'], ['_controller' => 'App\\Controller\\CarFavoriteController::edit'], [], [['text', '/edit'], ['variable', '/', '[^/]++', 'id', true], ['text', '/favorite']], [], [], []],
     'app_car_favorite_delete' => [['favoriteId'], ['_controller' => 'App\\Controller\\CarFavoriteController::delete'], [], [['text', '/delete'], ['variable', '/', '[^/]++', 'favoriteId', true], ['text', '/favorite']], [], [], []],
-    'app_chat_car_index' => [[], ['_controller' => 'App\\Controller\\ChatController::show'], [], [['text', '/chat/']], [], [], []],
+    'app_chat_car_index' => [[], ['_controller' => 'App\\Controller\\ChatController::show'], [], [['text', '/chat/index']], [], [], []],
     'app_chat_car_create' => [[], ['_controller' => 'App\\Controller\\ChatController::createChat'], [], [['text', '/chat/create']], [], [], []],
     'app_chat_car_delete' => [['id'], ['_controller' => 'App\\Controller\\ChatController::delete'], [], [['text', '/delete'], ['variable', '/', '[^/]++', 'id', true], ['text', '/chat']], [], [], []],
     'app_chat_user_chats' => [['userId'], ['_controller' => 'App\\Controller\\ChatController::getUserChats'], [], [['text', '/chats'], ['variable', '/', '[^/]++', 'userId', true], ['text', '/chat']], [], [], []],
