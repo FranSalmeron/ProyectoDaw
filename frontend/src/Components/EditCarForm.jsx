@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { editCar } from '../helpers/CarHelper'; // Asegúrate de que esta función existe
+import { editCar } from '../helpers/carHelper'; // Asegúrate de que esta función existe
 import { toast } from 'react-toastify';
 
 const EditCarForm = ({ car, onClose }) => {
