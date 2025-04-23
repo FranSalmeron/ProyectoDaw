@@ -6,8 +6,9 @@ import { addFavorite, removeFavorite } from "../helpers/favoriteHelper"; // Impo
 import { useFavorites } from "../context/FavoriteContext";
 import { getUserIdFromToken } from "../helpers/decodeToken";
 import EditCarForm from "./EditCarForm";
-import { deleteCar } from "../helpers/CarHelper";
+import { deleteCar } from "../helpers/carHelper"; // Importar la función para eliminar coches
 import { isAdmin } from "../helpers/decodeToken";
+import LoadingSpinner from "./LoadingSpinner/LoadingSpinner";
 
 const CarImage = ({ car }) => {
   return (
@@ -100,7 +101,7 @@ const CarCards = ({
   return (
     <div className="w-full bg-[#F5EFEB] min-h-screen overflow-y-auto mb-4 sm:mb-0 relative z-10">
       {loading ? (
-        <p>Cargando Coches...</p>
+        <LoadingSpinner />
       ) : cars && cars.length > 0 ? (
         <ul className="space-y-6">
           {/* Filtramos los coches según si son subidos o baneados */}
@@ -115,7 +116,7 @@ const CarCards = ({
                 return car.CarSold == "subido" || car.CarSold == "baneado";
               }
               // Usuarios normales solo ven coches subidos
-              return car.CarSold == "subido" ;
+              return car.CarSold == "subido";
             })
             .map((car, index) => (
               <li

@@ -7,6 +7,7 @@ import { useUser } from "../context/UserContext";
 import "react-toastify/dist/ReactToastify.css";
 import UserProfileForm from "../components/UserProfileForm";
 import ChangePasswordForm from "../components/ChangePasswordForm";
+import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 
 const Profile = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -57,7 +58,12 @@ const Profile = () => {
   // Función para guardar los cambios de los datos del usuario
   const handleSubmitEdit = async (e) => {
     e.preventDefault();
-    if (!userData.name || !userData.email || !userData.address || !userData.phone) {
+    if (
+      !userData.name ||
+      !userData.email ||
+      !userData.address ||
+      !userData.phone
+    ) {
       setError("Por favor, complete todos los campos.");
       return;
     }
@@ -94,7 +100,11 @@ const Profile = () => {
   };
 
   if (isLoading) {
-    return <div className="text-center">Cargando...</div>;
+    return (
+      <div className="flex justify-center items-center">
+        <LoadingSpinner /> {/* Usamos un spinner mientras se carga */}
+      </div>
+    );
   }
 
   return (
@@ -114,34 +124,47 @@ const Profile = () => {
         ) : (
           <div>
             <div className="text-gray-700">
-              <p><strong>Nombre:</strong> {userInfo.name}</p>
-              <p><strong>Correo Electrónico:</strong> {userInfo.email}</p>
-              <p><strong>Dirección:</strong> {userInfo.address}</p>
-              <p><strong>Teléfono:</strong> {userInfo.phone}</p>
+              <p>
+                <strong>Nombre:</strong> {userInfo.name}
+              </p>
+              <p>
+                <strong>Correo Electrónico:</strong> {userInfo.email}
+              </p>
+              <p>
+                <strong>Dirección:</strong> {userInfo.address}
+              </p>
+              <p>
+                <strong>Teléfono:</strong> {userInfo.phone}
+              </p>
             </div>
-            <div className="mt-6 flex justify-between">
+            <div className="mt-6 flex flex-wrap gap-4 items-center">
               <button
                 onClick={handleEditClick}
-                className="bg-yellow-500 text-white p-2 rounded-md hover:bg-yellow-600"
+                className="bg-[#0E566A] text-white p-2 rounded-md hover:bg-[#42AEB5]"
               >
                 Editar
               </button>
               <button
+                onClick={togglePasswordVisibility}
+                className="bg-[#43697a] text-white p-2 rounded-md hover:bg-[#567C8D]"
+              >
+                {isPasswordVisible
+                  ? "Cancelar cambio de contraseña"
+                  : "Cambiar Contraseña"}
+              </button>
+              <button
                 onClick={handleDeleteClick}
-                className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600"
+                className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 ml-auto"
               >
                 Eliminar Cuenta
               </button>
             </div>
-            <div className="mt-6">
-              <button
-                onClick={togglePasswordVisibility}
-                className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700"
-              >
-                {isPasswordVisible ? "Cancelar cambio de contraseña" : "Cambiar Contraseña"}
-              </button>
-              {isPasswordVisible && <ChangePasswordForm userId={userId} />}
-            </div>
+
+            {isPasswordVisible && (
+              <div className="mt-4">
+                <ChangePasswordForm userId={userId} />
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -5,6 +5,7 @@ import { getUserInfo } from "../helpers/UserHelper";
 import { getUserIdFromToken } from "../helpers/decodeToken";
 import { buyCar } from "../helpers/BuyHelper";
 import { toast } from "react-toastify";
+import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 
 const BuyCar = () => {
   const location = useLocation();
@@ -48,9 +49,7 @@ const BuyCar = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="text-center mt-10 text-gray-600">Cargando recibo...</div>
-    );
+    return <LoadingSpinner />; // Usamos el spinner de carga aquí
   }
 
   if (error) {
@@ -97,7 +96,10 @@ const BuyCar = () => {
             </button>
           )}
           {paymentStatus === "processing" && (
-            <p className="text-yellow-600 font-medium">Procesando pago...</p>
+            <div className="text-center">
+              <LoadingSpinner /> {/* Spinner mientras se procesa el pago */}
+              <p className="text-yellow-600 font-medium">Procesando pago...</p>
+            </div>
           )}
           {paymentStatus === "completed" && (
             <p className="text-green-600 font-semibold">

@@ -11,7 +11,7 @@ import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { isAdmin } from "../helpers/decodeToken";
-import { editCar } from "../helpers/CarHelper";
+import { editCar } from "../helpers/carHelper";
 
 const CarDetails = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -313,23 +313,21 @@ const CarDetails = () => {
         <div className="car-actions mt-6 flex justify-between">
           <button
             onClick={handleBuyClick}
-            className="btn bg-[#43697a] text-white p-3 rounded-md w-1/3 hover:bg-[#567C8D]"
+            className="btn bg-[#43697a] text-white p-3 rounded-md w-1/3 hover:bg-[#567C8D] m-2"
           >
             Comprar
           </button>
           {isAdmin() && (
-            <div className="mb-4">
               <button
                 onClick={handleBanClick}
-                className="btn bg-red-600 text-white p-3 rounded-md w-full hover:bg-red-700"
+                className="btn bg-red-600 text-white p-3 rounded-md w-1/3 hover:bg-red-700 m-2"
               >
                 {car.CarSold == "baneado" ? "Desbanear Coche" : "Banear Coche"}
               </button>
-            </div>
           )}
           <button
             onClick={handleChatClick}
-            className="btn bg-[#0E566A] text-white p-3 rounded-md w-1/3 hover:bg-[#42AEB5]"
+            className="btn bg-[#0E566A] text-white p-3 rounded-md w-1/3 hover:bg-[#42AEB5] m-2"
           >
             Chatear
           </button>

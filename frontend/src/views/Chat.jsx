@@ -4,7 +4,7 @@ import { createChat } from '../helpers/chatHelper';
 import { loadMessages, sendMessage, pollTaskStatus } from '../helpers/chatMessageHelper';
 import { getUserIdFromToken } from '../helpers/decodeToken';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { isAdmin } from '../helpers/decodeToken';
+import LoadingSpinner  from '../components/LoadingSpinner/LoadingSpinner';
 
 const Chat = () => {
   // Extraemos los parámetros de la URL
@@ -150,7 +150,11 @@ const Chat = () => {
   }, []);
 
   if (loading) {
-    return <div className="text-center text-gray-500">Cargando...</div>;
+    return (
+      <div className="flex justify-center items-center mt-10">
+        <LoadingSpinner /> {/* Usamos un spinner mientras se carga */}
+      </div>
+    );
   }
 
   return (

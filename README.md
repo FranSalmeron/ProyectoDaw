@@ -18,10 +18,11 @@
 #### Pagina de Error. (Hecho)
 #### Crear y configurar todo lo que pueden hacer los administradores (Usuarios, Chats, Coches)
 #### Pagina para usuarios baneados. (Hecho)
-#### Crear Spinner de carga y eso ()
+#### Revision de rutas (Hecho)
+#### Crear Spinner de carga y eso (Hecho)
+#### Crear, consultar y hacer un buen diseño de la pagina visual y esteticamente (Hecho)
+#### Optimizar codigo y velocidad de carga (A medias si se llega a implementar webSockets, Hecho sin WebSocket)
 #### Arreglar JWT o dejarlos como ya esta. 
-#### Optimizar codigo y velocidad de carga (A medias)
-#### Crear, consultar y hacer un buen diseño de la pagina visual y esteticamente (A medias)
 #### Despliegue de la pagina (Dominio,github,otras opciones a elegir)
 #### Documentacion y cosas necesarias del proyecto.
 

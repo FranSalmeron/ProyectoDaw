@@ -6,6 +6,7 @@ import { getFavorites } from '../helpers/favoriteHelper';
 import { carList } from '../helpers/carHelper';
 import { useCars } from '../context/CarContext';
 import CarCards from '../components/CarCards';
+import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner';
 
 const CarFavorites = () => {
   const { favorites, addFavorites, removeFromData } = useFavorites();
@@ -48,14 +49,14 @@ const CarFavorites = () => {
       <h3 className="text-xl font-semibold mb-4">Mis Favoritos:</h3>
 
       {loading ? (
-        <p>Cargando coches favoritos...</p> // Mensaje de carga mientras se obtienen los datos
-      ) : favoriteCars.length > 0 ? (
-        <CarCards
-          cars={favoriteCars}
-          loading={loading}
-          addFavorites={addFavorites}
-          removeFromData={removeFromData}
-        />
+          <LoadingSpinner />
+        ) : favoriteCars.length > 0 ? (
+          <CarCards
+            cars={favoriteCars}
+            loading={loading}
+            addFavorites={addFavorites}
+            removeFromData={removeFromData}
+          />
       ) : (
         <p>No tienes coches en tus favoritos.</p> // Mensaje cuando no hay coches favoritos
       )}

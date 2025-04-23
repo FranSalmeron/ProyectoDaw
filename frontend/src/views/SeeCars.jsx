@@ -4,8 +4,9 @@ import CarCards from '../components/CarCards';
 import { useFavorites } from '../context/FavoriteContext';
 import { getUserIdFromToken } from '../helpers/decodeToken';
 import { getFavorites } from '../helpers/favoriteHelper';
-import { carList } from '../helpers/CarHelper';
+import { carList } from '../helpers/carHelper';
 import { toast } from 'react-toastify';
+
 
 
 const SeeCars = () => {
@@ -36,9 +37,8 @@ const SeeCars = () => {
       }, [cars, userId]); 
        
   return (
-    <div>
+    <div className='bg-[#F5EFEB] p-5'>
         <CarCards cars={myCars} loading={loading} addFavorites={addFavorites} removeFromData={removeFromData} showEditDeleteButtons={true}  />
-        
     </div>
   )
 }
