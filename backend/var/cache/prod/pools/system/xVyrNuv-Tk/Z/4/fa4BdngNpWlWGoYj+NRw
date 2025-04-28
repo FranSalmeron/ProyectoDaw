@@ -1,0 +1,3 @@
+<?php //App%255CEntity%255CChatMessage
+
+return [PHP_INT_MAX, []];

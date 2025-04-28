@@ -87,6 +87,9 @@ const refreshTokenHandler = async (refreshToken) => {
       return true;
     } else {
       console.error("Fallo al refrescar el token");
+      alert("Sesion expirada, vuelve a iniciar sesión");
+      localStorage.clear();
+      window.location.href = "/login";
       return false;
     }
   } catch (error) {

@@ -23,6 +23,7 @@ export const getFavorites = async (userId, addFavoritesToContext) => {
     });
   } catch (error) {
     console.error('Error al obtener favoritos:', error);
+    addFavoritesToContext([]); // En caso de error, pasamos un array vacío al contexto
   }
 };
 

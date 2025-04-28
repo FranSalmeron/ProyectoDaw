@@ -12,7 +12,6 @@ COPY . /app
 
 # Instalar las dependencias de Node.js
 RUN npm install
-RUN npm run build
 
 # Instalar netcat para la comprobación de red
 RUN apk add --no-cache netcat-openbsd

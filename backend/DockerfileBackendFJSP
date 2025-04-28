@@ -1,7 +1,6 @@
-# Usamos la imagen oficial de PHP con Apache
 FROM php:8.1-apache
 
-# Instalamos las dependencias necesarias para Symfony y Redis
+# 1. Dependencias necesarias
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
@@ -15,26 +14,28 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure zip \
     && docker-php-ext-install pdo pdo_mysql zip intl gd
 
-# Instalamos Composer
+# 2. Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Instalamos Symfony CLI
-RUN curl -sS https://get.symfony.com/cli/installer | bash
-RUN mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
+# 3. Redis PHP extension
+RUN pecl install redis && docker-php-ext-enable redis
 
-# Activamos mod_rewrite en Apache
+# 4. Opcache (para rendimiento)
+RUN docker-php-ext-install opcache
+
+# 5. Apache rewrite
 RUN a2enmod rewrite
 
-# Establecemos el directorio de trabajo en el contenedor (aunque el código se monta en /var/www/html)
+RUN a2ensite 000-default.conf
+
+# 6. Configuración PHP.ini para producción
+COPY ./php.ini /usr/local/etc/php/conf.d/custom.ini
+
+# 7. Establece directorio
 WORKDIR /var/www/html
 
-# Instalamos Redis para PHP
-RUN pecl install redis \
-    && docker-php-ext-enable redis
+ENV DATABASE_URL=mysql://salmeron:salmeron@database:3306/Proyecto-FJSP
 
-# Instalamos el certificado del servidor Symfony
-RUN symfony server:ca:install
+COPY . /var/www/html
 
-# Exponemos el puerto 80 para el contenedor
-EXPOSE 8001
-EXPOSE 8081
+EXPOSE 80
