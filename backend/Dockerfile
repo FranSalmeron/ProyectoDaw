@@ -39,10 +39,5 @@ COPY ./php.ini /usr/local/etc/php/conf.d/custom.ini
 WORKDIR /var/www/html
 COPY . /var/www/html
 
-# NO ejecutar estos comandos durante el build
-# RUN composer install --no-dev --optimize-autoloader \
-#     && php bin/console cache:clear --env=prod \
-#     && php bin/console cache:warmup --env=prod
-
 # Comando final para ejecutar el contenedor
-CMD service apache2 start
+CMD ["apache2-foreground"]
