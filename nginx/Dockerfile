@@ -5,7 +5,7 @@ FROM nginx:alpine
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Copia los archivos compilados de React a la carpeta pública de Nginx
-COPY ./frontend/dist /usr/share/nginx/html/
+COPY ./dist /usr/share/nginx/html/
 
 # Exponer el puerto 80 para HTTP y 443 para HTTPS (si usas SSL)
 EXPOSE 80
