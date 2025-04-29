@@ -2,7 +2,7 @@
 FROM nginx:alpine
 
 # Copia el archivo de configuración de Nginx
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./default.conf /etc/nginx/conf.d/default.conf
 
 # Copia los archivos compilados de React a la carpeta pública de Nginx
 COPY ./dist /usr/share/nginx/html/
