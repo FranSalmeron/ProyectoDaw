@@ -45,4 +45,4 @@ COPY . /var/www/html
 #     && php bin/console cache:warmup --env=prod
 
 # Comando final para ejecutar el contenedor
-CMD ["apache2-foreground"]
+CMD service apache2 start
