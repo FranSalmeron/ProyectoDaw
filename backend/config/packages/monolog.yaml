@@ -40,7 +40,7 @@ when@prod:
                 buffer_size: 50  # Cómo controlar el tamaño de los mensajes para evitar fugas de memoria
             nested:
                 type: stream
-                path: php://stderr
+                path: "%kernel.logs_dir%/prod.log"
                 level: debug
                 formatter: monolog.formatter.json
             console:

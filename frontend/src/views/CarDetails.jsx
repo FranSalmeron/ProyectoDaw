@@ -174,7 +174,7 @@ const CarDetails = () => {
                 <img
                   src={image}
                   alt={`Car image ${index + 1}`}
-                  className="w-full h-auto object-cover rounded-lg shadow-md"
+                  className="w-full h-100 object-cover rounded-lg shadow-md"
                 />
               </div>
             ))}
@@ -297,7 +297,7 @@ const CarDetails = () => {
         </div>
 
         {/* Mapa para seleccionar ubicación */}
-        <div className="mb-4" style={{ height: "300px" }}>
+        <div className="mb-4 mt-4" style={{ height: "300px" }}>
           <MapContainer
             center={[car.lat, car.lon]}
             zoom={13}

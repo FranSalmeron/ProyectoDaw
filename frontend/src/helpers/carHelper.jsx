@@ -8,14 +8,13 @@ export const carList = async (addCars) => {
         const storedData = localStorage.getItem('cachedCars');
         
         const now = new Date();
-        const thirtyMinutes = 30 * 60 * 1000; // 30 minutos en milisegundos
-
+        const minutes = 5 * 60 * 1000; 
         // Si existe cachedData en localStorage
         if (storedData) {
             const { cars, lastUpdated } = JSON.parse(storedData);  // Desestructuramos el objeto
 
             // Verificamos si los datos son válidos y si no ha pasado el tiempo de expiración
-            if (now - new Date(lastUpdated) < thirtyMinutes) {
+            if (now - new Date(lastUpdated) < minutes) {
                 cars.forEach(car => addCars(car));  // Agregamos los coches desde localStorage
             } else {
                 // Si han pasado más de 30 minutos, necesitamos actualizar los datos

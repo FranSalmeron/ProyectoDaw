@@ -91,7 +91,7 @@ export const pollTaskStatus = async (taskId, setMessages, setLoading, existingMe
  * @param {string} userId - ID del usuario
  * @param {string} message - Contenido del mensaje
  */
-export const sendMessage = async (chatId, userId, message, taskId) => {
+export const sendMessage = async (chatId, userId, message) => {
   try {
     const response = await fetch(`${symfonyUrl}/ChatMessage/${chatId}/send`, {
       method: 'POST',

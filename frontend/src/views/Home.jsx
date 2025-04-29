@@ -145,7 +145,7 @@ const Home = () => {
       </button>
 
       <div
-        className={`w-full sm:w-1/4 bg-gray-100 p-4 rounded-lg shadow-lg mb-4 sm:mb-0 transition-all duration-300 ease-in-out ${showFilters ? "block" : "hidden sm:block"}`}
+        className={`w-full sm:h-1/4 sm:w-1/4 bg-gray-100 p-4 rounded-lg shadow-lg mb-4 sm:mb-0 transition-all duration-300 ease-in-out ${showFilters ? "block" : "hidden sm:block"}`}
       >
         <h3 className="text-xl font-semibold mb-4">Filtros de Búsqueda</h3>
 

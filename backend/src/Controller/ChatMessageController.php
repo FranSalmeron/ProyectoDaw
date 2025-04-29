@@ -135,7 +135,7 @@ class ChatMessageController extends AbstractController
 
 
     // Iniciar carga de mensajes en background (asíncrono)
-    #[Route('/{chatId}/messages', name: 'app_ChatMessage_load_messages', methods: ['POST'])]
+    #[Route('/{chatId}/messages', name: 'app_ChatMessage_load_messages', methods: ['POST','GET'])]
     public function loadMessages(int $chatId, Request $request): JsonResponse
     {
         // Obtener el taskId del parámetro de la solicitud

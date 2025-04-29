@@ -8,7 +8,6 @@ security:
             entity:
                 class: App\Entity\User
                 property: id
-
     firewalls:
         # Configuración para la ruta de login (sin autenticación)
         login:
@@ -26,13 +25,18 @@ security:
         UserChangePassword:
             pattern: ^/user/\d+/change-password  # El patrón para la ruta específica
             jwt: ~ 
+            stateless: true
         
         userIndex:
             pattern: ^/user/index  # El patrón para la ruta específica
             jwt: ~
+            stateless: true  # Desactiva el estado para esta ruta
+
         ChatList:
             pattern: ^/chat/index  # El patrón para la ruta específica
-            jwt: ~    
+            jwt: ~  
+            stateless: true  
+
         csrf-token:
             pattern: ^/csrf-token  # Excluye esta ruta del firewall JWT
             security: false  # Desactiva la seguridad para esta ruta
@@ -40,6 +44,8 @@ security:
         ChatCreate:
             pattern:  ^/chat/create
             jwt: ~
+            stateless: true
+      
         # Configuración para todas las rutas /api (excepto /api/login y /api/verify-token)
 
     # Define todas las reglas de acceso en una sola sección

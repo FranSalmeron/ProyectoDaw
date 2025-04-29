@@ -26,6 +26,8 @@ RUN docker-php-ext-install opcache
 # 5. Apache rewrite
 RUN a2enmod rewrite
 
+RUN a2enmod headers
+
 RUN a2ensite 000-default.conf
 
 # 6. Configuración PHP.ini para producción

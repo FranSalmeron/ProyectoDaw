@@ -239,13 +239,20 @@ function SubmitCar() {
       if (response.ok) {
         toast.success("Coche creado con éxito");
         localStorage.removeItem("cachedCars");
-        navigate(`/`);
       } else {
         toast.error("Error al crear el coche");
+        toast.info("Tamaño de imagen demasiado grande. Pon menos imágenes. Recargando la página en 4 segundos...");
+        setTimeout(() => {
+          window.location.reload(); // Recargar la página después de 4 segundos
+        }, 4000);
       }
-    } catch (error) {
-      console.error("Hubo un error:", error);
-    }
+      } catch (error) {
+        console.error("Hubo un error:", error);
+        toast.info("Tamaño de imagen demasiado grande. Pon menos imágenes. Recargando la página en 4 segundos...");
+        setTimeout(() => {
+          window.location.reload(); // Recargar la página después de 4 segundos
+        }, 4000);
+      }
   };
 
   const brands = [

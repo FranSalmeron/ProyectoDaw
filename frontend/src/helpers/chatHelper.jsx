@@ -21,7 +21,7 @@ export const createChat = async (sellerId, buyerId, carId) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
       },
       body: body,
     });
@@ -57,7 +57,7 @@ export const deleteChat = async (chatId) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // Aquí añadimos el token en el encabezado Authorization
+        'Authorization': `Bearer ${token}`, // Aquí añadimos el token en el encabezado Authorization
       },
     });
 
@@ -80,14 +80,14 @@ export const listChats = async (userId, addChats) => {
     // Primero, revisamos si hay datos en el localStorage
     const storedChats = localStorage.getItem("cachedChats");
     const now = new Date();
-    const thirtyMinutes = 30 * 60 * 1000; // 30 minutos en milisegundos
+    const minutes = 5 * 60 * 1000;
 
     // Si existe cachedChats en localStorage
     if (storedChats) {
       const { chats, lastUpdated } = JSON.parse(storedChats); // Desestructuramos el objeto
 
       // Verificamos si los datos son válidos y si no ha pasado el tiempo de expiración
-      if (now - new Date(lastUpdated) < thirtyMinutes) {
+      if (now - new Date(lastUpdated) < minutes) {
         chats.forEach((chat) => addChats(chat)); // Agregamos los chats desde localStorage
       } else {
         // Si han pasado más de 30 minutos, necesitamos actualizar los datos
@@ -143,7 +143,7 @@ export const getChats = async () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
       },
     });
     if (!response.ok) {

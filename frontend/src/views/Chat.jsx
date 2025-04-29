@@ -71,14 +71,14 @@ const Chat = () => {
     }
   }, [chatId, taskId]); // Este useEffect solo se ejecuta cuando chatId está disponible
 
-  // **Iniciar el polling cada 15 segundos (actualización periódica de mensajes)**
+  // **Iniciar el polling cada 10 segundos (actualización periódica de mensajes)**
   const startPolling = (taskId) => {
     const intervalId = setInterval(async () => {
       if (taskId) {
         await loadMessages(chatId, setLoading, taskId);  // Recargar mensajes
         pollTaskStatus(taskId, setMessages, setLoading, messages);
       }
-    }, 15000);  // Polling cada 15 segundos
+    }, 10000);  // Polling cada 10 segundos
 
     // Limpiar el intervalo cuando el componente se desmonte o el chat se cierre
     return intervalId;
@@ -112,7 +112,7 @@ const Chat = () => {
     setIsSending(true);
 
     try {
-      const response = await sendMessage(chatId, userId, messageInput, taskId);
+      const response = await sendMessage(chatId, userId, messageInput);
       setMessageInput('');
       if (response && response.success) {
         setMessages((prevMessages) => [
