@@ -19,6 +19,13 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # 3. Redis (solo cliente PHP, no el servidor)
 RUN pecl install redis && docker-php-ext-enable redis
 
+
+# Copia la configuración de Apache que incluye el ServerName
+COPY ./apache/000-default.conf /etc/apache2/sites-available/000-default.conf
+
+
+RUN a2ensite 000-default.conf
+
 # 4. Habilitar módulos Apache
 RUN a2enmod rewrite headers
 
