@@ -30,10 +30,8 @@ RUN a2ensite 000-default.conf
 RUN a2enmod rewrite headers
 
 # 5. Usar el puerto proporcionado por Railway
-ENV PORT 8080
-EXPOSE 8080
-RUN sed -i "s/80/\${PORT}/g" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
-
+RUN sed -i 's/80/8081/g' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
+EXPOSE 8081
 # 6. Configuración PHP
 COPY ./php.ini /usr/local/etc/php/conf.d/custom.ini
 

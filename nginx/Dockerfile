@@ -1,15 +1,13 @@
-# Usa la imagen oficial de Nginx
 FROM nginx:alpine
 
-# Copia el archivo de configuración de Nginx
+# Copia config de Nginx
 COPY ./default.conf /etc/nginx/conf.d/default.conf
 
-# Copia los archivos compilados de React a la carpeta pública de Nginx
+# Copia el frontend compilado
 COPY ./dist /usr/share/nginx/html/
 
-# Exponer el puerto 80 para HTTP y 443 para HTTPS (si usas SSL)
-EXPOSE 80
-EXPOSE 443
+# Solo expón el puerto que Railway usará
+EXPOSE 8080
 
-# Establecer un comando para iniciar Nginx en primer plano
+# Lanza nginx en primer plano
 CMD ["nginx", "-g", "daemon off;"]
