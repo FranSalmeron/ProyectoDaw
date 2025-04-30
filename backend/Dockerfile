@@ -39,11 +39,11 @@ RUN chown -R www-data:www-data var
 # RUN php bin/console cache:clear --env=prod
 # RUN php bin/console cache:warmup --env=prod
 
-# Copia el script al contenedor
+ENV PORT=${PORT}
+
+# Copia el script de arranque
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Usa el script como entrypoint
+# Usar el script como entrypoint
 ENTRYPOINT ["/entrypoint.sh"]
-
-
