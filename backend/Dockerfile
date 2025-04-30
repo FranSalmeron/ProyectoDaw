@@ -34,6 +34,7 @@ COPY . /var/www/html
 # Ajustar permisos (crítico para prod)
 RUN chown -R www-data:www-data var
 
+
 # Preparar Symfony para producción
 # RUN composer install --no-dev --optimize-autoloader
 # RUN php bin/console cache:clear --env=prod

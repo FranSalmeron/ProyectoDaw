@@ -1,13 +1,10 @@
 #!/bin/bash
-# Reemplaza el puerto en tiempo de ejecución
-#!/bin/bash
 
-# Usa el puerto que Railway define en tiempo de ejecución
+# Usa el puerto de Railway o default al 8080
 PORT=${PORT:-8080}
 
-# Reemplaza en los archivos de Apache
-sed -i "s/80/${PORT}/g" /etc/apache2/ports.conf
-sed -i "s/80/${PORT}/g" /etc/apache2/sites-available/000-default.conf
+# Solo modifica VirtualHost, no uses "Listen" (Railway gestiona eso internamente)
+sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-available/000-default.conf
 
-# Inicia Apache en primer plano
+# Iniciar Apache
 exec apache2-foreground
