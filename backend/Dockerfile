@@ -35,9 +35,9 @@ COPY . /var/www/html
 RUN chown -R www-data:www-data var
 
 # Preparar Symfony para producción
-RUN composer install --no-dev --optimize-autoloader
-RUN php bin/console cache:clear --env=prod
-RUN php bin/console cache:warmup --env=prod
+# RUN composer install --no-dev --optimize-autoloader
+# RUN php bin/console cache:clear --env=prod
+# RUN php bin/console cache:warmup --env=prod
 
 # Iniciar Apache
 CMD apache2-foreground
