@@ -6,8 +6,14 @@ COPY ./default.conf /etc/nginx/conf.d/default.conf
 # Copia el frontend compilado
 COPY ./dist /usr/share/nginx/html/
 
-# Exponer el puerto que Railway asigna dinámicamente (usando la variable de entorno $PORT)
-EXPOSE 8080
+# Copia el script de inicio para reemplazar el puerto
+COPY ./start.sh /start.sh
 
-# Lanza nginx en primer plano
-CMD ["sh", "-c", "nginx -g 'daemon off;' -c /etc/nginx/nginx.conf"]
+# Asegúrate de que el script sea ejecutable
+RUN chmod +x /start.sh
+
+# Expón el puerto 8081, ya que Railway asigna uno dinámicamente
+EXPOSE 8081
+
+# Ejecuta el script que ajusta la configuración y lanza Nginx
+CMD ["/start.sh"]
