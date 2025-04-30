@@ -40,4 +40,5 @@ RUN php bin/console cache:clear --env=prod
 RUN php bin/console cache:warmup --env=prod
 
 # Iniciar Apache
-CMD ["apache2-foreground"]
+CMD apache2-foreground
+
