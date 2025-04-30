@@ -20,6 +20,8 @@ COPY ./php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # Activar módulos necesarios de Apache
 RUN a2enmod rewrite headers
+RUN a2dissite 000-default.conf && a2ensite 000-default.conf
+
 
 # Adaptar Apache al puerto que Railway asigna
 # ARG PORT
