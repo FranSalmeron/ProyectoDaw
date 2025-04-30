@@ -1,46 +1,43 @@
 FROM php:8.1-apache
 
-# 1. Dependencias necesarias
+# Instalación de dependencias
 RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    unzip \
-    git \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    libicu-dev \
-    libpq-dev \
+    libzip-dev unzip git \
+    libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
+    libicu-dev libpq-dev \
     && docker-php-ext-configure zip \
     && docker-php-ext-install pdo pdo_mysql zip intl gd opcache
 
-# 2. Composer
+# Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# 3. Redis (solo cliente PHP, no el servidor)
+# Redis
 RUN pecl install redis && docker-php-ext-enable redis
 
-
-# Copia la configuración de Apache que incluye el ServerName
+# Copiar configuración personalizada
 COPY ./apache/000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY ./php.ini /usr/local/etc/php/conf.d/custom.ini
 
-
-RUN a2ensite 000-default.conf
-
-# 4. Habilitar módulos Apache
+# Activar módulos necesarios de Apache
 RUN a2enmod rewrite headers
 
-# 5. Usar el puerto proporcionado por Railway
-ARG PORT=8080
+# Adaptar Apache al puerto que Railway asigna
+ARG PORT
 ENV PORT=${PORT}
 RUN sed -i "s/80/${PORT}/g" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
 EXPOSE ${PORT}
 
-# 6. Configuración PHP
-COPY ./php.ini /usr/local/etc/php/conf.d/custom.ini
-
-# 7. Código fuente
+# Establecer directorio de trabajo y copiar el código
 WORKDIR /var/www/html
 COPY . /var/www/html
 
-# Comando final para ejecutar el contenedor
+# Ajustar permisos (crítico para prod)
+RUN chown -R www-data:www-data var
+
+# Preparar Symfony para producción
+RUN composer install --no-dev --optimize-autoloader
+RUN php bin/console cache:clear --env=prod
+RUN php bin/console cache:warmup --env=prod
+
+# Iniciar Apache
 CMD ["apache2-foreground"]
