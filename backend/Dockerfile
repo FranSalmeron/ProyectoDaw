@@ -32,7 +32,8 @@ WORKDIR /var/www/html
 COPY . /var/www/html
 
 # Ajustar permisos (crítico para prod)
-RUN chown -R www-data:www-data var
+RUN chown -R www-data:www-data /var/www/html
+
 
 
 # Preparar Symfony para producción
