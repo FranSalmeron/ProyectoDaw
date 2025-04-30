@@ -13,7 +13,7 @@ COPY ./start.sh /start.sh
 RUN chmod +x /start.sh
 
 # Expón el puerto 8081, ya que Railway asigna uno dinámicamente
-EXPOSE 8081
+EXPOSE 8080
 
 # Ejecuta el script que ajusta la configuración y lanza Nginx
 CMD ["/start.sh"]
