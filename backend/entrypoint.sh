@@ -6,6 +6,8 @@ PORT=${PORT:-8081}
 # Solo modifica VirtualHost, no uses "Listen" (Railway gestiona eso internamente)
 sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-available/000-default.conf
 
+echo "El puerto asignado es: $PORT"
+
 redis-server --daemonize yes
 
 # Ejecuta la actualizacion de la BD (opcional, solo si quieres que se lancen al iniciar)
