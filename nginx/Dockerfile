@@ -11,7 +11,8 @@ COPY ./start.sh /start.sh
 
 # Asegúrate de que el script sea ejecutable
 RUN chmod +x /start.sh
-RUN chmod -R /usr/share/nginx/html
+RUN chmod -R 755 /usr/share/nginx/html
+
 
 # Expón el puerto 8081, ya que Railway asigna uno dinámicamente
 EXPOSE 8080
