@@ -9,6 +9,9 @@ COPY ./dist /usr/share/nginx/html/
 # Copia el script de inicio para reemplazar el puerto
 COPY ./start.sh /start.sh
 
+RUN mkdir -p /run /
+touch /run/nginx.pid /
+chmod 644 /run/nginx.pid 
 # Asegúrate de que el script sea ejecutable
 RUN chmod +x /start.sh
 RUN chmod -R 755 /usr/share/nginx/html
