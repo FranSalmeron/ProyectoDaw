@@ -14,8 +14,9 @@ RUN chmod +x /start.sh
 RUN chmod -R 755 /usr/share/nginx/html
 
 
-# Expón el puerto 8081, ya que Railway asigna uno dinámicamente
+# Expón el puerto 8080, ya que Railway asigna uno dinámicamente
 EXPOSE 8080
+EXPOSE 443
 
 # Ejecuta el script que ajusta la configuración y lanza Nginx
 CMD ["/start.sh"]
