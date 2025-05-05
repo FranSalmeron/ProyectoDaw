@@ -1,7 +1,7 @@
 FROM nginx:alpine
 
 # Copia config de Nginx
-COPY ./default.conf /etc/nginx/conf.d/default.conf
+COPY ./default.conf.template /default.conf.template
 
 # Copia el frontend compilado
 COPY ./dist /usr/share/nginx/html/
