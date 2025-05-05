@@ -11,6 +11,10 @@ RUN apt-get update && apt-get install -y redis-server \
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Symfony CLI
+RUN curl -sS https://get.symfony.com/cli/installer | bash
+RUN mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
+
 # Redis
 RUN pecl install redis && docker-php-ext-enable redis
 
