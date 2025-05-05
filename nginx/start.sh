@@ -5,6 +5,10 @@ PORT=${PORT:-8080}
 # Reemplaza el puerto en la plantilla y copia al sitio real
 sed "s/\${PORT}/$PORT/g" /default.conf.template > /etc/nginx/conf.d/default.conf
 
+mkdir -p /run
+touch /run/nginx.pid
+chmod 644 /run/nginx.pid 
+
 echo "✅ Puerto asignado por Railway: $PORT"
 echo "✅ Archivo Nginx generado correctamente:"
 cat /etc/nginx/conf.d/default.conf
