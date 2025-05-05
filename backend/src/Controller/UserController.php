@@ -75,6 +75,14 @@ class UserController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
+    #[Route('/prueba', name: 'app_user_index', methods: ['GET'])]
+    public function prueba(UserRepository $userRepository): Response
+    {
+        $users = $userRepository->findAll();
+
+        return $this->render('user/new.html.twig');
+    }
+
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
