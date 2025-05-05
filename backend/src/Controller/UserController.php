@@ -42,7 +42,7 @@ class UserController extends AbstractController
         ]);
     }    
 
-    #[Route('/new', name: 'app_user_new', methods: ['POST'])]
+    #[Route('/new', name: 'app_user_new', methods: ['POST','GET'])]
     public function new(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
     {
         $data = json_decode($request->getContent(), true);
