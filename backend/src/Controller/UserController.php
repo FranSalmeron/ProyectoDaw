@@ -42,7 +42,7 @@ class UserController extends AbstractController
         ]);
     }    
 
-    #[Route('/new', name: 'app_user_new', methods: ['POST','GET'])]
+    #[Route('/new', name: 'app_user_new', methods: ['POST'])]
     public function new(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
     {
         $data = json_decode($request->getContent(), true);
@@ -75,11 +75,9 @@ class UserController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
-    #[Route('/prueba', name: 'app_user_index', methods: ['GET'])]
+    #[Route('/prueba', name: 'app_user_prueba', methods: ['GET'])]
     public function prueba(UserRepository $userRepository): Response
     {
-        $users = $userRepository->findAll();
-
         return $this->render('user/new.html.twig');
     }
 
