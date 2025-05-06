@@ -9,7 +9,7 @@ function Register() {
     const [address, setAddress] = useState('');
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
-    const roles =(['ROLE_USER']); 
+    const roles =['ROLE_USER']; 
 
     // Función para manejar el envío del formulario
 
