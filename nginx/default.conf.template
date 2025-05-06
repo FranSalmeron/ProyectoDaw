@@ -74,7 +74,7 @@ server {
     rewrite ^/symfony/(.*)$ /$1 break;
 
     # Pasa la nueva ruta al backend
-    proxy_pass http://proyectodaw.railway.internal/public;
+    proxy_pass http://proyectodaw.railway.internal:80/public;
 
     # Headers necesarios para CORS y seguridad
     proxy_redirect off;
