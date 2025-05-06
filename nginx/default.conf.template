@@ -92,7 +92,7 @@ server {
 
     # Manejamos las imágenes en /uploads/images/
     location /uploads/images/ {
-        proxy_pass http://proyectodaw.railway.internal/;
+        proxy_pass http://proyectodaw.railway.internal/public/;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
