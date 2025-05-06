@@ -91,7 +91,7 @@ server {
     }
 
     # Manejamos las imágenes en /uploads/images/
-    location /images/ {
+    location /uploads/images/ {
         proxy_pass http://proyectodaw.railway.internal/;
         proxy_redirect off;
         proxy_set_header Host $host;
