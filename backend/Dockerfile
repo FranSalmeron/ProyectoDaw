@@ -53,5 +53,6 @@ ENV PORT=${PORT}
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+
 # Usar el script como entrypoint
 ENTRYPOINT ["/entrypoint.sh"]

@@ -13,5 +13,6 @@ redis-server --daemonize yes
 # Ejecuta la actualizacion de la BD (opcional, solo si quieres que se lancen al iniciar)
 php bin/console doctrine:schema:update --complete --force
 
+
 # Iniciar Apache
 exec apache2-foreground
