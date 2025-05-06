@@ -20,7 +20,7 @@ server {
     rewrite ^/symfony/(.*)$ /$1 break;
 
     # Pasa la nueva ruta al backend
-    proxy_pass http://proyectodaw-production-f6bb.up.railway.app/public;
+    proxy_pass http://proyectodaw.railway.internal/public;
 
     # Headers necesarios para CORS y seguridad
     proxy_redirect off;
@@ -74,7 +74,7 @@ server {
     rewrite ^/symfony/(.*)$ /$1 break;
 
     # Pasa la nueva ruta al backend
-    proxy_pass http://proyectodaw-production-f6bb.up.railway.app/public;
+    proxy_pass http://proyectodaw.railway.internal/public;
 
     # Headers necesarios para CORS y seguridad
     proxy_redirect off;
