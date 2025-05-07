@@ -16,6 +16,6 @@ if (!\class_exists(App_KernelProdContainer::class, false)) {
 
 return new \ContainerECDY0ax\App_KernelProdContainer([
     'container.build_hash' => 'ECDY0ax',
-    'container.build_id' => '5c33bc9c',
-    'container.build_time' => 1746605037,
+    'container.build_id' => '05d0fa09',
+    'container.build_time' => 1746605566,
 ], __DIR__.\DIRECTORY_SEPARATOR.'ContainerECDY0ax');
