@@ -36,8 +36,8 @@ class ChatController extends AbstractController
             // Verificar si el coche tiene imágenes
             $carImages = [];
             if ($car && $car->getImages()) {
-                // Las imágenes ya contienen las URLs completas almacenadas en la base de datos, así que solo las usamos tal cual
-                $carImages = $car->getImages(); // No necesitas concatenar la ruta base
+                
+                $carImages = $car->getImages();
             }
 
             $chatsData[] = [
@@ -202,14 +202,11 @@ class ChatController extends AbstractController
             // Obtener el coche asociado al chat
             $car = $chat->getCar();
 
-            // Verificar si el coche tiene imágenes
-            $imageBaseUrl = '/uploads/images/';
-            $carImages = [];
-            if ($car && $car->getImages()) {
-                foreach ($car->getImages() as $image) {
-                    $carImages[] = $imageBaseUrl . $image;
-                }
-            }
+           // Verificar si el coche tiene imágenes
+           $carImages = [];
+           if ($car && $car->getImages()) {
+               $carImages = $car->getImages(); 
+           }
 
             // Añadir el chat con sus datos a la estructura
             $chatsData[] = [
