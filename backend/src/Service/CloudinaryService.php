@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use Cloudinary\Cloudinary;
-use Cloudinary\Configuration\Configuration;
+use Cloudinary\Api\Upload\UploadApi;
 
 class CloudinaryService
 {
@@ -11,23 +11,21 @@ class CloudinaryService
 
     public function __construct(string $cloudName, string $apiKey, string $apiSecret)
     {
-        Configuration::instance([
+        $this->cloudinary = new Cloudinary([
             'cloud' => [
                 'cloud_name' => $cloudName,
-                'api_key' => $apiKey,
+                'api_key'    => $apiKey,
                 'api_secret' => $apiSecret,
             ],
             'url' => [
-                'secure' => true
-            ]
+                'secure' => true,
+            ],
         ]);
-
-        $this->cloudinary = new Cloudinary();
     }
 
-    public function uploadImage($filePath): string
+    public function uploadImage(string $filePath): string
     {
         $response = $this->cloudinary->uploadApi()->upload($filePath);
-        return $response['secure_url'];
+        return $response['secure_url'] ?? '';
     }
 }
