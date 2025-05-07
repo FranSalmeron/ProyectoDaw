@@ -10,12 +10,6 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # Definición de MessageHandler
-    App\Message\MessageHandler:
-        arguments:
-            $chatMessageRepository: '@App\Repository\ChatMessageRepository'
-            $entityManager: '@doctrine.orm.entity_manager'
-
     App\Service\CloudinaryService:
         arguments:
             $cloudinaryCloudName: '%env(CLOUDINARY_CLOUD_NAME)%'

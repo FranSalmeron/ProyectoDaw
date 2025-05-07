@@ -103,7 +103,7 @@ return [
         395 => [[['_route' => 'app_ChatMessage_message_show', '_controller' => 'App\\Controller\\ChatMessageController::show'], ['ChatMessage'], ['GET' => 0], null, false, true, null]],
         408 => [[['_route' => 'app_ChatMessage_message_send', '_controller' => 'App\\Controller\\ChatMessageController::sendMessage'], ['chatId'], ['POST' => 0], null, false, false, null]],
         430 => [[['_route' => 'app_check_task_status', '_controller' => 'App\\Controller\\ChatMessageController::checkTaskStatus'], ['taskId'], ['GET' => 0], null, false, true, null]],
-        455 => [[['_route' => 'app_ChatMessage_load_messages', '_controller' => 'App\\Controller\\ChatMessageController::loadMessages'], ['chatId'], ['POST' => 0, 'GET' => 1], null, false, false, null]],
+        455 => [[['_route' => 'app_ChatMessage_load_messages', '_controller' => 'App\\Controller\\ChatMessageController::loadMessages'], ['chatId'], ['GET' => 0], null, false, false, null]],
         488 => [[['_route' => 'app_transaction_show', '_controller' => 'App\\Controller\\TransactionController::show'], ['id'], ['GET' => 0], null, false, true, null]],
         501 => [[['_route' => 'app_transaction_edit', '_controller' => 'App\\Controller\\TransactionController::edit'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
         509 => [[['_route' => 'app_transaction_delete', '_controller' => 'App\\Controller\\TransactionController::delete'], ['id'], ['POST' => 0], null, false, true, null]],

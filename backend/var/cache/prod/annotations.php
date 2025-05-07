@@ -64,7 +64,6 @@ return [[
 'App%5CController%5CChatMessageController%23sendMessage' => 0,
 'App%5CController%5CChatMessageController%23checkTaskStatus' => 0,
 'App%5CController%5CChatMessageController%23loadMessages' => 0,
-'App%5CController%5CChatMessageController%24bus' => 0,
 'App%5CController%5CChatMessageController%24cache' => 0,
 'App%5CController%5CChatMessageController%24logger' => 0,
 'App%5CController%5CMainController' => 0,

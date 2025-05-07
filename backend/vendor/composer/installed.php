@@ -1412,15 +1412,6 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'symfony/redis-messenger' => array(
-            'pretty_version' => 'v6.0.19',
-            'version' => '6.0.19.0',
-            'reference' => '75183a574bae512ae38beb0f3e623e6c4d708789',
-            'type' => 'symfony-messenger-bridge',
-            'install_path' => __DIR__ . '/../symfony/redis-messenger',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'symfony/routing' => array(
             'pretty_version' => 'v6.0.19',
             'version' => '6.0.19.0',

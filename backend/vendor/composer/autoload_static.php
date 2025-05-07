@@ -87,7 +87,6 @@ class ComposerStaticInit563661120ba69b5b691ff93c818e3a7d
             'Symfony\\Component\\OptionsResolver\\' => 34,
             'Symfony\\Component\\Notifier\\' => 27,
             'Symfony\\Component\\Mime\\' => 23,
-            'Symfony\\Component\\Messenger\\Bridge\\Redis\\' => 41,
             'Symfony\\Component\\Messenger\\Bridge\\Doctrine\\' => 44,
             'Symfony\\Component\\Messenger\\' => 28,
             'Symfony\\Component\\Mailer\\' => 25,
@@ -386,10 +385,6 @@ class ComposerStaticInit563661120ba69b5b691ff93c818e3a7d
         'Symfony\\Component\\Mime\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/mime',
-        ),
-        'Symfony\\Component\\Messenger\\Bridge\\Redis\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/redis-messenger',
         ),
         'Symfony\\Component\\Messenger\\Bridge\\Doctrine\\' => 
         array (
@@ -1792,8 +1787,6 @@ class ComposerStaticInit563661120ba69b5b691ff93c818e3a7d
         'App\\Form\\TransactionType' => __DIR__ . '/../..' . '/src/Form/TransactionType.php',
         'App\\Form\\UserType' => __DIR__ . '/../..' . '/src/Form/UserType.php',
         'App\\Kernel' => __DIR__ . '/../..' . '/src/Kernel.php',
-        'App\\Message\\LoadMessagesMessage' => __DIR__ . '/../..' . '/src/Message/LoadMessagesMessage.php',
-        'App\\Message\\MessageHandler' => __DIR__ . '/../..' . '/src/Message/MessageHandler.php',
         'App\\Repository\\CarFavoriteRepository' => __DIR__ . '/../..' . '/src/Repository/CarFavoriteRepository.php',
         'App\\Repository\\CarRepository' => __DIR__ . '/../..' . '/src/Repository/CarRepository.php',
         'App\\Repository\\ChatMessageRepository' => __DIR__ . '/../..' . '/src/Repository/ChatMessageRepository.php',
@@ -7932,14 +7925,6 @@ class ComposerStaticInit563661120ba69b5b691ff93c818e3a7d
         'Symfony\\Component\\Messenger\\Bridge\\Doctrine\\Transport\\DoctrineTransport' => __DIR__ . '/..' . '/symfony/doctrine-messenger/Transport/DoctrineTransport.php',
         'Symfony\\Component\\Messenger\\Bridge\\Doctrine\\Transport\\DoctrineTransportFactory' => __DIR__ . '/..' . '/symfony/doctrine-messenger/Transport/DoctrineTransportFactory.php',
         'Symfony\\Component\\Messenger\\Bridge\\Doctrine\\Transport\\PostgreSqlConnection' => __DIR__ . '/..' . '/symfony/doctrine-messenger/Transport/PostgreSqlConnection.php',
-        'Symfony\\Component\\Messenger\\Bridge\\Redis\\Transport\\Connection' => __DIR__ . '/..' . '/symfony/redis-messenger/Transport/Connection.php',
-        'Symfony\\Component\\Messenger\\Bridge\\Redis\\Transport\\RedisClusterProxy' => __DIR__ . '/..' . '/symfony/redis-messenger/Transport/RedisClusterProxy.php',
-        'Symfony\\Component\\Messenger\\Bridge\\Redis\\Transport\\RedisProxy' => __DIR__ . '/..' . '/symfony/redis-messenger/Transport/RedisProxy.php',
-        'Symfony\\Component\\Messenger\\Bridge\\Redis\\Transport\\RedisReceivedStamp' => __DIR__ . '/..' . '/symfony/redis-messenger/Transport/RedisReceivedStamp.php',
-        'Symfony\\Component\\Messenger\\Bridge\\Redis\\Transport\\RedisReceiver' => __DIR__ . '/..' . '/symfony/redis-messenger/Transport/RedisReceiver.php',
-        'Symfony\\Component\\Messenger\\Bridge\\Redis\\Transport\\RedisSender' => __DIR__ . '/..' . '/symfony/redis-messenger/Transport/RedisSender.php',
-        'Symfony\\Component\\Messenger\\Bridge\\Redis\\Transport\\RedisTransport' => __DIR__ . '/..' . '/symfony/redis-messenger/Transport/RedisTransport.php',
-        'Symfony\\Component\\Messenger\\Bridge\\Redis\\Transport\\RedisTransportFactory' => __DIR__ . '/..' . '/symfony/redis-messenger/Transport/RedisTransportFactory.php',
         'Symfony\\Component\\Messenger\\Command\\AbstractFailedMessagesCommand' => __DIR__ . '/..' . '/symfony/messenger/Command/AbstractFailedMessagesCommand.php',
         'Symfony\\Component\\Messenger\\Command\\ConsumeMessagesCommand' => __DIR__ . '/..' . '/symfony/messenger/Command/ConsumeMessagesCommand.php',
         'Symfony\\Component\\Messenger\\Command\\DebugCommand' => __DIR__ . '/..' . '/symfony/messenger/Command/DebugCommand.php',

@@ -1,7 +1,7 @@
 FROM php:8.1-apache
 
 # Instalación de dependencias
-RUN apt-get update && apt-get install -y redis-server \
+RUN apt-get update && apt-get install -y \
     libzip-dev unzip git \
     libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
     libicu-dev libpq-dev \
@@ -14,9 +14,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Symfony CLI
 RUN curl -sS https://get.symfony.com/cli/installer | bash
 RUN mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
-
-# Redis
-RUN pecl install redis && docker-php-ext-enable redis
 
 # Copiar configuración personalizada
 COPY ./apache/000-default.conf /etc/apache2/sites-available/000-default.conf

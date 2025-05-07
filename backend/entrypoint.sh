@@ -8,8 +8,6 @@ sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-avail
 
 echo "El puerto asignado es: $PORT"
 
-redis-server --daemonize yes
-
 # Ejecuta la actualizacion de la BD (opcional, solo si quieres que se lancen al iniciar)
 php bin/console doctrine:schema:update --complete --force
 

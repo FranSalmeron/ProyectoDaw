@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { createChat } from '../helpers/chatHelper';
-import { loadMessages, sendMessage, pollTaskStatus } from '../helpers/chatMessageHelper';
+import { loadMessages, sendMessage } from '../helpers/chatMessageHelper';
 import { getUserIdFromToken } from '../helpers/decodeToken';
 import { useNavigate, useLocation } from 'react-router-dom';
 import LoadingSpinner  from '../components/LoadingSpinner/LoadingSpinner';
@@ -17,7 +17,6 @@ const Chat = () => {
   const [chatId, setChatId] = useState(0);
   const [isSending, setIsSending] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
-  const [taskId, setTaskId] = useState(null);
   const navigate = useNavigate();
 
   const MAX_CHARACTERS = 500;
@@ -51,59 +50,25 @@ const Chat = () => {
     createChatIfNotExists();
   }, [buyerId, userId, carId, navigate]);
 
-  // **Cargar mensajes y empezar polling solo si no hay taskId**
+  // **Cargar mensajes directamente desde el backend cada 10s (polling)**
   useEffect(() => {
-    if (chatId) {
-      if (!taskId) {
-        const loadMessagesForChat = async () => {
-          setLoading(true);
-          const newTaskId = await loadMessages(chatId, setLoading);
+    if (!chatId) return;
 
-          if (newTaskId) {
-            setTaskId(newTaskId);
-            // Iniciar el polling con taskId una vez que haya sido asignado
-            startPolling(newTaskId);
-          }
-        };
-
-        loadMessagesForChat(); // Cargar mensajes y empezar el polling
-      }
-    }
-  }, [chatId, taskId]); // Este useEffect solo se ejecuta cuando chatId está disponible
-
-  // **Iniciar el polling cada 10 segundos (actualización periódica de mensajes)**
-  const startPolling = (taskId) => {
-    const intervalId = setInterval(async () => {
-      if (taskId) {
-        await loadMessages(chatId, setLoading, taskId);  // Recargar mensajes
-        pollTaskStatus(taskId, setMessages, setLoading, messages);
-      }
-    }, 10000);  // Polling cada 10 segundos
-
-    // Limpiar el intervalo cuando el componente se desmonte o el chat se cierre
-    return intervalId;
-  };
-
-  // **Manejar el cambio de página para detener el polling**
-  useEffect(() => {
-    // Esta función se ejecuta al cambiar de página, limpiamos el intervalo.
-    const clearPolling = () => {
-      if (taskId) {
-        // Si hay un taskId, limpiamos el intervalo y el taskId
-        clearInterval(taskId);
-        setTaskId(null);
-      }
+    const fetchMessages = async () => {
+      setLoading(true);
+      await loadMessages(chatId, setMessages, setLoading);
     };
 
-    // Si el componente se desmonta (cambio de página)
-    return () => {
-      clearPolling();
-    };
-  }, [taskId]); // El efecto se ejecuta cuando el `taskId` cambia
+    fetchMessages(); // Cargar mensajes al inicio
+
+    const intervalId = setInterval(fetchMessages, 10000); // Polling cada 10s
+
+    return () => clearInterval(intervalId); // Limpiar el intervalo al desmontarse
+  }, [chatId]);
 
   // **Enviar mensaje al chat**
   const sendMessageToChat = async () => {
-    if (!messageInput.trim() || !chatId || !taskId) return;
+    if (!messageInput.trim() || !chatId) return;
     if (messageInput.length > MAX_CHARACTERS) {
       toast.error(`El mensaje no puede tener más de ${MAX_CHARACTERS} caracteres.`);
       return;
@@ -115,15 +80,8 @@ const Chat = () => {
       const response = await sendMessage(chatId, userId, messageInput);
       setMessageInput('');
       if (response && response.success) {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            messageId: Date.now(),
-            content: messageInput,
-            userId: userId,
-            messageDate: new Date().toISOString(),
-          },
-        ]);
+        // Recargar los mensajes después de enviar uno
+        await loadMessages(chatId, setMessages, () => {});
       }
     } catch (error) {
       console.error('Error al enviar el mensaje:', error);
