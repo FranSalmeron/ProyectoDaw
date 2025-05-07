@@ -1,3 +1,9 @@
+parameters:
+    cloudinary:
+        cloud_name: '%env(CLOUDINARY_CLOUD_NAME)%'
+        api_key: '%env(CLOUDINARY_API_KEY)%'
+        api_secret: '%env(CLOUDINARY_API_SECRET)%'
+
 services:
     _defaults:
         autowire: true  # Habilita la inyección automática
@@ -15,3 +21,9 @@ services:
         arguments:
             $chatMessageRepository: '@App\Repository\ChatMessageRepository'
             $entityManager: '@doctrine.orm.entity_manager'
+            
+    App\Service\CloudinaryService:
+        arguments:
+            $cloudName: '%cloudinary.cloud_name%'
+            $apiKey: '%cloudinary.api_key%'
+            $apiSecret: '%cloudinary.api_secret%'

@@ -14,11 +14,11 @@ const CarImage = ({ car }) => {
   return (
     <div className="relative w-full h-48 overflow-hidden">
       {car.images && car.images.length > 0 ? (
-        <img
-          src={car.images[0]} // Usamos la primera imagen tal cual
-          alt={`${car.brand} ${car.model}`}
-          className="w-auto h-auto object-cover"
-        />
+       <img
+       src={car.images[0] || "/images/logo-oscuro.png"} // Imagen por defecto si no hay imagen
+       alt={`${car.brand} ${car.model}`}
+       className="w-auto h-auto object-cover"
+      />
       ) : (
         <p>No hay imágenes disponibles</p>
       )}
