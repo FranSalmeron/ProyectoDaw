@@ -3,19 +3,18 @@
 namespace App\Service;
 
 use Cloudinary\Cloudinary;
-use Cloudinary\Api\Upload\UploadApi;
 
 class CloudinaryService
 {
     private Cloudinary $cloudinary;
 
-    public function __construct(array $config)
+    public function __construct(string $cloudinaryCloudName, string $cloudinaryApiKey, string $cloudinaryApiSecret)
     {
         $this->cloudinary = new Cloudinary([
             'cloud' => [
-                'cloud_name' => $config['cloud_name'],
-                'api_key'    => $config['api_key'],
-                'api_secret' => $config['api_secret'],
+                'cloud_name' => $cloudinaryCloudName,
+                'api_key'    => $cloudinaryApiKey,
+                'api_secret' => $cloudinaryApiSecret,
             ],
             'url' => ['secure' => true],
         ]);

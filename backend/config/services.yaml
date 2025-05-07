@@ -1,14 +1,8 @@
-parameters:
-    cloudinary:
-        cloud_name: '%env(CLOUDINARY_CLOUD_NAME)%'
-        api_key: '%env(CLOUDINARY_API_KEY)%'
-        api_secret: '%env(CLOUDINARY_API_SECRET)%'
-
 services:
     _defaults:
         autowire: true  # Habilita la inyección automática
         autoconfigure: true  # Configura automáticamente los servicios para ser utilizados por el contenedor
-
+        
     App\:
         resource: '../src/'
         exclude:
@@ -21,7 +15,10 @@ services:
         arguments:
             $chatMessageRepository: '@App\Repository\ChatMessageRepository'
             $entityManager: '@doctrine.orm.entity_manager'
-            
+
     App\Service\CloudinaryService:
         arguments:
-            $config: '%cloudinary%'
+            $cloudinaryCloudName: '%env(CLOUDINARY_CLOUD_NAME)%'
+            $cloudinaryApiKey: '%env(CLOUDINARY_API_KEY)%'
+            $cloudinaryApiSecret: '%env(CLOUDINARY_API_SECRET)%'
+            
