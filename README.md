@@ -21,9 +21,10 @@
 #### Revision de rutas (Hecho)
 #### Crear Spinner de carga y eso (Hecho)
 #### Crear, consultar y hacer un buen diseño de la pagina visual y esteticamente (Hecho)
-#### Optimizar codigo y velocidad de carga (A medias si se llega a implementar webSockets, Hecho sin WebSocket)
-#### Arreglar JWT o dejarlos como ya esta. 
-#### Despliegue de la pagina (Dominio,github,otras opciones a elegir)
+#### Optimizar codigo y velocidad de carga (HECHO)
+#### Arreglar JWT o dejarlos como ya esta. (Hecho)
+#### Despliegue de la pagina (Hecho)
+# INTENTAR CAMBIAR CHAT POR WEBSOCKET SI NO TERMINAR DE CONFIGURAR EL CHAT
 #### Documentacion y cosas necesarias del proyecto.
 
 #### OPCIONAL valorar vendedores de coches
