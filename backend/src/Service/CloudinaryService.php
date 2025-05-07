@@ -9,17 +9,15 @@ class CloudinaryService
 {
     private Cloudinary $cloudinary;
 
-    public function __construct(string $cloudName, string $apiKey, string $apiSecret)
+    public function __construct(array $config)
     {
         $this->cloudinary = new Cloudinary([
             'cloud' => [
-                'cloud_name' => $cloudName,
-                'api_key'    => $apiKey,
-                'api_secret' => $apiSecret,
+                'cloud_name' => $config['cloud_name'],
+                'api_key'    => $config['api_key'],
+                'api_secret' => $config['api_secret'],
             ],
-            'url' => [
-                'secure' => true,
-            ],
+            'url' => ['secure' => true],
         ]);
     }
 

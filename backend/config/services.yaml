@@ -24,6 +24,4 @@ services:
             
     App\Service\CloudinaryService:
         arguments:
-            $cloudName: '%cloudinary.cloud_name%'
-            $apiKey: '%cloudinary.api_key%'
-            $apiSecret: '%cloudinary.api_secret%'
+            $config: '%cloudinary%'
