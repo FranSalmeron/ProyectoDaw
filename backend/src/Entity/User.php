@@ -17,7 +17,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user_id', 'car_list', 'car_favorite_list'])] 
+    #[Groups(['user_id', 'car_list', 'car_favorite_list'])]
     private ?int $id = null;
 
     #[ORM\Column]
@@ -38,13 +38,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $address = null; 
+    private ?string $address = null;
 
     #[ORM\Column(length: 20, nullable: true)]
     #[Groups(['user_id'])]
-    private ?string $phone = null; 
+    private ?string $phone = null;
 
-    #[ORM\OneToMany(targetEntity: Car::class, mappedBy: 'User')]
+    #[ORM\OneToMany(targetEntity: Car::class, mappedBy: 'User', cascade: ['persist', 'remove'])]
     #[Groups('user_id')]
     private Collection $cars;
 

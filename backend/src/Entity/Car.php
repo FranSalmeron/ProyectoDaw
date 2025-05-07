@@ -10,89 +10,86 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: CarRepository::class)]
 class Car
 {
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
-    #[Groups(['car_list', 'car_favorite_list'])] 
+    #[Groups(['car_list', 'car_favorite_list'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-    #[Groups('car_list',)] 
+    #[Groups('car_list',)]
     private ?string $brand = null;
 
     #[ORM\Column(length: 100)]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?string $model = null;
 
     #[ORM\Column]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?int $manufacture_year = null;
 
     #[ORM\Column]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?int $mileage = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?string $price = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?string $color = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?string $fuelType = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?string $transmission = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?string $traction = null;
 
-
     #[ORM\Column]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?int $doors = null;
 
     #[ORM\Column]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?int $seats = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?\DateTimeInterface $publication_date = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?string $CarCondition = null;
 
     #[ORM\Column(type: "json", nullable: true)]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?array $images = null;
 
     #[ORM\Column(name: "car_status", type: Types::STRING, length: 50)]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?string $CarSold = null;
 
     #[ORM\ManyToOne(inversedBy: 'cars')]
-    #[Groups('car_list')] 
-    private ?User $user = null; 
-
+    #[Groups('car_list')]
+    private ?User $user = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 6)]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?string $lat = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 6)]
-    #[Groups('car_list')] 
+    #[Groups('car_list')]
     private ?string $lon = null;
 
     #[ORM\Column(length: 255)]
@@ -274,13 +271,13 @@ class Car
     {
         return $this->CarSold;
     }
-    
+
     public function setCarSold(string $CarSold): static
     {
         $this->CarSold = $CarSold;
         return $this;
     }
-    
+
 
     public function getUser(): ?User
     {
