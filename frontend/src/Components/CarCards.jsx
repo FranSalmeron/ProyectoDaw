@@ -77,11 +77,13 @@ const CarCards = ({
     e.stopPropagation();
     // Llamamos a la función para eliminar el coche
     await deleteCar(carId);
+    localStorage.removeItem("cachedCars"); // Limpiar caché de coches
   };
 
   const handleEdit = (e, car) => {
     e.stopPropagation();
     setSelectedCar(car); // Establecemos el coche seleccionado para editar
+    localStorage.removeItem("cachedCars"); // Limpiar caché de coches
   };
 
   const handleCloseEdit = () => {
