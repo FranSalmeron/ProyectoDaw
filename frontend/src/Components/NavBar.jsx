@@ -29,7 +29,7 @@ const NavBar = () => {
             <img
                 src="images/home.png"
                 alt="RenovAuto"
-                className="h-20 w-30"
+                className="h-15 w-15"
               />
           </button>
 
@@ -59,7 +59,7 @@ const NavBar = () => {
                 <img
                   src="images/perfil.png"
                   alt="Usuario"
-                  className="h-10 w-10"
+                  className="h-25 w-25"
                 />
               </button>
             ) : (
