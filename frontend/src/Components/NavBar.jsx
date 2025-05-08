@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { ROUTES } from "../routes/paths";
 import { isAdmin } from "../helpers/decodeToken";
 
+
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -18,16 +19,29 @@ const NavBar = () => {
 
   return (
     <div className="relative z-40">
-      {/* NAVBAR FIJO ARRIBA */}
       <nav className="bg-[#567C8D] p-4 sticky top-0 z-40">
         <div className="flex justify-between items-center relative">
+          {/* Icono de casa fuera del menú hamburguesa */}
+          <button
+            onClick={() => navigate(ROUTES.HOME)}
+            className="text-white text-2xl"
+          >
+            <img
+                src="images/home.png"
+                alt="RenovAuto"
+                className="h-20 w-30"
+              />
+          </button>
+
+          {/* Menú hamburguesa */}
           <button
             onClick={toggleMenu}
-            className="text-white text-3xl absolute z-50"
+            className="text-white text-3xl absolute left-10 z-50"
           >
             {isMenuOpen ? "✕" : "☰"}
           </button>
 
+          {/* Logo */}
           <div className="flex-1 flex justify-center">
             <NavLink to={ROUTES.HOME}>
               <img
@@ -38,40 +52,49 @@ const NavBar = () => {
             </NavLink>
           </div>
 
-          <div className="text-white absolute right-0 pr-4 text-sm">
-            {userName ? `Bienvenido, ${userName}` : "Bienvenido"}
+          {/* Usuario o ícono de perfil */}
+          <div className="text-white absolute right-0 pr-4 text-xl">
+            {userName ? (
+              <button onClick={() => navigate(ROUTES.PROFILE)}>
+                <img
+                  src="images/perfil.png"
+                  alt="Usuario"
+                  className="h-10 w-10"
+                />
+              </button>
+            ) : (
+              <span className="text-sm">Bienvenido</span>
+            )}
           </div>
         </div>
       </nav>
 
-      {/* SIDEBAR ABSOLUTO, NO DESPLAZA CONTENIDO */}
+      {/* Sidebar */}
       <div
         className={`absolute left-0 w-64 bg-[#43697a] p-6 shadow-lg transition-transform duration-300 ease-in-out ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
-        style={{ top: "100%" }} // Justo debajo del navbar
+        style={{ top: "100%" }}
       >
         <ul className="space-y-4 text-white">
-          <li>
-            <NavLink to={ROUTES.HOME} onClick={closeMenu}>
-              Inicio
-            </NavLink>
-          </li>
+          {/* Eliminado: <NavLink to={ROUTES.HOME}>Inicio</NavLink> */}
+
           <li>
             <NavLink to={ROUTES.ABOUT} onClick={closeMenu}>
               Sobre Nosotros
             </NavLink>
           </li>
+
           {!userName ? (
             <>
               <li>
                 <NavLink to={ROUTES.LOGIN} onClick={closeMenu}>
-                  Logearse
+                  Login
                 </NavLink>
               </li>
               <li>
                 <NavLink to={ROUTES.REGISTER} onClick={closeMenu}>
-                  Registrarse
+                  Register
                 </NavLink>
               </li>
             </>
@@ -97,11 +120,7 @@ const NavBar = () => {
                   Ver mis coches
                 </NavLink>
               </li>
-              <li>
-                <NavLink to={ROUTES.PROFILE} onClick={closeMenu}>
-                  Perfil
-                </NavLink>
-              </li>
+              {/* Quitamos Perfil del menú */}
               {isAdmin() && (
                 <>
                   <li>
