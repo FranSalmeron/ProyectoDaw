@@ -119,7 +119,7 @@ const Chat = () => {
           {messages.map((message) => (
             <div
               key={message.messageId}
-              className={`message p-3 rounded-lg max-w-xs ${message.userId == sellerId ? 'ml-auto bg-[#9DB6CF] text-white' : 'mr-auto bg-[#D4E4ED] text-gray-800'}`}
+              className={`message p-3 rounded-lg max-w-xs ${message.userId == currentuserId ? 'ml-auto bg-[#9DB6CF] text-white' : 'mr-auto bg-[#D4E4ED] text-gray-800'}`}
             >
               <p>{message.content}</p>
               <small className="text-xs opacity-75">
