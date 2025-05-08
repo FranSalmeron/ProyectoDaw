@@ -15,4 +15,7 @@ services:
             $cloudinaryCloudName: '%env(CLOUDINARY_CLOUD_NAME)%'
             $cloudinaryApiKey: '%env(CLOUDINARY_API_KEY)%'
             $cloudinaryApiSecret: '%env(CLOUDINARY_API_SECRET)%'
+
+    App\Repository\UserRepository:
+        public: true
             
