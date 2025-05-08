@@ -22,5 +22,6 @@ $server = IoServer::factory(
     8081
 );
 
+echo "✅ WebSocket iniciado correctamente en el puerto 8081\n";
 
 $server->run();
