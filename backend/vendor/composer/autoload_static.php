@@ -1796,6 +1796,7 @@ class ComposerStaticInit563661120ba69b5b691ff93c818e3a7d
         'App\\Repository\\UserRepository' => __DIR__ . '/../..' . '/src/Repository/UserRepository.php',
         'App\\Service\\CloudinaryService' => __DIR__ . '/../..' . '/src/Service/CloudinaryService.php',
         'App\\Service\\UploadService' => __DIR__ . '/../..' . '/src/Service/UploadService.php',
+        'App\\WebSocket\\ChatServer' => __DIR__ . '/../..' . '/src/WebSocket/ChatServer.php',
         'Brick\\Math\\BigDecimal' => __DIR__ . '/..' . '/brick/math/src/BigDecimal.php',
         'Brick\\Math\\BigInteger' => __DIR__ . '/..' . '/brick/math/src/BigInteger.php',
         'Brick\\Math\\BigNumber' => __DIR__ . '/..' . '/brick/math/src/BigNumber.php',

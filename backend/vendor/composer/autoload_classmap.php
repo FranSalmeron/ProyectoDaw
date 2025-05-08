@@ -1028,6 +1028,7 @@ return array(
     'App\\Repository\\UserRepository' => $baseDir . '/src/Repository/UserRepository.php',
     'App\\Service\\CloudinaryService' => $baseDir . '/src/Service/CloudinaryService.php',
     'App\\Service\\UploadService' => $baseDir . '/src/Service/UploadService.php',
+    'App\\WebSocket\\ChatServer' => $baseDir . '/src/WebSocket/ChatServer.php',
     'Brick\\Math\\BigDecimal' => $vendorDir . '/brick/math/src/BigDecimal.php',
     'Brick\\Math\\BigInteger' => $vendorDir . '/brick/math/src/BigInteger.php',
     'Brick\\Math\\BigNumber' => $vendorDir . '/brick/math/src/BigNumber.php',

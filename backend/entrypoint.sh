@@ -1,16 +1,18 @@
 #!/bin/bash
 
-# Usa el puerto de Railway o default al 8080
-PORT=${PORT:-8081}
+# Usa el puerto de Railway o por defecto el 8081
+PORT=${PORT:-8080}
 
-# Solo modifica VirtualHost, no uses "Listen" (Railway gestiona eso internamente)
+# Actualiza VirtualHost para Apache
 sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-available/000-default.conf
 
-echo "El puerto asignado es: $PORT"
+echo "El puerto asignado para Apache es: $PORT"
 
-# Ejecuta la actualizacion de la BD (opcional, solo si quieres que se lancen al iniciar)
+# Ejecuta migraciones si es necesario
 php bin/console doctrine:schema:update --complete --force
 
+# Ejecuta el servidor WebSocket en segundo plano (puerto 8080)
+php bin/webSocket.php &
 
-# Iniciar Apache
+# Inicia Apache en primer plano
 exec apache2-foreground

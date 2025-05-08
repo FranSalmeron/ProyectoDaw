@@ -367,6 +367,16 @@ return [[
                 'columnName' => [
                     1 => 'id',
                 ],
+                'cascade' => [
+                    2 => [
+                        'persist',
+                        'remove',
+                    ],
+                    4 => [
+                        'persist',
+                        'remove',
+                    ],
+                ],
                 'fetch' => [
                     2 => 2,
                     4 => 2,
@@ -522,6 +532,17 @@ return [[
                 'columnName' => [
                     1 => 'id',
                     'created_date',
+                ],
+                'cascade' => [
+                    3 => [
+                        'remove',
+                    ],
+                    5 => [
+                        'remove',
+                    ],
+                    7 => [
+                        'remove',
+                    ],
                 ],
                 'fetch' => [
                     3 => 2,
@@ -700,6 +721,14 @@ return [[
                     1 => 'id_message',
                     'content',
                     'message_date',
+                ],
+                'cascade' => [
+                    4 => [
+                        'remove',
+                    ],
+                    6 => [
+                        'remove',
+                    ],
                 ],
                 'fetch' => [
                     4 => 2,
@@ -1074,6 +1103,12 @@ return [[
                 'nullable' => [
                     6 => true,
                     true,
+                ],
+                'cascade' => [
+                    9 => [
+                        'persist',
+                        'remove',
+                    ],
                 ],
                 'fetch' => [
                     9 => 2,

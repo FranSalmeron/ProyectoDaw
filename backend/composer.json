@@ -10,6 +10,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "api-platform/core": "^2.7",
+        "cboden/ratchet": "^0.4.4",
         "cloudinary/cloudinary_php": "*",
         "doctrine/dbal": "^3",
         "doctrine/doctrine-bundle": "^2.13",

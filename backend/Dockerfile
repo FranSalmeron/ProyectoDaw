@@ -50,6 +50,8 @@ ENV PORT=${PORT}
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+# Exponer el puerto 8081 (puerto de webSocket)
+EXPOSE 8081
 
 # Usar el script como entrypoint
 ENTRYPOINT ["/entrypoint.sh"]

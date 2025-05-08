@@ -5,6 +5,7 @@ import { loadMessages, sendMessage } from '../helpers/chatMessageHelper';
 import { getUserIdFromToken } from '../helpers/decodeToken';
 import { useNavigate, useLocation } from 'react-router-dom';
 import LoadingSpinner  from '../components/LoadingSpinner/LoadingSpinner';
+import { sendMessageWS, connectToWebSocket, closeWebSocket } from '../helpers/webSocketHelper';
 
 const Chat = () => {
   // Extraemos los parámetros de la URL
@@ -50,45 +51,39 @@ const Chat = () => {
     createChatIfNotExists();
   }, [buyerId, userId, carId, navigate]);
 
-  // **Cargar mensajes directamente desde el backend cada 10s (polling)**
   useEffect(() => {
     if (!chatId) return;
-
+  
+    // Cargar historial solo al inicio
     const fetchMessages = async () => {
       setLoading(true);
       await loadMessages(chatId, setMessages, setLoading);
     };
-
-    fetchMessages(); // Cargar mensajes al inicio
-
-    const intervalId = setInterval(fetchMessages, 10000); // Polling cada 10s
-
-    return () => clearInterval(intervalId); // Limpiar el intervalo al desmontarse
+  
+    fetchMessages();
+  
+    // Abrir WebSocket
+    connectToWebSocket(chatId, currentUserId, (newMessage) => {
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    });
+  
+    return () => {
+      closeWebSocket();
+    };
   }, [chatId]);
-
+  
   // **Enviar mensaje al chat**
-  const sendMessageToChat = async () => {
+  const sendMessageToChat = () => {
     if (!messageInput.trim() || !chatId) return;
     if (messageInput.length > MAX_CHARACTERS) {
       toast.error(`El mensaje no puede tener más de ${MAX_CHARACTERS} caracteres.`);
       return;
     }
-
-    setIsSending(true);
-
-    try {
-      const response = await sendMessage(chatId, userId, messageInput);
-      setMessageInput('');
-      if (response && response.success) {
-        // Recargar los mensajes después de enviar uno
-        await loadMessages(chatId, setMessages, () => {});
-      }
-    } catch (error) {
-      console.error('Error al enviar el mensaje:', error);
-    } finally {
-      setIsSending(false);
-    }
+  
+    sendMessageWS(chatId, currentUserId, messageInput);
+    setMessageInput('');
   };
+  
 
   // **Autoscroll al final del chat**
   useEffect(() => {
