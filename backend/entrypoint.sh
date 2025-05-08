@@ -12,7 +12,7 @@ echo "El puerto asignado para Apache es: $PORT"
 php bin/console doctrine:schema:update --complete --force
 
 # Ejecuta el servidor WebSocket en segundo plano (puerto 8080)
-php bin/webSocket.php &
+# php bin/webSocket.php &
 
 # Inicia Apache en primer plano
 exec apache2-foreground
