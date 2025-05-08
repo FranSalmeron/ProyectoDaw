@@ -55,7 +55,7 @@ const Chats = ({ userId = null }) => {
     // Redirige a la página del chat
     navigate("/chat", {
       state: {
-        userId: chatDetailsItem.seller?.id,
+        sellerId: chatDetailsItem.seller?.id,
         carId: chatDetailsItem.car?.id,
         buyerId: chatDetailsItem.buyer?.id,
       },

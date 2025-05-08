@@ -8,7 +8,7 @@ const ChatCards = ({ chats }) => {
     // Redirigir al chat pasándole los datos necesarios
     navigate("/chat", {
       state: {
-        userId: chat.seller.id,
+        sellerId: chat.seller.id,
         carId: chat.car.id,
         buyerId: chat.buyer.id,
       },
