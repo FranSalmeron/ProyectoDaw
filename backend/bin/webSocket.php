@@ -19,7 +19,8 @@ $server = IoServer::factory(
         $entityManager->getRepository(App\Entity\User::class),
         $entityManager->getRepository(App\Entity\Chat::class)
     ),
-    8081
+    8081,
+    '0.0.0.0' 
 );
 
 echo "✅ WebSocket iniciado correctamente en el puerto 8081\n";
