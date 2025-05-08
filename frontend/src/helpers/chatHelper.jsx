@@ -33,6 +33,7 @@ export const createChat = async (sellerId, buyerId, carId) => {
 
     const data = await response.json();
     if (data.chatId) {
+      localStorage.removeItem("cachedChats"); // Limpiar la caché de chats
       return data.chatId;
     } else {
       toast.error("No se pudo entrar al chat, intentalo de nuevo.");

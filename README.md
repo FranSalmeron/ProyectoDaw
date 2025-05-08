@@ -24,7 +24,7 @@
 #### Optimizar codigo y velocidad de carga (HECHO)
 #### Arreglar JWT o dejarlos como ya esta. (Hecho)
 #### Despliegue de la pagina (Hecho)
-# INTENTAR CAMBIAR CHAT POR WEBSOCKET SI NO TERMINAR DE CONFIGURAR EL CHAT
+#### TERMINAR DE CONFIGURAR EL CHAT (Hecho)
 #### Documentacion y cosas necesarias del proyecto.
 
 #### OPCIONAL valorar vendedores de coches

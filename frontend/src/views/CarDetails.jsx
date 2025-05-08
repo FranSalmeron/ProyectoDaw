@@ -149,9 +149,9 @@ const CarDetails = () => {
       const currentUserId = getUserIdFromToken();
       navigate("/chat", {
         state: {
-          userId: currentUserId,
+          buyerId: currentUserId,
           carId: car?.id,
-          buyerId: car?.user.id,
+          sellerId: car?.user.id,
         },
       });
     }
