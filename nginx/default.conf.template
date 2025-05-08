@@ -103,7 +103,7 @@ server {
         }
     }
     location /ws/ {
-        proxy_pass http://proyectodaw.railway.internal:8081;
+        proxy_pass https://proyectodaw.railway.internal:8081;
 
         # Necesario para WebSocket
         proxy_http_version 1.1;
