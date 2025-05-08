@@ -11,13 +11,16 @@ $kernel->boot();
 
 $container = $kernel->getContainer();
 
+$entityManager = $container->get('doctrine')->getManager();
+
 $server = IoServer::factory(
     new ChatServer(
-        $container->get('doctrine')->getManager(),
-        $container->get(App\Repository\UserRepository::class),
-        $container->get(App\Repository\ChatRepository::class)
+        $entityManager,
+        $entityManager->getRepository(App\Entity\User::class),
+        $entityManager->getRepository(App\Entity\Chat::class)
     ),
     8081
 );
+
 
 $server->run();

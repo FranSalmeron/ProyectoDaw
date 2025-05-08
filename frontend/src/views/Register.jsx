@@ -72,6 +72,7 @@ function Register() {
                     id="name"
                     type="text"
                     value={name}
+                    required
                     onChange={(e) => setName(e.target.value)}
                     class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                     placeholder="Escribe tu nombre completo"
@@ -85,6 +86,7 @@ function Register() {
                     id="email"
                     type="email"
                     value={email}
+                    required
                     onChange={(e) => setEmail(e.target.value)}
                     class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                     placeholder="Escribe tu email"
@@ -98,6 +100,7 @@ function Register() {
                     id="address"
                     type="text"
                     value={address}
+                    required
                     onChange={(e) => setAddress(e.target.value)}
                     class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                     placeholder="Escribe tu dirección"
@@ -111,6 +114,7 @@ function Register() {
                     id="phone"
                     type="text"
                     value={phone}
+                    required
                     onChange={(e) => setPhone(e.target.value)}
                     class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                     placeholder="Escribe tu teléfono"
@@ -124,6 +128,7 @@ function Register() {
                     id="password"
                     type="password"
                     value={password}
+                    required
                     onChange={(e) => setPassword(e.target.value)}
                     class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                     placeholder="Crea tu contraseña"
