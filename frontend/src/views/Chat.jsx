@@ -9,7 +9,6 @@ const Chat = () => {
   // Extraemos los parámetros de la URL
   const location = useLocation();
   const { sellerId, carId, buyerId } = location.state;
-  console.log("sellerId:" + sellerId, carId,"buyerid: "+ buyerId);
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
   const [loading, setLoading] = useState(true);
@@ -77,7 +76,7 @@ const Chat = () => {
     setIsSending(true);
 
     try {
-      const response = await sendMessage(chatId, sellerId, messageInput);
+      const response = await sendMessage(chatId, currentuserId, messageInput);
       setMessageInput('');
       if (response && response.success) {
         // Recargar los mensajes después de enviar uno
