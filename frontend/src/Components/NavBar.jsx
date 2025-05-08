@@ -24,12 +24,12 @@ const NavBar = () => {
           {/* Icono de casa fuera del menú hamburguesa */}
           <button
             onClick={() => navigate(ROUTES.HOME)}
-            className="text-white text-2xl"
+            className="text-white text-2xl ml-1"
           >
             <img
                 src="images/home.png"
                 alt="RenovAuto"
-                className="h-15 w-15"
+                className="h-10 w-10"
               />
           </button>
 
@@ -59,7 +59,7 @@ const NavBar = () => {
                 <img
                   src="images/perfil.png"
                   alt="Usuario"
-                  className="h-25 w-25"
+                  className="h-15 w-15"
                 />
               </button>
             ) : (
