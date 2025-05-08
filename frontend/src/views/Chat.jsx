@@ -1,19 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { toast } from 'react-toastify';
-import { createChat } from '../helpers/chatHelper';
-import { loadMessages, sendMessage } from '../helpers/chatMessageHelper';
-import { getUserIdFromToken } from '../helpers/decodeToken';
-import { useNavigate, useLocation } from 'react-router-dom';
-import LoadingSpinner  from '../components/LoadingSpinner/LoadingSpinner';
-import { sendMessageWS, connectToWebSocket, closeWebSocket } from '../helpers/webSocketHelper';
+import React, { useState, useEffect, useRef } from "react";
+import { toast } from "react-toastify";
+import { createChat } from "../helpers/chatHelper";
+import { loadMessages} from "../helpers/chatMessageHelper";
+import { getUserIdFromToken } from "../helpers/decodeToken";
+import { useNavigate, useLocation } from "react-router-dom";
+import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
+import {
+  sendMessageWS,
+  connectToWebSocket,
+  closeWebSocket,
+} from "../helpers/webSocketHelper";
 
 const Chat = () => {
   // Extraemos los parámetros de la URL
   const location = useLocation();
   const { userId, carId, buyerId } = location.state;
-  
+
   const [messages, setMessages] = useState([]);
-  const [messageInput, setMessageInput] = useState('');
+  const [messageInput, setMessageInput] = useState("");
   const [loading, setLoading] = useState(true);
   const [chatId, setChatId] = useState(0);
   const [isSending, setIsSending] = useState(false);
@@ -31,7 +35,7 @@ const Chat = () => {
     const createChatIfNotExists = async () => {
       if (!buyerId || !userId || !carId) {
         toast.error("Error de red");
-        navigate('/');  
+        navigate("/");
         return;
       }
 
@@ -40,11 +44,11 @@ const Chat = () => {
         if (chatIdResponse) {
           setChatId(chatIdResponse);
         } else {
-          navigate('/'); 
+          navigate("/");
         }
       } catch (error) {
-        console.error('Error al crear el chat:', error);
-        toast.error('Error al crear el chat.');
+        console.error("Error al crear el chat:", error);
+        toast.error("Error al crear el chat.");
       }
     };
 
@@ -53,54 +57,53 @@ const Chat = () => {
 
   useEffect(() => {
     if (!chatId) return;
-  
+    console.log("Chat Montado")
     // Cargar historial solo al inicio
     const fetchMessages = async () => {
       setLoading(true);
       await loadMessages(chatId, setMessages, setLoading);
     };
-  
+
     fetchMessages();
-  
+
     // Abrir WebSocket
     connectToWebSocket(chatId, currentUserId, (newMessage) => {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
-  
+
     return () => {
       closeWebSocket();
     };
   }, [chatId]);
-  
+
   // **Enviar mensaje al chat**
   const sendMessageToChat = () => {
     if (!messageInput.trim() || !chatId) return;
     if (messageInput.length > MAX_CHARACTERS) {
-      toast.error(`El mensaje no puede tener más de ${MAX_CHARACTERS} caracteres.`);
+      toast.error(
+        `El mensaje no puede tener más de ${MAX_CHARACTERS} caracteres.`
+      );
       return;
     }
-  
+
     sendMessageWS(chatId, currentUserId, messageInput);
-    setMessageInput('');
+    setMessageInput("");
   };
-  
 
   // **Autoscroll al final del chat**
   useEffect(() => {
-    if (isAtBottom && messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "auto" });
     }
-  }, [messages, isAtBottom]);
+  }, []);
 
   const handleScroll = () => {
-    const bottom = messagesEndRef.current?.getBoundingClientRect().top <= window.innerHeight;
+    const bottom =
+      messagesEndRef.current?.getBoundingClientRect().top <= window.innerHeight;
     setIsAtBottom(bottom);
   };
 
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  
 
   if (loading) {
     return (
@@ -120,8 +123,8 @@ const Chat = () => {
               key={message.messageId}
               className={`message p-3 rounded-lg max-w-xs ${
                 message.userId == userId
-                  ? 'ml-auto bg-[#9DB6CF] text-white'
-                  : 'mr-auto bg-[#D4E4ED] text-gray-800'
+                  ? "ml-auto bg-[#9DB6CF] text-white"
+                  : "mr-auto bg-[#D4E4ED] text-gray-800"
               }`}
             >
               <p>{message.content}</p>
@@ -132,7 +135,7 @@ const Chat = () => {
           ))}
           <div ref={messagesEndRef} />
         </div>
-  
+
         {canWrite ? (
           <div className="mt-4">
             <textarea
@@ -144,14 +147,14 @@ const Chat = () => {
             <button
               onClick={sendMessageToChat}
               className={`mt-2 p-2 text-white rounded-lg w-full ${
-                isSending ? 'bg-[#B6CADE]' : 'bg-[#43697a]'
-              } ${isSending ? 'cursor-not-allowed' : ''}`}
+                isSending ? "bg-[#B6CADE]" : "bg-[#43697a]"
+              } ${isSending ? "cursor-not-allowed" : ""}`}
               disabled={isSending}
             >
               {isSending ? (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               ) : (
-                'Enviar'
+                "Enviar"
               )}
             </button>
           </div>
