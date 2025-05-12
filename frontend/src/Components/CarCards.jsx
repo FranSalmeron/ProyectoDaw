@@ -15,9 +15,9 @@ const CarImage = ({ car }) => {
     <div className="relative w-full h-48 overflow-hidden">
       {car.images && car.images.length > 0 ? (
         <img
-          src={car.images[0] || "/images/logo-oscuro.png"} // Imagen por defecto si no hay imagen
+          src={car.images[0] || "/images/logo-oscuro.png"}
           alt={`${car.brand} ${car.model}`}
-          className="w-auto h-auto object-cover"
+          className="w-full h-full object-fill"
         />
       ) : (
         <p>No hay imágenes disponibles</p>
@@ -25,6 +25,7 @@ const CarImage = ({ car }) => {
     </div>
   );
 };
+
 const CarCards = ({
   cars,
   loading,
@@ -139,13 +140,12 @@ const CarCards = ({
                   )}
 
                   {/* Imagen */}
-                  <div className="relative w-full h-48 overflow-hidden">
-                    {car.images && car.images.length > 0}
-                    <img
-                      src={car.images[0]}
-                      alt={`${car.brand} ${car.model}`}
-                      className="w-full h-full object-fill"
-                    />
+                  <div className="flex w-full mb-4">
+                    <div className="flex-1">
+                      <h4 className="text-lg font-semibold">
+                        {formatBrand(car.brand)} {car.model}
+                      </h4>
+                    </div>
                     <div className="flex-none">
                       <p className="text-black-500">
                         <strong>{car.price} €</strong>
