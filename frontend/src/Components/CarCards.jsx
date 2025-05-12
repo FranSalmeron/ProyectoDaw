@@ -139,12 +139,13 @@ const CarCards = ({
                   )}
 
                   {/* Imagen */}
-                  <div className="flex w-full mb-4">
-                    <div className="flex-1">
-                      <h4 className="text-lg font-semibold">
-                        {formatBrand(car.brand)} {car.model}
-                      </h4>
-                    </div>
+                  <div className="relative w-full h-48 overflow-hidden">
+                    {car.images && car.images.length > 0}
+                    <img
+                      src={car.images[0]}
+                      alt={`${car.brand} ${car.model}`}
+                      className="w-full h-full object-fill"
+                    />
                     <div className="flex-none">
                       <p className="text-black-500">
                         <strong>{car.price} €</strong>
