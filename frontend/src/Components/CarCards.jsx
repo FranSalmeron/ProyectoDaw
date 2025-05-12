@@ -12,7 +12,7 @@ import LoadingSpinner from "./LoadingSpinner/LoadingSpinner";
 
 const CarImage = ({ car }) => {
   return (
-    <div className="relative w-full h-38 overflow-hidden">
+    <div className="relative w-full h-38 overflow-hidden mb-1">
       {car.images && car.images.length > 0 ? (
         <img
           src={car.images[0] || "/images/logo-oscuro.png"}
