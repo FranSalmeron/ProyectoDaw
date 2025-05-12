@@ -24,7 +24,7 @@ const NavBar = () => {
           {/* Icono de casa fuera del menú hamburguesa */}
           <button
             onClick={() => navigate(ROUTES.HOME)}
-            className="text-white text-2xl ml-1"
+            className="text-white text-2xl ml-2"
           >
             <img
                 src="images/home.png"
