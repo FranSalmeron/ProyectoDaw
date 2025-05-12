@@ -27,7 +27,7 @@ const NavBar = () => {
             className="text-white text-2xl mr-10"
           >
             <img
-                src="images/home.png"
+                src="images/home2.png"
                 alt="RenovAuto"
                 className="h-10 w-10"
               />
@@ -57,7 +57,7 @@ const NavBar = () => {
             {userName ? (
               <button onClick={() => navigate(ROUTES.PROFILE)}>
                 <img
-                  src="images/perfil.png"
+                  src="images/perfil2.png"
                   alt="Usuario"
                   className="h-15 w-15"
                 />
