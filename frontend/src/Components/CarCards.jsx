@@ -154,45 +154,43 @@ const CarCards = ({
 
                   {/* Imagen y Características */}
                   <div className="flex flex-col sm:flex-row w-full">
-                    <div className="flex w-full">
-                      <div className="w-50 h-auto mr-4">
-                        <CarImage car={car} />
-                      </div>
-                      <div className="flex-1">
-                        <ul className="space-y-2">
-                          <li className="text-black-500">
-                            <strong>Ubicación:</strong> {car.city}
-                          </li>
-                          <li className="text-black-500">
-                            <strong>Condición:</strong> {car.CarCondition}
-                          </li>
-                          <li className="text-black-500">
-                            <strong>Año:</strong> {car.manufacture_year}
-                          </li>
-                          <li className="text-black-500">
-                            <strong>Kilómetros:</strong> {car.mileage} km
-                          </li>
-                          <li className="text-black-500">
-                            <strong>Combustible:</strong> {car.fuelType}
-                          </li>
-                        </ul>
-                        {showEditDeleteButtons && (
-                          <div className="flex justify-between p-4">
-                            <button
-                              className="bg-[#43697a] text-white px-4 py-2 rounded-lg hover:bg-[#567C8D] focus:outline-none"
-                              onClick={(e) => handleEdit(e, car)}
-                            >
-                              Editar
-                            </button>
-                            <button
-                              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none"
-                              onClick={(e) => handleDelete(e, car.id)}
-                            >
-                              Eliminar
-                            </button>
-                          </div>
-                        )}
-                      </div>
+                    <div className="w-50 h-auto mr-4">
+                      <CarImage car={car} />
+                    </div>
+                    <div className="flex-1">
+                      <ul className="space-y-2">
+                        <li className="text-black-500">
+                          <strong>Ubicación:</strong> {car.city}
+                        </li>
+                        <li className="text-black-500">
+                          <strong>Condición:</strong> {car.CarCondition}
+                        </li>
+                        <li className="text-black-500">
+                          <strong>Año:</strong> {car.manufacture_year}
+                        </li>
+                        <li className="text-black-500">
+                          <strong>Kilómetros:</strong> {car.mileage} km
+                        </li>
+                        <li className="text-black-500">
+                          <strong>Combustible:</strong> {car.fuelType}
+                        </li>
+                      </ul>
+                      {showEditDeleteButtons && (
+                        <div className="flex justify-between p-4">
+                          <button
+                            className="bg-[#43697a] text-white px-4 py-2 rounded-lg hover:bg-[#567C8D] focus:outline-none"
+                            onClick={(e) => handleEdit(e, car)}
+                          >
+                            Editar
+                          </button>
+                          <button
+                            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none"
+                            onClick={(e) => handleDelete(e, car.id)}
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
