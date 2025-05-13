@@ -4,7 +4,7 @@ export const ROUTES = {
     REGISTER: "/register",
     CAR_DETAILS: "/car_details",
     SUBMIT_CAR: "/submit_car",
-    CHATS: "/chats/:userId",
+    CHATS: "/chats",
     CHAT: "/chat",
     BUY_CAR: "/buy_car",
     CAR_FAVORITES: "/car_favorites", 

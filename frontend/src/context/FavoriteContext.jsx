@@ -21,6 +21,8 @@ export function FavoriteProvider({ children }) {
     // Filtramos el array para eliminar el favorito
     setFavorites((prevFavorites) => prevFavorites.filter((p) => p?.id !== favoriteId));
   };
+
+  const clearFavorites = () => setFavorites([]);
   
   return (
     <favoriteContext.Provider value={{ favorites, addFavorites, removeFromData }}>

@@ -19,7 +19,6 @@ export const buyCar = async (carId, userId, price) => {
         }
     
         const data = await response.json();
-        localStorage.removeItem('cachedCars'); // Limpiar caché de coches después de la compra
         return data;
     } catch (error) {
         console.error("Error en la compra:", error);

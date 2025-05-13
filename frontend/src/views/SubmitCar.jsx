@@ -13,6 +13,7 @@ import "leaflet/dist/leaflet.css";
 import { useNavigate } from "react-router-dom";
 import { getUserIdFromToken } from "../helpers/decodeToken";
 import Select from "react-select";
+import { useCars } from "../context/CarContext";
 
 const symfonyUrl = import.meta.env.VITE_API_URL;
 
@@ -40,7 +41,7 @@ function SubmitCar() {
     lon: null,
     city: "",
   });
-
+  const { clearCars } = useCars();
   // Establecer automáticamente la fecha de publicación como la fecha actual
   useEffect(() => {
     if (formData.user == null) {
@@ -256,13 +257,14 @@ function SubmitCar() {
       if (response.ok) {
         toast.success("Coche creado con éxito");
         localStorage.removeItem("cachedCars");
+        clearCars(); // Limpiar el estado de coches
       } else {
         toast.error("Error al crear el coche");
         toast.info(
           "Tamaño de imagen demasiado grande, pon imagenes menos pesadas. Recargando la página en 4 segundos..."
         );
         setTimeout(() => {
-          window.location.reload(); // Recargar la página después de 4 segundos
+          window.location.reload(); // Recargar la página después de 4 xsegundos
         }, 4000);
       }
     } catch (error) {

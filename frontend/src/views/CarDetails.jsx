@@ -12,6 +12,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { isAdmin } from "../helpers/decodeToken";
 import { editCar } from "../helpers/carHelper";
+import { useCars } from "../context/CarContext";
 
 const CarDetails = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -23,6 +24,7 @@ const CarDetails = () => {
   const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
 
   const [car, setCar] = useState(location.state?.car);
+  const [isDarkMode, setIsDarkMode] = useState(false); // Estado para el modo oscuro
 
   // Mostrar el toast solo si el coche no está disponible y asegurarse de que solo se muestre una vez
   useEffect(() => {
@@ -109,6 +111,8 @@ const CarDetails = () => {
             ? "Coche baneado correctamente."
             : "Coche desbaneado correctamente.";
         toast.success(message);
+        localStorage.removeItem("cachedCars"); // Limpiar caché de coches
+        clearCars(); // Limpiar el estado de coches
       }
     } catch (error) {
       console.error("Error al banear el coche: ", error);
@@ -140,6 +144,14 @@ const CarDetails = () => {
     popupAnchor: [0, -32],
   });
 
+  const formatCondition = (condition) => {
+    if (!condition) return "";
+    return condition
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   // Función para manejar el clic en "Chatear"
   const handleChatClick = () => {
     if (!isAuthenticated()) {
@@ -155,7 +167,6 @@ const CarDetails = () => {
         },
       });
     }
-    // Redirige a la página de chat
   };
 
   // Si no se pasa el coche como estado, mostramos un mensaje de error.
@@ -164,8 +175,23 @@ const CarDetails = () => {
   }
 
   return (
-    <div className="bg-[#F5EFEB] p-6">
-      <div className="car-details p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-lg mt-6 mb-6">
+    <div
+      className={`${
+        isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black"
+      } p-6 min-h-screen`}
+    >
+      <button
+        onClick={() => setIsDarkMode(!isDarkMode)}
+        className="mb-4 px-4 py-2 bg-gray-300 rounded"
+      >
+        {isDarkMode ? "Modo Claro ☀" : "Modo Oscuro 🌙"}
+      </button>
+
+      <div
+        className={`car-details p-6 max-w-4xl mx-auto rounded-lg shadow-lg ${
+          isDarkMode ? "bg-[#2C2C2E]" : "bg-white"
+        }`}
+      >
         {/* Carrusel de imágenes */}
         <div className="car-images mb-6">
           <Slider ref={sliderRef} {...settings}>
@@ -208,12 +234,8 @@ const CarDetails = () => {
           {/* Fila con Marca, Modelo y el Icono de Favoritos */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-semibold text-gray-800 mb-2">
-                {car.brand} {car.model}
-              </h1>
-              <h2 className="text-lg text-gray-500 mb-4">
-                Vendedor: {car.user.name}
-              </h2>
+              <h1 className="text-3xl font-semibold mb-2">{car.brand} {car.model}</h1>
+              <h2 className="text-lg mb-4">Vendedor: {car.user.name}</h2>
             </div>
 
             {/* Icono de favoritos */}
@@ -240,59 +262,14 @@ const CarDetails = () => {
           {/* Información del coche */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Ubicacion:</p>
-              <p className="text-gray-500">{car.city}</p>
+              <p className="font-semibold">Ubicacion:</p>
+              <p>{car.city}</p>
             </div>
             <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Precio:</p>
-              <p className="text-gray-500">{car.price} €</p>
+              <p className="font-semibold">Precio:</p>
+              <p>{car.price} €</p>
             </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Año:</p>
-              <p className="text-gray-500">{car.manufacture_year}</p>
-            </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Kilómetros:</p>
-              <p className="text-gray-500">{car.mileage} km</p>
-            </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Combustible:</p>
-              <p className="text-gray-500">{car.fuelType}</p>
-            </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Condición:</p>
-              <p className="text-gray-500">{car.CarCondition}</p>
-            </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Tracción:</p>
-              <p className="text-gray-500">{car.traction}</p>
-            </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Puertas:</p>
-              <p className="text-gray-500">{car.doors}</p>
-            </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Asientos:</p>
-              <p className="text-gray-500">{car.seats}</p>
-            </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Transmisión:</p>
-              <p className="text-gray-500">{car.transmission}</p>
-            </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Color:</p>
-              <p className="text-gray-500">{car.color}</p>
-            </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Fecha Publicación:</p>
-              <p className="text-gray-500">
-                {new Date(car.publication_date).toLocaleDateString()}
-              </p>
-            </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Descripcion:</p>
-              <p className="text-gray-500">{car.description}</p>
-            </div>
+            {/* Otros detalles... */}
           </div>
         </div>
 
@@ -318,12 +295,12 @@ const CarDetails = () => {
             Comprar
           </button>
           {isAdmin() && (
-              <button
-                onClick={handleBanClick}
-                className="btn bg-red-600 text-white p-3 rounded-md w-1/3 hover:bg-red-700 m-2"
-              >
-                {car.CarSold == "baneado" ? "Desbanear Coche" : "Banear Coche"}
-              </button>
+            <button
+              onClick={handleBanClick}
+              className="btn bg-red-600 text-white p-3 rounded-md w-1/3 hover:bg-red-700 m-2"
+            >
+              {car.CarSold == "baneado" ? "Desbanear Coche" : "Banear Coche"}
+            </button>
           )}
           <button
             onClick={handleChatClick}

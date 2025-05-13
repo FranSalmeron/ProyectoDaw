@@ -4,6 +4,7 @@ import { useUser } from "../context/UserContext";
 import { getUserInfo } from "../helpers/UserHelper";
 import { getUserIdFromToken } from "../helpers/decodeToken";
 import { buyCar } from "../helpers/BuyHelper";
+import { useCars } from "../context/CarContext";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 
@@ -11,6 +12,7 @@ const BuyCar = () => {
   const location = useLocation();
   const { car } = location.state || {};
   const { user, addUser } = useUser();
+  const { clearCars } = useCars();
   const userId = getUserIdFromToken ? getUserIdFromToken() : null;
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,6 +47,8 @@ const BuyCar = () => {
     await buyCar(car.id, userId, car.price);
     setTimeout(() => {
       setPaymentStatus("completed");
+      localStorage.removeItem("cachedCars"); // Limpiar caché de coches
+      clearCars(); // Limpiar el estado de coches
     }, 2000); // simula 2 segundos de "proceso de pago"
   };
 

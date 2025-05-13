@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { editCar } from '../helpers/carHelper'; // Asegúrate de que esta función existe
 import { toast } from 'react-toastify';
+import { useCars } from '../context/CarContext';
 
 const EditCarForm = ({ car, onClose }) => {
     const [formData, setFormData] = useState({
@@ -21,6 +22,7 @@ const EditCarForm = ({ car, onClose }) => {
         lat: car.lat || '',
         lon: car.lon || '',
     });
+    const { clearCars } = useCars();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -32,6 +34,8 @@ const EditCarForm = ({ car, onClose }) => {
         try {
             await editCar(car.id, formData);
             toast.success("Coche editado con éxito.");
+            localStorage.removeItem("cachedCars"); // Limpiar caché de coches
+            clearCars(); // Limpiar el estado de coches
             onClose();  // Cerrar el formulario o modal
         } catch (error) {
             toast.error("Error al editar el coche. Intenta nuevamente.");

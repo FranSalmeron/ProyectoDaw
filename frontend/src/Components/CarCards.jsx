@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { addFavorite, removeFavorite } from "../helpers/favoriteHelper"; // Importar las funciones necesarias
 import { useFavorites } from "../context/FavoriteContext";
+import { useCars } from "../context/CarContext";
 import { getUserIdFromToken } from "../helpers/decodeToken";
 import EditCarForm from "./EditCarForm";
 import { deleteCar } from "../helpers/carHelper"; // Importar la función para eliminar coches
@@ -26,6 +27,14 @@ const CarImage = ({ car }) => {
   );
 };
 
+const formatCondition = (condition) => {
+  if (!condition) return "";
+  return condition
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+
 const CarCards = ({
   cars,
   loading,
@@ -34,6 +43,7 @@ const CarCards = ({
   showEditDeleteButtons,
 }) => {
   const [selectedCar, setSelectedCar] = useState("");
+  const { clearCars } = useCars();
   const { favorites } = useFavorites();
   const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
   const navigate = useNavigate();
@@ -79,12 +89,14 @@ const CarCards = ({
     // Llamamos a la función para eliminar el coche
     await deleteCar(carId);
     localStorage.removeItem("cachedCars"); // Limpiar caché de coches
+    clearCars(); // Limpiar el estado de coches
   };
 
   const handleEdit = (e, car) => {
     e.stopPropagation();
     setSelectedCar(car); // Establecemos el coche seleccionado para editar
     localStorage.removeItem("cachedCars"); // Limpiar caché de coches
+    clearCars(); // Limpiar el estado de coches
   };
 
   const handleCloseEdit = () => {
@@ -164,7 +176,7 @@ const CarCards = ({
                           <strong>Ubicación:</strong> {car.city}
                         </li>
                         <li className="text-black-500">
-                          <strong>Condición:</strong> {car.CarCondition}
+                          <strong>Condición:</strong> {formatCondition(car.CarCondition)}
                         </li>
                         <li className="text-black-500">
                           <strong>Año:</strong> {car.manufacture_year}

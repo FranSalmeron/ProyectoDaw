@@ -67,7 +67,7 @@ export const router = createBrowserRouter([
         element: <Chat_list />,
       },
       {
-        path: ROUTES.CHATS, // "/chats::userId"
+        path: ROUTES.CHATS, // "/chats"
         element: <Chats />,
       },
       {
