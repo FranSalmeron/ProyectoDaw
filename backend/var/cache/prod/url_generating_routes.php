@@ -34,6 +34,7 @@ return [
     'app_transaction_new' => [[], ['_controller' => 'App\\Controller\\TransactionController::new'], [], [['text', '/transaction/new']], [], [], []],
     'app_transaction_show' => [['id'], ['_controller' => 'App\\Controller\\TransactionController::show'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/transaction']], [], [], []],
     'app_transaction_edit' => [['id'], ['_controller' => 'App\\Controller\\TransactionController::edit'], [], [['text', '/edit'], ['variable', '/', '[^/]++', 'id', true], ['text', '/transaction']], [], [], []],
+    'api_statistics' => [[], ['_controller' => 'App\\Controller\\TransactionController::statistics'], [], [['text', '/transaction/statistics']], [], [], []],
     'app_transaction_delete' => [['id'], ['_controller' => 'App\\Controller\\TransactionController::delete'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/transaction']], [], [], []],
     'app_user_index' => [[], ['_controller' => 'App\\Controller\\UserController::index'], [], [['text', '/user/index']], [], [], []],
     'app_user_new' => [[], ['_controller' => 'App\\Controller\\UserController::new'], [], [['text', '/user/new']], [], [], []],

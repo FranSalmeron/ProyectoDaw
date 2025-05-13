@@ -806,6 +806,9 @@ return [[
             clone $p['Doctrine\\ORM\\Mapping\\FieldMapping'],
             clone $p['Doctrine\\ORM\\Mapping\\FieldMapping'],
             clone $p['Doctrine\\ORM\\Mapping\\FieldMapping'],
+            clone $p['Doctrine\\ORM\\Mapping\\FieldMapping'],
+            clone $p['Doctrine\\ORM\\Mapping\\FieldMapping'],
+            clone $p['Doctrine\\ORM\\Mapping\\FieldMapping'],
             clone ($p['Doctrine\\ORM\\Mapping\\ManyToOneAssociationMapping'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Mapping\\ManyToOneAssociationMapping')),
             clone ($p['Doctrine\\ORM\\Mapping\\JoinColumnMapping'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Mapping\\JoinColumnMapping')),
             clone $p['Doctrine\\ORM\\Mapping\\ManyToOneAssociationMapping'],
@@ -838,6 +841,9 @@ return [[
                         'price' => $o[2],
                         'status' => $o[3],
                         'transactionDate' => $o[4],
+                        'commission' => $o[5],
+                        'totalIncome' => $o[6],
+                        'isIncomeReported' => $o[7],
                     ],
                 ],
                 'fieldNames' => [
@@ -846,6 +852,9 @@ return [[
                         'price' => 'price',
                         'status' => 'status',
                         'transaction_date' => 'transactionDate',
+                        'commission' => 'commission',
+                        'total_income' => 'totalIncome',
+                        'is_income_reported' => 'isIncomeReported',
                     ],
                 ],
                 'columnNames' => [
@@ -854,6 +863,9 @@ return [[
                         'price' => 'price',
                         'status' => 'status',
                         'transactionDate' => 'transaction_date',
+                        'commission' => 'commission',
+                        'totalIncome' => 'total_income',
+                        'isIncomeReported' => 'is_income_reported',
                     ],
                 ],
                 'table' => [
@@ -863,17 +875,17 @@ return [[
                 ],
                 'associationMappings' => [
                     [
-                        'buyer' => $o[5],
-                        'car' => $o[7],
+                        'buyer' => $o[8],
+                        'car' => $o[10],
                     ],
                 ],
                 'idGenerator' => [
-                    $o[9],
+                    $o[12],
                 ],
                 'name' => [
                     'App\\Entity\\Transaction',
-                    6 => 'buyer_id',
-                    8 => 'car_id',
+                    9 => 'buyer_id',
+                    11 => 'car_id',
                 ],
                 'id' => [
                     1 => true,
@@ -883,89 +895,102 @@ return [[
                     'decimal',
                     'string',
                     'datetime',
+                    'decimal',
+                    'decimal',
+                    'boolean',
                 ],
                 'fieldName' => [
                     1 => 'id',
                     'price',
                     'status',
                     'transactionDate',
+                    'commission',
+                    'totalIncome',
+                    'isIncomeReported',
                 ],
                 'columnName' => [
                     1 => 'id',
                     'price',
                     'status',
                     'transaction_date',
+                    'commission',
+                    'total_income',
+                    'is_income_reported',
                 ],
                 'precision' => [
                     2 => 10,
+                    5 => 10,
+                    10,
                 ],
                 'scale' => [
                     2 => 2,
+                    5 => 2,
+                    2,
                 ],
                 'length' => [
                     3 => 20,
                 ],
                 'fetch' => [
-                    5 => 2,
-                    7 => 2,
+                    8 => 2,
+                    10 => 2,
                 ],
                 'sourceEntity' => [
-                    5 => 'App\\Entity\\Transaction',
-                    7 => 'App\\Entity\\Transaction',
+                    8 => 'App\\Entity\\Transaction',
+                    10 => 'App\\Entity\\Transaction',
                 ],
                 'sourceToTargetKeyColumns' => [
-                    5 => [
+                    8 => [
                         'buyer_id' => 'id',
                     ],
-                    7 => [
+                    10 => [
                         'car_id' => 'id',
                     ],
                 ],
                 'targetToSourceKeyColumns' => [
-                    5 => [
+                    8 => [
                         'id' => 'buyer_id',
                     ],
-                    7 => [
+                    10 => [
                         'id' => 'car_id',
                     ],
                 ],
                 'joinColumns' => [
-                    5 => [
-                        $o[6],
+                    8 => [
+                        $o[9],
                     ],
-                    7 => [
-                        $o[8],
+                    10 => [
+                        $o[11],
                     ],
                 ],
                 'joinColumnFieldNames' => [
-                    5 => [
+                    8 => [
                         'buyer_id' => 'buyer_id',
                     ],
-                    7 => [
+                    10 => [
                         'car_id' => 'car_id',
                     ],
                 ],
                 'unique' => [
-                    6 => false,
-                    8 => false,
+                    9 => false,
+                    11 => false,
                 ],
                 'nullable' => [
-                    6 => true,
-                    8 => true,
+                    9 => true,
+                    11 => true,
                 ],
                 'referencedColumnName' => [
-                    6 => 'id',
-                    8 => 'id',
+                    9 => 'id',
+                    11 => 'id',
                 ],
             ],
             'Doctrine\\ORM\\Mapping\\AssociationMapping' => [
                 'fieldName' => [
-                    5 => 'buyer',
-                    7 => 'car',
+                    8 => 'buyer',
+                    10 => 'car',
                 ],
                 'targetEntity' => [
-                    5 => 'App\\Entity\\User',
-                    7 => 'App\\Entity\\Car',
+                    8 => 'App\\Entity\\User',
+                    10 => 'App\\Entity\\Car',
                 ],
             ],
         ],

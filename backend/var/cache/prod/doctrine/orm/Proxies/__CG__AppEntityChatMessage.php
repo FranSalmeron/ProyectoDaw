@@ -22,16 +22,16 @@ class ChatMessage extends \App\Entity\ChatMessage implements \Doctrine\ORM\Proxy
     
 
     private const LAZY_OBJECT_PROPERTY_SCOPES = [
-        "\0".parent::class."\0".'chat' => [parent::class, 'chat', null],
-        "\0".parent::class."\0".'content' => [parent::class, 'content', null],
-        "\0".parent::class."\0".'idMessage' => [parent::class, 'idMessage', null],
-        "\0".parent::class."\0".'messageDate' => [parent::class, 'messageDate', null],
-        "\0".parent::class."\0".'user' => [parent::class, 'user', null],
-        'chat' => [parent::class, 'chat', null],
-        'content' => [parent::class, 'content', null],
-        'idMessage' => [parent::class, 'idMessage', null],
-        'messageDate' => [parent::class, 'messageDate', null],
-        'user' => [parent::class, 'user', null],
+        "\0".parent::class."\0".'chat' => [parent::class, 'chat', null, 16],
+        "\0".parent::class."\0".'content' => [parent::class, 'content', null, 16],
+        "\0".parent::class."\0".'idMessage' => [parent::class, 'idMessage', null, 16],
+        "\0".parent::class."\0".'messageDate' => [parent::class, 'messageDate', null, 16],
+        "\0".parent::class."\0".'user' => [parent::class, 'user', null, 16],
+        'chat' => [parent::class, 'chat', null, 16],
+        'content' => [parent::class, 'content', null, 16],
+        'idMessage' => [parent::class, 'idMessage', null, 16],
+        'messageDate' => [parent::class, 'messageDate', null, 16],
+        'user' => [parent::class, 'user', null, 16],
     ];
 
     public function __isInitialized(): bool

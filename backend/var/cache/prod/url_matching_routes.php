@@ -65,22 +65,25 @@ return [
                     .'|task/([^/]++)(*:430)'
                     .'|([^/]++)/messages(*:455)'
                 .')'
-                .'|/transaction/([^/]++)(?'
-                    .'|(*:488)'
-                    .'|/edit(*:501)'
-                    .'|(*:509)'
+                .'|/transaction/(?'
+                    .'|([^/]++)(?'
+                        .'|(*:491)'
+                        .'|/edit(*:504)'
+                    .')'
+                    .'|statistics(*:523)'
+                    .'|([^/]++)(*:539)'
                 .')'
                 .'|/user/([^/]++)(?'
-                    .'|(*:535)'
+                    .'|(*:565)'
                     .'|/(?'
-                        .'|edit(*:551)'
-                        .'|delete(*:565)'
+                        .'|edit(*:581)'
+                        .'|delete(*:595)'
                         .'|toggle\\-(?'
-                            .'|admin(*:589)'
-                            .'|banned(*:603)'
+                            .'|admin(*:619)'
+                            .'|banned(*:633)'
                         .')'
-                        .'|info(*:616)'
-                        .'|change\\-password(*:640)'
+                        .'|info(*:646)'
+                        .'|change\\-password(*:670)'
                     .')'
                 .')'
             .')/?$}sDu',
@@ -104,16 +107,17 @@ return [
         408 => [[['_route' => 'app_ChatMessage_message_send', '_controller' => 'App\\Controller\\ChatMessageController::sendMessage'], ['chatId'], ['POST' => 0], null, false, false, null]],
         430 => [[['_route' => 'app_check_task_status', '_controller' => 'App\\Controller\\ChatMessageController::checkTaskStatus'], ['taskId'], ['GET' => 0], null, false, true, null]],
         455 => [[['_route' => 'app_ChatMessage_load_messages', '_controller' => 'App\\Controller\\ChatMessageController::loadMessages'], ['chatId'], ['GET' => 0], null, false, false, null]],
-        488 => [[['_route' => 'app_transaction_show', '_controller' => 'App\\Controller\\TransactionController::show'], ['id'], ['GET' => 0], null, false, true, null]],
-        501 => [[['_route' => 'app_transaction_edit', '_controller' => 'App\\Controller\\TransactionController::edit'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        509 => [[['_route' => 'app_transaction_delete', '_controller' => 'App\\Controller\\TransactionController::delete'], ['id'], ['POST' => 0], null, false, true, null]],
-        535 => [[['_route' => 'app_user_show', '_controller' => 'App\\Controller\\UserController::show'], ['id'], ['GET' => 0], null, false, true, null]],
-        551 => [[['_route' => 'app_user_edit', '_controller' => 'App\\Controller\\UserController::edit'], ['id'], ['POST' => 0], null, false, false, null]],
-        565 => [[['_route' => 'app_user_delete', '_controller' => 'App\\Controller\\UserController::delete'], ['id'], ['POST' => 0], null, false, false, null]],
-        589 => [[['_route' => 'app_user_toggle_admin', '_controller' => 'App\\Controller\\UserController::toggleAdmin'], ['id'], ['POST' => 0], null, false, false, null]],
-        603 => [[['_route' => 'app_user_toggle_banned', '_controller' => 'App\\Controller\\UserController::toggleBanned'], ['id'], ['POST' => 0], null, false, false, null]],
-        616 => [[['_route' => 'app_user_info', '_controller' => 'App\\Controller\\UserController::getUserInfo'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        640 => [
+        491 => [[['_route' => 'app_transaction_show', '_controller' => 'App\\Controller\\TransactionController::show'], ['id'], ['GET' => 0], null, false, true, null]],
+        504 => [[['_route' => 'app_transaction_edit', '_controller' => 'App\\Controller\\TransactionController::edit'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        523 => [[['_route' => 'api_statistics', '_controller' => 'App\\Controller\\TransactionController::statistics'], [], ['GET' => 0], null, false, false, null]],
+        539 => [[['_route' => 'app_transaction_delete', '_controller' => 'App\\Controller\\TransactionController::delete'], ['id'], ['POST' => 0], null, false, true, null]],
+        565 => [[['_route' => 'app_user_show', '_controller' => 'App\\Controller\\UserController::show'], ['id'], ['GET' => 0], null, false, true, null]],
+        581 => [[['_route' => 'app_user_edit', '_controller' => 'App\\Controller\\UserController::edit'], ['id'], ['POST' => 0], null, false, false, null]],
+        595 => [[['_route' => 'app_user_delete', '_controller' => 'App\\Controller\\UserController::delete'], ['id'], ['POST' => 0], null, false, false, null]],
+        619 => [[['_route' => 'app_user_toggle_admin', '_controller' => 'App\\Controller\\UserController::toggleAdmin'], ['id'], ['POST' => 0], null, false, false, null]],
+        633 => [[['_route' => 'app_user_toggle_banned', '_controller' => 'App\\Controller\\UserController::toggleBanned'], ['id'], ['POST' => 0], null, false, false, null]],
+        646 => [[['_route' => 'app_user_info', '_controller' => 'App\\Controller\\UserController::getUserInfo'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        670 => [
             [['_route' => 'user_change_password', '_controller' => 'App\\Controller\\UserController::changePassword'], ['id'], ['POST' => 0], null, false, false, null],
             [null, null, null, null, false, false, 0],
         ],

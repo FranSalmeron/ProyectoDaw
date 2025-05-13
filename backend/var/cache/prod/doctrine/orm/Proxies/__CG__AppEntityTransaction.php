@@ -22,18 +22,24 @@ class Transaction extends \App\Entity\Transaction implements \Doctrine\ORM\Proxy
     
 
     private const LAZY_OBJECT_PROPERTY_SCOPES = [
-        "\0".parent::class."\0".'buyer' => [parent::class, 'buyer', null],
-        "\0".parent::class."\0".'car' => [parent::class, 'car', null],
-        "\0".parent::class."\0".'id' => [parent::class, 'id', null],
-        "\0".parent::class."\0".'price' => [parent::class, 'price', null],
-        "\0".parent::class."\0".'status' => [parent::class, 'status', null],
-        "\0".parent::class."\0".'transactionDate' => [parent::class, 'transactionDate', null],
-        'buyer' => [parent::class, 'buyer', null],
-        'car' => [parent::class, 'car', null],
-        'id' => [parent::class, 'id', null],
-        'price' => [parent::class, 'price', null],
-        'status' => [parent::class, 'status', null],
-        'transactionDate' => [parent::class, 'transactionDate', null],
+        "\0".parent::class."\0".'buyer' => [parent::class, 'buyer', null, 16],
+        "\0".parent::class."\0".'car' => [parent::class, 'car', null, 16],
+        "\0".parent::class."\0".'commission' => [parent::class, 'commission', null, 16],
+        "\0".parent::class."\0".'id' => [parent::class, 'id', null, 16],
+        "\0".parent::class."\0".'isIncomeReported' => [parent::class, 'isIncomeReported', null, 16],
+        "\0".parent::class."\0".'price' => [parent::class, 'price', null, 16],
+        "\0".parent::class."\0".'status' => [parent::class, 'status', null, 16],
+        "\0".parent::class."\0".'totalIncome' => [parent::class, 'totalIncome', null, 16],
+        "\0".parent::class."\0".'transactionDate' => [parent::class, 'transactionDate', null, 16],
+        'buyer' => [parent::class, 'buyer', null, 16],
+        'car' => [parent::class, 'car', null, 16],
+        'commission' => [parent::class, 'commission', null, 16],
+        'id' => [parent::class, 'id', null, 16],
+        'isIncomeReported' => [parent::class, 'isIncomeReported', null, 16],
+        'price' => [parent::class, 'price', null, 16],
+        'status' => [parent::class, 'status', null, 16],
+        'totalIncome' => [parent::class, 'totalIncome', null, 16],
+        'transactionDate' => [parent::class, 'transactionDate', null, 16],
     ];
 
     public function __isInitialized(): bool

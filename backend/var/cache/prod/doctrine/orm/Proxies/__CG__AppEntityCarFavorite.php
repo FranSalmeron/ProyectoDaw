@@ -22,12 +22,12 @@ class CarFavorite extends \App\Entity\CarFavorite implements \Doctrine\ORM\Proxy
     
 
     private const LAZY_OBJECT_PROPERTY_SCOPES = [
-        "\0".parent::class."\0".'car' => [parent::class, 'car', null],
-        "\0".parent::class."\0".'id' => [parent::class, 'id', null],
-        "\0".parent::class."\0".'user' => [parent::class, 'user', null],
-        'car' => [parent::class, 'car', null],
-        'id' => [parent::class, 'id', null],
-        'user' => [parent::class, 'user', null],
+        "\0".parent::class."\0".'car' => [parent::class, 'car', null, 16],
+        "\0".parent::class."\0".'id' => [parent::class, 'id', null, 16],
+        "\0".parent::class."\0".'user' => [parent::class, 'user', null, 16],
+        'car' => [parent::class, 'car', null, 16],
+        'id' => [parent::class, 'id', null, 16],
+        'user' => [parent::class, 'user', null, 16],
     ];
 
     public function __isInitialized(): bool
