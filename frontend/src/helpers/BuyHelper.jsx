@@ -30,6 +30,10 @@ export const fetchStatistics = async () => {
   try {
     const response = await fetch(`${symfonyUrl}/transaction/statistics`, {
       method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+      },
     });
 
     if (!response.ok) {
