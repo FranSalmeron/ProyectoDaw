@@ -17,8 +17,9 @@ RUN apt-get update && apt-get install -y \
 # 2. Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# 3. Redis PHP extension
-RUN pecl install redis && docker-php-ext-enable redis
+# Instalamos Symfony CLI
+RUN curl -sS https://get.symfony.com/cli/installer | bash
+RUN mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
 
 # 4. Opcache (para rendimiento)
 RUN docker-php-ext-install opcache

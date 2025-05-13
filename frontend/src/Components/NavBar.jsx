@@ -9,7 +9,6 @@ const NavBar = () => {
   const navigate = useNavigate();
   const userName = localStorage.getItem("username");
 
-  // Obtener el estado de modo oscuro y la función para alternarlo
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -77,7 +76,7 @@ const NavBar = () => {
 
         {/* Botón para cambiar el modo oscuro */}
         <button
-          onClick={toggleDarkMode} // Usamos la función toggleDarkMode del contexto
+          onClick={toggleDarkMode}
           className="text-white absolute top-4 right-4 p-2 rounded-full bg-[#43697a] hover:bg-[#567C8D]"
         >
           {isDarkMode ? "Modo Claro ☀" : "Modo Oscuro 🌙"}
@@ -88,10 +87,10 @@ const NavBar = () => {
       <div
         className={`absolute left-0 w-64 p-6 shadow-lg transition-transform duration-300 ease-in-out ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        } ${isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-[#43697a] text-white"}`}
         style={{ top: "100%" }}
       >
-        <ul className="space-y-4 text-white">
+        <ul className="space-y-4">
           <li>
             <NavLink to={ROUTES.ABOUT} onClick={closeMenu}>
               Sobre Nosotros
@@ -133,7 +132,6 @@ const NavBar = () => {
                   Ver mis coches
                 </NavLink>
               </li>
-              {/* Quitamos Perfil del menú */}
               {isAdmin() && (
                 <>
                   <li>
