@@ -3,7 +3,7 @@ import { Line, Bar, Pie } from "react-chartjs-2";
 import "chart.js/auto";
 import { fetchStatistics } from "../helpers/BuyHelper"; // Asegúrate de que esta ruta sea correcta
 
-export default Statistics = () => {
+const Statistics = () => {
   const [statistics, setStatistics] = useState({
     totalIncome: 0,
     totalTransactions: 0,
@@ -105,3 +105,5 @@ export default Statistics = () => {
     </div>
   );
 };
+
+export default Statistics;
