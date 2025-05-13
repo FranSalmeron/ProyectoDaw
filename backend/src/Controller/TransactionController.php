@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Transaction;
@@ -99,6 +100,64 @@ class TransactionController extends AbstractController
         return $this->renderForm('transaction/edit.html.twig', [
             'transaction' => $transaction,
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/statistics', name: 'api_statistics', methods: ['GET'])]
+    public function statistics(
+        TransactionRepository $transactionRepository,
+        UserRepository $userRepository,
+        CarRepository $carRepository
+    ): JsonResponse {
+        $transactions = $transactionRepository->findAll();
+
+        // Total de ingresos
+        $totalIncome = array_sum(array_map(fn($t) => $t->getTotalIncome(), $transactions));
+
+        // Total de transacciones
+        $totalTransactions = count($transactions);
+
+        // Ganancias mensuales (agrupadas por mes y año)
+        $monthlyEarnings = [];
+        foreach ($transactions as $transaction) {
+            $month = $transaction->getTransactionDate()->format('Y-m'); // ejemplo: 2024-05
+            if (!isset($monthlyEarnings[$month])) {
+                $monthlyEarnings[$month] = 0;
+            }
+            $monthlyEarnings[$month] += $transaction->getTotalIncome();
+        }
+
+        // Formatear para frontend
+        $monthlyEarningsFormatted = [];
+        foreach ($monthlyEarnings as $month => $income) {
+            $monthlyEarningsFormatted[] = [
+                'month' => $month,
+                'income' => $income,
+            ];
+        }
+
+        // Usuarios con más compras
+        $topUsers = $userRepository->findTopBuyers();
+
+        // Coches más vendidos
+        $topCars = $carRepository->findTopSellingCars();
+
+        // Transacciones por estado
+        $transactionsByStatus = [
+            'completed' => count(array_filter($transactions, fn($t) => $t->getStatus() === 'completed')),
+            'pending' => count(array_filter($transactions, fn($t) => $t->getStatus() === 'pending')),
+            'cancelled' => count(array_filter($transactions, fn($t) => $t->getStatus() === 'cancelled')),
+            'comprado' => count(array_filter($transactions, fn($t) => $t->getStatus() === 'comprado')), // por si usas "comprado"
+        ];
+
+        // Devolver la respuesta
+        return $this->json([
+            'totalIncome' => $totalIncome,
+            'totalTransactions' => $totalTransactions,
+            'monthlyEarnings' => $monthlyEarningsFormatted,
+            'topBuyers' => $topUsers,
+            'topCars' => $topCars,
+            'statusCount' => $transactionsByStatus,
         ]);
     }
 

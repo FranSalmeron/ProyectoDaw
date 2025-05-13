@@ -25,3 +25,22 @@ export const buyCar = async (carId, userId, price) => {
         throw error;
     }
 }
+
+export const fetchStatistics = async () => {
+  try {
+    const response = await fetch(`${symfonyUrl}/transaction/statistics`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error("No se pudo obtener las estadísticas");
+    }
+
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    console.error("Error al cargar estadísticas:", error);
+    throw error;
+  }
+};

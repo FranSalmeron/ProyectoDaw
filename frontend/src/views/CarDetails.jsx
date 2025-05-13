@@ -3,69 +3,67 @@ import { toast } from "react-toastify";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { getUserIdFromToken } from "../helpers/decodeToken";
+import { getUserIdFromToken, isAdmin } from "../helpers/decodeToken";
 import { useNavigate, useLocation } from "react-router-dom";
 import { addFavorite, removeFavorite } from "../helpers/favoriteHelper";
 import { useFavorites } from "../context/FavoriteContext";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { isAdmin } from "../helpers/decodeToken";
 import { editCar } from "../helpers/carHelper";
-import { useDarkMode } from "../context/DarkModeContext"; // Usar el contexto de Dark Mode
+import { useCars } from "../context/CarContext";
+import { useDarkMode } from "../context/DarkModeContext"; // ✅ contexto de modo oscuro
 
 const CarDetails = () => {
-  const { isDarkMode, toggleDarkMode } = useDarkMode(); // Obtener el estado y la función toggle del contexto
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const sliderRef = useRef(null);
-  const [toastShown, setToastShown] = useState(false); // Estado para controlar el toast
+  const [toastShown, setToastShown] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation(); // Usamos useLocation para obtener el estado de la navegación
+  const location = useLocation();
   const { favorites, addFavorites, removeFromData } = useFavorites();
-  const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
-
+  const { clearCars } = useCars();
+  const userId = getUserIdFromToken() || null;
   const [car, setCar] = useState(location.state?.car);
 
-  // Mostrar el toast solo si el coche no está disponible y asegurarse de que solo se muestre una vez
+  const { isDarkMode, toggleDarkMode } = useDarkMode(); // ✅ usamos el contexto
+
   useEffect(() => {
     if (!car && !toastShown) {
-      setToastShown(true); // Aseguramos que el toast solo se muestre una vez
+      setToastShown(true);
       toast.error("No se ha proporcionado un coche para mostrar");
-      navigate("/"); // Redirigir a la página de inicio si no se proporciona un coche
+      navigate("/");
     }
   }, [car, toastShown, navigate]);
 
-  // Comprobar si el coche está en la lista de favoritos
   const isFavorite = (carId) => {
     return favorites.some((fav) => fav.car && fav.car.id === carId);
   };
 
-  // Función para manejar el clic en favoritos
   const handleFavoriteClick = async (e, carId) => {
-    e.stopPropagation(); // Prevenir que el clic del corazón dispare el clic de la tarjeta
+    e.stopPropagation();
 
     try {
       if (isFavorite(carId)) {
         const currentFavorite = favorites.find(
           (fav) => fav.car && fav.car.id === carId
         );
-        const remove = await removeFavorite(
+        const removed = await removeFavorite(
           userId,
           currentFavorite.id,
           removeFromData
         );
-        if (remove) {
+        if (removed) {
           toast.success("Coche eliminado de favoritos.");
-          return;
+        } else {
+          toast.error("Error al eliminar el coche de favoritos.");
         }
-        toast.error("Error al eliminar el coche de favoritos.");
-        return;
       } else {
-        const add = await addFavorite(userId, carId, addFavorites);
-        if (!add) {
+        const added = await addFavorite(userId, carId, addFavorites);
+        if (added) {
+          toast.success("Coche añadido a favoritos.");
+        } else {
           toast.error("Error al añadir el coche a favoritos.");
         }
-        toast.success("Coche añadido a favoritos.");
       }
     } catch (error) {
       console.error("Error al manejar el clic en favoritos:", error);
@@ -73,7 +71,6 @@ const CarDetails = () => {
     }
   };
 
-  // Configuración del carrusel
   const settings = {
     dots: true,
     infinite: false,
@@ -85,7 +82,6 @@ const CarDetails = () => {
     prevArrow: <div className="slick-prev">←</div>,
   };
 
-  // Función para cambiar la imagen principal
   const handleImageClick = (index) => {
     setSelectedImageIndex(index);
     sliderRef.current.slickGoTo(index);
@@ -94,23 +90,23 @@ const CarDetails = () => {
   const handleBanClick = async () => {
     try {
       const newCarData = {
-        carSold: car.CarSold == "baneado" ? "subido" : "baneado", // Cambia entre "baneado" y "subido"
+        carSold: car.CarSold === "baneado" ? "subido" : "baneado",
       };
 
-      // Actualizar el estado local del coche de inmediato
       setCar((prevCar) => ({
         ...prevCar,
         CarSold: newCarData.carSold,
       }));
 
-      // Simular la llamada a la API para actualizar el coche
       const result = await editCar(car.id, newCarData);
       if (result) {
-        const message =
-          newCarData.carSold == "baneado"
+        toast.success(
+          newCarData.carSold === "baneado"
             ? "Coche baneado correctamente."
-            : "Coche desbaneado correctamente.";
-        toast.success(message);
+            : "Coche desbaneado correctamente."
+        );
+        localStorage.removeItem("cachedCars");
+        clearCars();
       }
     } catch (error) {
       console.error("Error al banear el coche: ", error);
@@ -118,35 +114,25 @@ const CarDetails = () => {
     }
   };
 
-  // Verificar si el usuario está autenticado
   const isAuthenticated = () => {
     const token = localStorage.getItem("jwt");
-    return token ? true : false;
+    return !!token;
   };
 
-  // Función para manejar el clic en "Comprar"
   const handleBuyClick = () => {
     if (!isAuthenticated()) {
       toast.error("Debes estar registrado para comprar.");
-      navigate("/login"); // Redirigir al login si no está autenticado
+      navigate("/login");
     } else {
       toast.success("Redirigiendo a la página de compra.");
-      navigate("/buy_car", { state: { car } }); // Redirige a la página de compra
+      navigate("/buy_car", { state: { car } });
     }
   };
 
-  const carIcon = new L.Icon({
-    iconUrl: "/images/marcador.png",
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -32],
-  });
-
-  // Función para manejar el clic en "Chatear"
   const handleChatClick = () => {
     if (!isAuthenticated()) {
       toast.error("Debes estar registrado para chatear.");
-      navigate("/login"); // Redirige al login si no está autenticado
+      navigate("/login");
     } else {
       const currentUserId = getUserIdFromToken();
       navigate("/chat", {
@@ -159,7 +145,21 @@ const CarDetails = () => {
     }
   };
 
-  // Si no se pasa el coche como estado, mostramos un mensaje de error.
+  const carIcon = new L.Icon({
+    iconUrl: "/images/marcador.png",
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32],
+  });
+
+  const formatCondition = (condition) => {
+    if (!condition) return "";
+    return condition
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   if (!car) {
     return <div>No se ha encontrado el coche</div>;
   }
@@ -170,8 +170,9 @@ const CarDetails = () => {
         isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black"
       } p-6 min-h-screen`}
     >
+      {/* Botón para alternar modo */}
       <button
-        onClick={toggleDarkMode} // Usamos la función toggleDarkMode del contexto
+        onClick={toggleDarkMode}
         className="mb-4 px-4 py-2 bg-gray-300 rounded"
       >
         {isDarkMode ? "Modo Claro ☀" : "Modo Oscuro 🌙"}
@@ -197,53 +198,156 @@ const CarDetails = () => {
           </Slider>
         </div>
 
-        {/* Fila de miniaturas de imágenes */}
+        {/* Miniaturas */}
         <div className="image-thumbnails flex space-x-4 overflow-x-auto mb-6">
           {car.images.map((image, index) => (
             <div
               key={index}
               className="w-20 h-20 cursor-pointer"
-              onClick={() => handleImageClick(index)} // Actualiza la imagen seleccionada
+              onClick={() => handleImageClick(index)}
             >
               <img
                 src={image}
                 alt={`Thumbnail ${index + 1}`}
                 className={`w-full h-full object-cover rounded-lg hover:opacity-80 ${
-                  selectedImageIndex === index ? "border-4 border-blue-500" : ""
-                }`} // Resalta la miniatura seleccionada
+                  selectedImageIndex === index
+                    ? "border-4 border-blue-500"
+                    : ""
+                }`}
               />
             </div>
           ))}
         </div>
 
-        {/* Información del coche */}
-        <div className="car-info mt-6">
-          <h1 className="text-3xl font-semibold">{car.brand} {car.model}</h1>
-          <p>{car.user.name}</p>
-
-          {/* Botones de acción */}
-          <div className="car-actions mt-6 flex justify-between">
-            <button
-              onClick={handleBuyClick}
-              className="btn bg-[#43697a] text-white p-3 rounded-md w-1/3 hover:bg-[#567C8D] m-2"
-            >
-              Comprar
-            </button>
-            {isAdmin() && (
-              <button
-                onClick={handleBanClick}
-                className="btn bg-red-600 text-white p-3 rounded-md w-1/3 hover:bg-red-700 m-2"
-              >
-                {car.CarSold == "baneado" ? "Desbanear Coche" : "Banear Coche"}
-              </button>
-            )}
-            <button
-              onClick={handleChatClick}
-              className="btn bg-[#0E566A] text-white p-3 rounded-md w-1/3 hover:bg-[#42AEB5] m-2"
-            >
-              Chatear
-            </button>
+        {/* Alerta si el vendedor está baneado */}
+        {car.user.roles.includes("ROLE_BANNED") && (
+          <div className="text-red-600 font-semibold">
+            ⚠ Este vendedor ha sido baneado y podría no responder.
           </div>
+        )}
+
+        {/* Info */}
+        <div className="car-info mt-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-semibold mb-2">
+                {car.brand} {car.model}
+              </h1>
+              <h2 className="text-lg mb-4">Vendedor: {car.user.name}</h2>
+            </div>
+
+            {userId && (
+              <div>
+                <button
+                  className="text-white cursor-pointer"
+                  onClick={(e) => handleFavoriteClick(e, car.id)}
+                >
+                  <img
+                    src={
+                      isFavorite(car.id)
+                        ? "/images/corazon-relleno.png"
+                        : "/images/corazon-vacio.png"
+                    }
+                    alt="Corazón"
+                    className="w-10 h-10"
+                  />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Datos del coche */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <p className="font-semibold">Ubicación:</p>
+              <p>{car.city}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Precio:</p>
+              <p>{car.price} €</p>
+            </div>
+            <div>
+              <p className="font-semibold">Año:</p>
+              <p>{car.manufacture_year}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Kilómetros:</p>
+              <p>{car.mileage} km</p>
+            </div>
+            <div>
+              <p className="font-semibold">Combustible:</p>
+              <p>{car.fuelType}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Condición:</p>
+              <p>{formatCondition(car.CarCondition)}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Tracción:</p>
+              <p>{car.traction}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Puertas:</p>
+              <p>{car.doors}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Asientos:</p>
+              <p>{car.seats}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Transmisión:</p>
+              <p>{car.transmission}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Color:</p>
+              <p>{car.color}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Fecha Publicación:</p>
+              <p>{new Date(car.publication_date).toLocaleDateString()}</p>
+            </div>
+            <div className="sm:col-span-2">
+              <p className="font-semibold">Descripción:</p>
+              <p>{car.description}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Mapa */}
+        <div className="mb-4 mt-4" style={{ height: "300px" }}>
+          <MapContainer
+            center={[car.lat, car.lon]}
+            zoom={13}
+            scrollWheelZoom={false}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            <Marker position={[car.lat, car.lon]} icon={carIcon} />
+          </MapContainer>
+        </div>
+
+        {/* Botones */}
+        <div className="car-actions mt-6 flex flex-col sm:flex-row justify-between">
+          <button
+            onClick={handleBuyClick}
+            className="btn bg-[#43697a] text-white p-3 rounded-md hover:bg-[#567C8D] m-2"
+          >
+            Comprar
+          </button>
+          {isAdmin() && (
+            <button
+              onClick={handleBanClick}
+              className="btn bg-red-600 text-white p-3 rounded-md hover:bg-red-700 m-2"
+            >
+              {car.CarSold === "baneado" ? "Desbanear Coche" : "Banear Coche"}
+            </button>
+          )}
+          <button
+            onClick={handleChatClick}
+            className="btn bg-[#0E566A] text-white p-3 rounded-md hover:bg-[#42AEB5] m-2"
+          >
+            Chatear
+          </button>
         </div>
       </div>
     </div>
