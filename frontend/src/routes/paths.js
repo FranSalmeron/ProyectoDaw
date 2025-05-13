@@ -14,5 +14,6 @@ export const ROUTES = {
     USERS: "/users",
     CHATS_LIST: "/chats_list",
     BANNED: "/banned",
+    STATISTICS: "/statistics",
   };
   

@@ -146,6 +146,11 @@ const NavBar = () => {
                       Lista de Chats
                     </NavLink>
                   </li>
+                  <li>
+                    <NavLink to={ROUTES.STATISTICS} onClick={closeMenu}>
+                      Estadísticas
+                    </NavLink>
+                  </li>
                 </>
               )}
               <li>
