@@ -33,12 +33,23 @@ class Transaction
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $transactionDate = null;
 
+    // **Campos añadidos**
+    #[ORM\Column(type: "decimal", precision: 10, scale: 2)]
+    private ?float $commission = null;
+
+    #[ORM\Column(type: "decimal", precision: 10, scale: 2)]
+    private ?float $totalIncome = null;
+
+    #[ORM\Column(type: "boolean")]
+    private bool $isIncomeReported = false;
+
+    // **Constructor**
     public function __construct()
     {
         $this->transactionDate = new \DateTime();
     }
 
-
+    // **Métodos existentes** (sin cambios)
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +85,7 @@ class Transaction
     public function setPrice(float $price): static
     {
         $this->price = $price;
+        $this->calculateCommission(); // Calcula la comisión automáticamente al setear el precio
         return $this;
     }
 
@@ -97,5 +109,48 @@ class Transaction
     {
         $this->transactionDate = $transactionDate;
         return $this;
+    }
+
+    // **Métodos añadidos**
+    public function getCommission(): ?float
+    {
+        return $this->commission;
+    }
+
+    public function setCommission(float $commission): static
+    {
+        $this->commission = $commission;
+        return $this;
+    }
+
+    public function getTotalIncome(): ?float
+    {
+        return $this->totalIncome;
+    }
+
+    public function setTotalIncome(float $totalIncome): static
+    {
+        $this->totalIncome = $totalIncome;
+        return $this;
+    }
+
+    public function getIsIncomeReported(): bool
+    {
+        return $this->isIncomeReported;
+    }
+
+    public function setIsIncomeReported(bool $isIncomeReported): static
+    {
+        $this->isIncomeReported = $isIncomeReported;
+        return $this;
+    }
+
+    // **Lógica para calcular la comisión (20% del precio de la venta)**
+    public function calculateCommission(): void
+    {
+        if ($this->price) {
+            $this->commission = $this->price * 0.20;  // Calcula el 20% de la venta
+            $this->totalIncome = $this->commission;  // El total que te corresponde es igual a la comisión
+        }
     }
 }

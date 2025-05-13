@@ -12,9 +12,10 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { isAdmin } from "../helpers/decodeToken";
 import { editCar } from "../helpers/carHelper";
-import { useCars } from "../context/CarContext";
+import { useDarkMode } from "../context/DarkModeContext"; // Usar el contexto de Dark Mode
 
 const CarDetails = () => {
+  const { isDarkMode, toggleDarkMode } = useDarkMode(); // Obtener el estado y la función toggle del contexto
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const sliderRef = useRef(null);
   const [toastShown, setToastShown] = useState(false); // Estado para controlar el toast
@@ -24,7 +25,6 @@ const CarDetails = () => {
   const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
 
   const [car, setCar] = useState(location.state?.car);
-  const [isDarkMode, setIsDarkMode] = useState(false); // Estado para el modo oscuro
 
   // Mostrar el toast solo si el coche no está disponible y asegurarse de que solo se muestre una vez
   useEffect(() => {
@@ -111,8 +111,6 @@ const CarDetails = () => {
             ? "Coche baneado correctamente."
             : "Coche desbaneado correctamente.";
         toast.success(message);
-        localStorage.removeItem("cachedCars"); // Limpiar caché de coches
-        clearCars(); // Limpiar el estado de coches
       }
     } catch (error) {
       console.error("Error al banear el coche: ", error);
@@ -144,14 +142,6 @@ const CarDetails = () => {
     popupAnchor: [0, -32],
   });
 
-  const formatCondition = (condition) => {
-    if (!condition) return "";
-    return condition
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-
   // Función para manejar el clic en "Chatear"
   const handleChatClick = () => {
     if (!isAuthenticated()) {
@@ -181,7 +171,7 @@ const CarDetails = () => {
       } p-6 min-h-screen`}
     >
       <button
-        onClick={() => setIsDarkMode(!isDarkMode)}
+        onClick={toggleDarkMode} // Usamos la función toggleDarkMode del contexto
         className="mb-4 px-4 py-2 bg-gray-300 rounded"
       >
         {isDarkMode ? "Modo Claro ☀" : "Modo Oscuro 🌙"}
@@ -225,89 +215,35 @@ const CarDetails = () => {
             </div>
           ))}
         </div>
-        {car.user.roles.includes("ROLE_BANNED") && (
-          <div className="text-red-600 font-semibold">
-            ⚠ Este vendedor ha sido baneado y podría no responder.
-          </div>
-        )}
+
+        {/* Información del coche */}
         <div className="car-info mt-6">
-          {/* Fila con Marca, Modelo y el Icono de Favoritos */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-semibold mb-2">{car.brand} {car.model}</h1>
-              <h2 className="text-lg mb-4">Vendedor: {car.user.name}</h2>
-            </div>
+          <h1 className="text-3xl font-semibold">{car.brand} {car.model}</h1>
+          <p>{car.user.name}</p>
 
-            {/* Icono de favoritos */}
-            {userId && (
-              <div>
-                <button
-                  className="text-white cursor-pointer"
-                  onClick={(e) => handleFavoriteClick(e, car.id)}
-                >
-                  <img
-                    src={
-                      isFavorite(car.id)
-                        ? "/images/corazon-relleno.png"
-                        : "/images/corazon-vacio.png"
-                    }
-                    alt="Corazón"
-                    className="w-10 h-10"
-                  />
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Información del coche */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="car-detail-item">
-              <p className="font-semibold">Ubicacion:</p>
-              <p>{car.city}</p>
-            </div>
-            <div className="car-detail-item">
-              <p className="font-semibold">Precio:</p>
-              <p>{car.price} €</p>
-            </div>
-            {/* Otros detalles... */}
-          </div>
-        </div>
-
-        {/* Mapa para seleccionar ubicación */}
-        <div className="mb-4 mt-4" style={{ height: "300px" }}>
-          <MapContainer
-            center={[car.lat, car.lon]}
-            zoom={13}
-            scrollWheelZoom={false}
-            style={{ height: "100%", width: "100%" }}
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <Marker position={[car.lat, car.lon]} icon={carIcon} />
-          </MapContainer>
-        </div>
-
-        {/* Botones de acción */}
-        <div className="car-actions mt-6 flex justify-between">
-          <button
-            onClick={handleBuyClick}
-            className="btn bg-[#43697a] text-white p-3 rounded-md w-1/3 hover:bg-[#567C8D] m-2"
-          >
-            Comprar
-          </button>
-          {isAdmin() && (
+          {/* Botones de acción */}
+          <div className="car-actions mt-6 flex justify-between">
             <button
-              onClick={handleBanClick}
-              className="btn bg-red-600 text-white p-3 rounded-md w-1/3 hover:bg-red-700 m-2"
+              onClick={handleBuyClick}
+              className="btn bg-[#43697a] text-white p-3 rounded-md w-1/3 hover:bg-[#567C8D] m-2"
             >
-              {car.CarSold == "baneado" ? "Desbanear Coche" : "Banear Coche"}
+              Comprar
             </button>
-          )}
-          <button
-            onClick={handleChatClick}
-            className="btn bg-[#0E566A] text-white p-3 rounded-md w-1/3 hover:bg-[#42AEB5] m-2"
-          >
-            Chatear
-          </button>
+            {isAdmin() && (
+              <button
+                onClick={handleBanClick}
+                className="btn bg-red-600 text-white p-3 rounded-md w-1/3 hover:bg-red-700 m-2"
+              >
+                {car.CarSold == "baneado" ? "Desbanear Coche" : "Banear Coche"}
+              </button>
+            )}
+            <button
+              onClick={handleChatClick}
+              className="btn bg-[#0E566A] text-white p-3 rounded-md w-1/3 hover:bg-[#42AEB5] m-2"
+            >
+              Chatear
+            </button>
+          </div>
         </div>
       </div>
     </div>

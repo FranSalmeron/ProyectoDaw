@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\Transaction;
@@ -52,7 +51,6 @@ class TransactionController extends AbstractController
         if ($car->getCarSold() !== 'subido') {
             return new JsonResponse(['error' => 'Este coche no está disponible para la compra'], Response::HTTP_CONFLICT);
         }
-        
 
         // Crear la transacción
         $transaction = new Transaction();
@@ -62,16 +60,21 @@ class TransactionController extends AbstractController
         $transaction->setStatus('comprado');
         $transaction->setTransactionDate(new \DateTime());
 
-        // Marcar el coche como vendido
+        // **Calcular comisión (20% del precio de venta)**
+        $commission = $price * 0.20;
+        $transaction->setCommission($commission);
+        $transaction->setTotalIncome($commission);  // El total de ingresos es igual a la comisión
+
+        // **Actualizar el estado del coche a "comprado"**
         $car->setCarSold('comprado');
 
-
+        // Persistir la transacción y actualizar el coche
         $entityManager->persist($transaction);
+        $entityManager->persist($car);  // Asegúrate de actualizar el estado del coche
         $entityManager->flush();
 
-        return new JsonResponse(['message' => 'Transacción creada y coche marcado como vendido'], Response::HTTP_CREATED);
+        return new JsonResponse(['message' => 'Transacción creada, comisión calculada y coche marcado como vendido'], Response::HTTP_CREATED);
     }
-
 
     #[Route('/{id}', name: 'app_transaction_show', methods: ['GET'])]
     public function show(Transaction $transaction): Response

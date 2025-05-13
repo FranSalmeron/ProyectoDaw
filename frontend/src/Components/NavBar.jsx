@@ -1,13 +1,16 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { ROUTES } from "../routes/paths";
 import { isAdmin } from "../helpers/decodeToken";
-
+import { useDarkMode } from "../context/DarkModeContext"; // Usar el contexto de modo oscuro
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const userName = localStorage.getItem("username");
+
+  // Obtener el estado de modo oscuro y la función para alternarlo
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
@@ -19,7 +22,11 @@ const NavBar = () => {
 
   return (
     <div className="relative z-40">
-      <nav className="bg-[#567C8D] p-4 sticky top-0 z-40">
+      <nav
+        className={`p-4 sticky top-0 z-40 ${
+          isDarkMode ? "bg-[#1C1C1E]" : "bg-[#567C8D]"
+        }`}
+      >
         <div className="flex justify-between items-center relative">
           {/* Icono de casa fuera del menú hamburguesa */}
           <button
@@ -27,10 +34,10 @@ const NavBar = () => {
             className="text-white text-2xl mr-10"
           >
             <img
-                src="images/home2.png"
-                alt="RenovAuto"
-                className="h-10 w-10"
-              />
+              src="images/home2.png"
+              alt="RenovAuto"
+              className="h-10 w-10"
+            />
           </button>
 
           {/* Menú hamburguesa */}
@@ -67,18 +74,24 @@ const NavBar = () => {
             )}
           </div>
         </div>
+
+        {/* Botón para cambiar el modo oscuro */}
+        <button
+          onClick={toggleDarkMode} // Usamos la función toggleDarkMode del contexto
+          className="text-white absolute top-4 right-4 p-2 rounded-full bg-[#43697a] hover:bg-[#567C8D]"
+        >
+          {isDarkMode ? "Modo Claro ☀" : "Modo Oscuro 🌙"}
+        </button>
       </nav>
 
       {/* Sidebar */}
       <div
-        className={`absolute left-0 w-64 bg-[#43697a] p-6 shadow-lg transition-transform duration-300 ease-in-out ${
+        className={`absolute left-0 w-64 p-6 shadow-lg transition-transform duration-300 ease-in-out ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{ top: "100%" }}
       >
         <ul className="space-y-4 text-white">
-          {/* Eliminado: <NavLink to={ROUTES.HOME}>Inicio</NavLink> */}
-
           <li>
             <NavLink to={ROUTES.ABOUT} onClick={closeMenu}>
               Sobre Nosotros

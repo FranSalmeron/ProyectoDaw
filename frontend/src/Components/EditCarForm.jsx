@@ -33,13 +33,12 @@ const EditCarForm = ({ car, onClose }) => {
 
         try {
             await editCar(car.id, formData);
-            toast.success("Coche editado con éxito.");
             localStorage.removeItem("cachedCars"); // Limpiar caché de coches
             clearCars(); // Limpiar el estado de coches
             onClose();  // Cerrar el formulario o modal
         } catch (error) {
-            toast.error("Error al editar el coche. Intenta nuevamente.");
-        }
+            console.error("Error al editar el coche:", error);
+        }   
     };
 
     return (

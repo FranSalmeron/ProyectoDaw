@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
 import { createUser } from '../helpers/UserHelper';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
     const [name, setName] = useState('');
@@ -10,7 +11,7 @@ function Register() {
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const roles =['ROLE_USER']; 
-
+    const navigate = useNavigate(); 
     // Función para manejar el envío del formulario
 
     // Función para validar el formato del email
@@ -49,6 +50,11 @@ function Register() {
     
                 // Mostrar el mensaje de éxito
                 toast.success(result.message); 
+
+                // Esperar 4 segundos y luego redirigir al login
+                setTimeout(() => {
+                    navigate('/login'); // Redirige a la página de login
+                }, 4000);  // 4000 ms = 4 segundos
     
             } catch (error) {
                 // Si hay un error en la creación, mostrarlo
