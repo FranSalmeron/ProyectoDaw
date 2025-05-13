@@ -194,10 +194,27 @@ function SubmitCar() {
 
   // Manejar la carga del archivo de imagen
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
+    const newFiles = Array.from(e.target.files);
+    const totalImages = formData.images.length + newFiles.length;
+
+    if (totalImages > 3) {
+      toast.error("Solo puedes subir un máximo de 3 imágenes.");
+      return;
+    }
+
     setFormData((prevState) => ({
       ...prevState,
-      images: prevState.images ? [...prevState.images, ...files] : files, // Concatenamos las imágenes nuevas a las existentes
+      images: [...prevState.images, ...newFiles],
+    }));
+  };
+
+  const handleRemoveImage = (index) => {
+    const updatedImages = [...formData.images];
+    updatedImages.splice(index, 1);
+
+    setFormData((prevState) => ({
+      ...prevState,
+      images: updatedImages,
     }));
   };
 
@@ -241,18 +258,22 @@ function SubmitCar() {
         localStorage.removeItem("cachedCars");
       } else {
         toast.error("Error al crear el coche");
-        toast.info("Tamaño de imagen demasiado grande. Pon menos imágenes. Recargando la página en 4 segundos...");
+        toast.info(
+          "Tamaño de imagen demasiado grande, pon imagenes menos pesadas. Recargando la página en 4 segundos..."
+        );
         setTimeout(() => {
           window.location.reload(); // Recargar la página después de 4 segundos
         }, 4000);
       }
-      } catch (error) {
-        console.error("Hubo un error:", error);
-        toast.info("Tamaño de imagen demasiado grande. Pon menos imágenes. Recargando la página en 4 segundos...");
-        setTimeout(() => {
-          window.location.reload(); // Recargar la página después de 4 segundos
-        }, 4000);
-      }
+    } catch (error) {
+      console.error("Hubo un error:", error);
+      toast.info(
+        "Tamaño de imagen demasiado grande. Pon menos imágenes. Recargando la página en 4 segundos..."
+      );
+      setTimeout(() => {
+        window.location.reload(); // Recargar la página después de 4 segundos
+      }, 4000);
+    }
   };
 
   const brands = [
@@ -266,7 +287,7 @@ function SubmitCar() {
     { label: "Buick", value: "buick" },
     { label: "Chevrolet", value: "chevrolet" },
     { label: "Chrysler", value: "chrysler" },
-    { label: "Citroën", value: "citroen" }, 
+    { label: "Citroën", value: "citroen" },
     { label: "Dodge", value: "dodge" },
     { label: "Fiat", value: "fiat" },
     { label: "Ford", value: "ford" },
@@ -611,10 +632,10 @@ function SubmitCar() {
           </div>
 
           {/* Imagen */}
-          <div className="mb-4">
-            <label htmlFor="image" className="block text-lg font-medium mb-2">
-              Imagen del coche:
-            </label>
+          <div className="mb-2">
+            <p className="text-sm text-red-400 mb-2">
+              Puedes subir hasta 3 imágenes como máximo.
+            </p>
             <input
               id="image"
               type="file"
@@ -623,7 +644,31 @@ function SubmitCar() {
               multiple
               onChange={handleFileChange}
               className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              disabled={formData.images.length >= 3}
             />
+            <p className="text-sm text-gray-300 mt-2">
+              Imágenes seleccionadas: {formData.images.length} / 3
+            </p>
+          </div>
+
+          {/* Vista previa de imágenes */}
+          <div className="flex flex-wrap gap-4 mt-3">
+            {formData.images.map((img, index) => (
+              <div key={index} className="relative w-24 h-24">
+                <img
+                  src={URL.createObjectURL(img)}
+                  alt={`Preview ${index}`}
+                  className="w-full h-full object-cover rounded-lg"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveImage(index)}
+                  className="absolute top-0 right-0 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-700"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
           </div>
 
           {/* Latitud y Longitud (autocompletado o manual) */}
