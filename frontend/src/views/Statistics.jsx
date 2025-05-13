@@ -17,6 +17,7 @@ const Statistics = () => {
     const loadStats = async () => {
       try {
         const data = await fetchStatistics();
+        console.log(data);
         setStatistics(data);
       } catch (err) {
         console.error("Error cargando estadísticas", err);
