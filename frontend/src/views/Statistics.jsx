@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Line, Bar, Pie } from "react-chartjs-2";
 import "chart.js/auto";
-import { fetchStatistics } from "../helpers/BuyHelper"; // Asegúrate de que esta ruta sea correcta
+import { fetchStatistics } from "../helpers/BuyHelper"; 
 
 const Statistics = () => {
   const [statistics, setStatistics] = useState({
@@ -17,7 +17,6 @@ const Statistics = () => {
     const loadStats = async () => {
       try {
         const data = await fetchStatistics();
-        console.log(data);
         setStatistics(data);
       } catch (err) {
         console.error("Error cargando estadísticas", err);
