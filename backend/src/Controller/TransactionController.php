@@ -17,11 +17,6 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/transaction')]
 class TransactionController extends AbstractController
 {
-    #[Route('/statistics', name: 'app_transaction_stats', methods: ['GET'])]
-    public function statistics(): JsonResponse
-    {
-        return new JsonResponse(['message' => 'Funciona OK'], Response::HTTP_OK);
-    }
 
     #[Route('/new', name: 'app_transaction_new', methods: ['POST'])]
     public function new(
@@ -75,33 +70,6 @@ class TransactionController extends AbstractController
         return new JsonResponse(['message' => 'Transacción creada, comisión calculada y coche marcado como vendido'], Response::HTTP_CREATED);
     }
 
-    #[Route('/{id}', name: 'app_transaction_show', methods: ['GET'])]
-    public function show(Transaction $transaction): Response
-    {
-        return $this->render('transaction/show.html.twig', [
-            'transaction' => $transaction,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_transaction_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Transaction $transaction, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(TransactionType::class, $transaction);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_transaction_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('transaction/edit.html.twig', [
-            'transaction' => $transaction,
-            'form' => $form,
-        ]);
-    }
-
-    /*
     #[Route('/statistics', name: 'app_transaction_stats', methods: ['GET'])]
     public function statistics(
         TransactionRepository $transactionRepository,
@@ -159,7 +127,33 @@ class TransactionController extends AbstractController
             'statusCount' => $transactionsByStatus,
         ]);
     }
-    */
+
+    #[Route('/{id}', name: 'app_transaction_show', methods: ['GET'])]
+    public function show(Transaction $transaction): Response
+    {
+        return $this->render('transaction/show.html.twig', [
+            'transaction' => $transaction,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_transaction_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Transaction $transaction, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(TransactionType::class, $transaction);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_transaction_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('transaction/edit.html.twig', [
+            'transaction' => $transaction,
+            'form' => $form,
+        ]);
+    }
+
     #[Route('/{id}', name: 'app_transaction_delete', methods: ['POST'])]
     public function delete(Request $request, Transaction $transaction, EntityManagerInterface $entityManager): Response
     {
