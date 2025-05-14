@@ -17,6 +17,13 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/transaction')]
 class TransactionController extends AbstractController
 {
+    private $transactionRepository;
+
+    // Inyectamos TransactionRepository en el constructor
+    public function __construct(TransactionRepository $transactionRepository)
+    {
+        $this->transactionRepository = $transactionRepository;
+    }
 
     #[Route('/new', name: 'app_transaction_new', methods: ['POST'])]
     public function new(
@@ -72,11 +79,10 @@ class TransactionController extends AbstractController
 
     #[Route('/statistics', name: 'app_transaction_stats', methods: ['GET'])]
     public function statistics(
-        TransactionRepository $transactionRepository,
         UserRepository $userRepository,
         CarRepository $carRepository
     ): JsonResponse {
-        $transactions = $transactionRepository->findAll();
+        $transactions = $this->transactionRepository->findAll();
 
         // Total de ingresos
         $totalIncome = array_sum(array_map(fn($t) => $t->getTotalIncome(), $transactions));
