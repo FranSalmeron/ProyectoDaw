@@ -13,6 +13,7 @@ import "leaflet/dist/leaflet.css";
 import { editCar } from "../helpers/carHelper";
 import { useCars } from "../context/CarContext";
 import { useDarkMode } from "../context/DarkModeContext"; // ✅ contexto de modo oscuro
+import transformCloudinaryUrl from "../helpers/cloudinaryHelper"; // Importar la función de transformación de URL
 
 const CarDetails = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -189,9 +190,12 @@ const CarDetails = () => {
             {car.images.map((image, index) => (
               <div key={index}>
                 <img
-                  src={image}
+                  src={transformCloudinaryUrl(
+                    image,
+                    "w_900,c_fit,f_auto,q_auto"
+                  )}
                   alt={`Car image ${index + 1}`}
-                  className="w-full h-100 object-cover rounded-lg shadow-md"
+                  className="w-full h-100 object-contain rounded-lg shadow-md"
                 />
               </div>
             ))}
@@ -207,12 +211,13 @@ const CarDetails = () => {
               onClick={() => handleImageClick(index)}
             >
               <img
-                src={image}
+                src={transformCloudinaryUrl(
+                  image,
+                  "w_100,h_100,c_fill,f_auto,q_auto"
+                )}
                 alt={`Thumbnail ${index + 1}`}
                 className={`w-full h-full object-cover rounded-lg hover:opacity-80 ${
-                  selectedImageIndex === index
-                    ? "border-4 border-blue-500"
-                    : ""
+                  selectedImageIndex === index ? "border-4 border-blue-500" : ""
                 }`}
               />
             </div>

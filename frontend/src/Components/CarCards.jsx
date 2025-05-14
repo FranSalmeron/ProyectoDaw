@@ -10,15 +10,17 @@ import EditCarForm from "./EditCarForm";
 import { deleteCar } from "../helpers/carHelper"; // Importar la función para eliminar coches
 import { isAdmin } from "../helpers/decodeToken";
 import LoadingSpinner from "./LoadingSpinner/LoadingSpinner";
+import transformCloudinaryUrl  from "../helpers/cloudinaryHelper"; // Importar la función para transformar URLs de Cloudinary
 
 const CarImage = ({ car }) => {
+  
   return (
     <div className="relative w-full h-38 overflow-hidden mb-1">
       {car.images && car.images.length > 0 ? (
         <img
-          src={car.images[0] || "/images/logo-oscuro.png"}
+          src={transformCloudinaryUrl(car.images[0]) || "/images/logo-oscuro.png"}
           alt={`${car.brand} ${car.model}`}
-          className="w-full h-full object-fill"
+          className="w-full h-full object-contain" // Cambiado a 'object-contain' para que no se recorte
         />
       ) : (
         <p>No hay imágenes disponibles</p>
