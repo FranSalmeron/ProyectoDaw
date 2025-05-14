@@ -111,10 +111,11 @@ class TransactionController extends AbstractController
 
         // Añadir esto antes de return $this->json(...)
         $carStatusCount = [
-            'subido' => count($carRepository->findBy(['carStatus' => 'subido'])),
-            'comprado' => count($carRepository->findBy(['carStatus' => 'comprado'])),
-            'baneado' => count($carRepository->findBy(['carStatus' => 'baneado'])),
+            'subido' => count($carRepository->findBy(['CarSold' => 'subido'])),
+            'comprado' => count($carRepository->findBy(['CarSold' => 'comprado'])),
+            'baneado' => count($carRepository->findBy(['CarSold' => 'baneado'])),
         ];
+
 
         return $this->json([
             'totalIncome' => $totalIncome,

@@ -16,6 +16,6 @@ if (!\class_exists(App_KernelProdContainer::class, false)) {
 
 return new \ContainerTF1PRxD\App_KernelProdContainer([
     'container.build_hash' => 'TF1PRxD',
-    'container.build_id' => '3d731054',
-    'container.build_time' => 1747219871,
+    'container.build_id' => 'f565df8d',
+    'container.build_time' => 1747220607,
 ], __DIR__.\DIRECTORY_SEPARATOR.'ContainerTF1PRxD');
