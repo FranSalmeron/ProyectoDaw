@@ -119,24 +119,24 @@ const Statistics = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white rounded-lg shadow-md p-4">
           <h3 className="text-lg font-semibold mb-2">Ganancias Mensuales</h3>
-          <Bar data={monthlyEarningsData} height={300} />
+          <Bar data={monthlyEarningsData} height={150} />
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-4">
           <h3 className="text-lg font-semibold mb-2">
             Usuarios con Más Compras
           </h3>
-          <Bar data={topBuyersData} height={300} />
+          <Bar data={topBuyersData} height={150} />
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-4">
           <h3 className="text-lg font-semibold mb-2">Coches Más Vendidos</h3>
-          <Pie data={topCarsData} height={300} />
+          <Pie data={topCarsData} height={150} />
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-4">
           <h3 className="text-lg font-semibold mb-2">Estados de los Coches</h3>
-          <Pie data={carStatusData} height={300} />
+          <Pie data={carStatusData} height={150} />
         </div>
       </div>
     </div>
