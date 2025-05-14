@@ -103,7 +103,13 @@ class TransactionController extends AbstractController
         ]);
     }
 
-    #[Route('/statistics', name: 'api_statistics', methods: ['GET'])]
+    #[Route('/statistics', name: 'app_transaction_stats', methods: ['GET'])]
+    public function statistics(): JsonResponse
+    {
+        return new JsonResponse(['message' => 'Funciona OK'], Response::HTTP_OK);
+    }
+    /*
+    #[Route('/statistics', name: 'app_transaction_stats', methods: ['GET'])]
     public function statistics(
         TransactionRepository $transactionRepository,
         UserRepository $userRepository,
@@ -160,7 +166,7 @@ class TransactionController extends AbstractController
             'statusCount' => $transactionsByStatus,
         ]);
     }
-
+    */
     #[Route('/{id}', name: 'app_transaction_delete', methods: ['POST'])]
     public function delete(Request $request, Transaction $transaction, EntityManagerInterface $entityManager): Response
     {

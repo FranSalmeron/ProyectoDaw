@@ -8,7 +8,7 @@ export const carList = async (addCars) => {
         const storedData = localStorage.getItem('cachedCars');
         
         const now = new Date();
-        const minutes = 5 * 60 * 1000; 
+        const minutes = 1 * 60 * 1000; 
         // Si existe cachedData en localStorage
         if (storedData) {
             const { cars, lastUpdated } = JSON.parse(storedData);  // Desestructuramos el objeto
