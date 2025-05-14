@@ -109,22 +109,20 @@ class TransactionController extends AbstractController
         // Coches más vendidos
         $topCars = $carRepository->findTopSellingCars();
 
-        // Transacciones por estado
-        $transactionsByStatus = [
-            'completed' => count(array_filter($transactions, fn($t) => $t->getStatus() === 'completed')),
-            'pending' => count(array_filter($transactions, fn($t) => $t->getStatus() === 'pending')),
-            'cancelled' => count(array_filter($transactions, fn($t) => $t->getStatus() === 'cancelled')),
-            'comprado' => count(array_filter($transactions, fn($t) => $t->getStatus() === 'comprado')), // por si usas "comprado"
+        // Añadir esto antes de return $this->json(...)
+        $carStatusCount = [
+            'subido' => count($carRepository->findBy(['carStatus' => 'subido'])),
+            'comprado' => count($carRepository->findBy(['carStatus' => 'comprado'])),
+            'baneado' => count($carRepository->findBy(['carStatus' => 'baneado'])),
         ];
 
-        // Devolver la respuesta
         return $this->json([
             'totalIncome' => $totalIncome,
             'totalTransactions' => $totalTransactions,
             'monthlyEarnings' => $monthlyEarningsFormatted,
             'topBuyers' => $topUsers,
             'topCars' => $topCars,
-            'statusCount' => $transactionsByStatus,
+            'carStatusCount' => $carStatusCount,
         ]);
     }
 

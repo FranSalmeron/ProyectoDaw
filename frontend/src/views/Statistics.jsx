@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Line, Bar, Pie } from "react-chartjs-2";
+import { Bar, Pie } from "react-chartjs-2";
 import "chart.js/auto";
 import { fetchStatistics } from "../helpers/BuyHelper";
 import dayjs from "dayjs";
@@ -11,7 +11,7 @@ const Statistics = () => {
     monthlyEarnings: [],
     topBuyers: [],
     topCars: [],
-    statusCount: {},
+    carStatusCount: {}, // solo este
   });
 
   useEffect(() => {
@@ -29,7 +29,9 @@ const Statistics = () => {
 
   // Rellenar hasta 6 meses incluso si están vacíos
   const getExtendedMonthlyEarnings = () => {
-    const earningsMap = new Map(statistics.monthlyEarnings.map(e => [e.month, e.income]));
+    const earningsMap = new Map(
+      statistics.monthlyEarnings.map((e) => [e.month, e.income])
+    );
 
     const now = dayjs();
     const months = [];
@@ -70,7 +72,7 @@ const Statistics = () => {
   };
 
   const topCarsData = {
-    labels: statistics.topCars.map((car) => car.name),
+    labels: statistics.topCars.map((car) => `${car.brand} ${car.model}`),
     datasets: [
       {
         label: "Ventas",
@@ -80,20 +82,26 @@ const Statistics = () => {
     ],
   };
 
-  const statusCountData = {
-    labels: Object.keys(statistics.statusCount),
+  const carStatusData = {
+    labels: ["Disponible", "Comprado", "Baneado"],
     datasets: [
       {
-        label: "Estado de transacciones",
-        data: Object.values(statistics.statusCount),
-        backgroundColor: ["#4CAF50", "#FFC107", "#F44336"],
+        label: "Estado de Coches",
+        data: [
+          statistics.carStatusCount.subido || 0,
+          statistics.carStatusCount.comprado || 0,
+          statistics.carStatusCount.baneado || 0,
+        ],
+        backgroundColor: ["#2196F3", "#4CAF50", "#F44336"],
       },
     ],
   };
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6 text-center">Estadísticas de Ventas</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">
+        Estadísticas de Ventas
+      </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="bg-white rounded-lg shadow-md p-4 text-center">
@@ -102,7 +110,9 @@ const Statistics = () => {
         </div>
         <div className="bg-white rounded-lg shadow-md p-4 text-center">
           <h3 className="text-lg font-semibold">Total de Transacciones</h3>
-          <p className="text-xl text-blue-600">{statistics.totalTransactions}</p>
+          <p className="text-xl text-blue-600">
+            {statistics.totalTransactions}
+          </p>
         </div>
       </div>
 
@@ -113,7 +123,9 @@ const Statistics = () => {
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-4">
-          <h3 className="text-lg font-semibold mb-2">Usuarios con Más Compras</h3>
+          <h3 className="text-lg font-semibold mb-2">
+            Usuarios con Más Compras
+          </h3>
           <Bar data={topBuyersData} />
         </div>
 
@@ -123,8 +135,8 @@ const Statistics = () => {
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-4">
-          <h3 className="text-lg font-semibold mb-2">Estados de Transacciones</h3>
-          <Bar data={statusCountData} />
+          <h3 className="text-lg font-semibold mb-2">Estados de los Coches</h3>
+          <Pie data={carStatusData} />
         </div>
       </div>
     </div>
