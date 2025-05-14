@@ -131,12 +131,20 @@ const Statistics = () => {
 
         <div className="bg-white rounded-lg shadow-md p-4">
           <h3 className="text-lg font-semibold mb-2">Coches Más Vendidos</h3>
-          <Pie data={topCarsData} height={150} />
+          <Pie
+            data={topCarsData}
+            height={150}
+            options={{ maintainAspectRatio: false }}
+          />
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-4">
           <h3 className="text-lg font-semibold mb-2">Estados de los Coches</h3>
-          <Pie data={carStatusData} height={150} />
+           <Pie
+            data={carStatusData}
+            height={150}
+            options={{ maintainAspectRatio: false }}
+          />
         </div>
       </div>
     </div>
