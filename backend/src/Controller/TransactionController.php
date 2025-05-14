@@ -17,14 +17,6 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/transaction')]
 class TransactionController extends AbstractController
 {
-    #[Route('/', name: 'app_transaction_index', methods: ['GET'])]
-    public function index(TransactionRepository $transactionRepository): Response
-    {
-        return $this->render('transaction/index.html.twig', [
-            'transactions' => $transactionRepository->findAll(),
-        ]);
-    }
-
     #[Route('/statistics', name: 'app_transaction_stats', methods: ['GET'])]
     public function statistics(): JsonResponse
     {
