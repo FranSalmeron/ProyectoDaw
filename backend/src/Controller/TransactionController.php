@@ -25,6 +25,12 @@ class TransactionController extends AbstractController
         ]);
     }
 
+    #[Route('/statistics', name: 'app_transaction_stats', methods: ['GET'])]
+    public function statistics(): JsonResponse
+    {
+        return new JsonResponse(['message' => 'Funciona OK'], Response::HTTP_OK);
+    }
+
     #[Route('/new', name: 'app_transaction_new', methods: ['POST'])]
     public function new(
         Request $request,
@@ -103,11 +109,6 @@ class TransactionController extends AbstractController
         ]);
     }
 
-    #[Route('/statistics', name: 'app_transaction_stats', methods: ['GET'])]
-    public function statistics(): JsonResponse
-    {
-        return new JsonResponse(['message' => 'Funciona OK'], Response::HTTP_OK);
-    }
     /*
     #[Route('/statistics', name: 'app_transaction_stats', methods: ['GET'])]
     public function statistics(
