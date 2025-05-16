@@ -179,7 +179,12 @@ function SubmitCar() {
   const inputBg = isDarkMode
     ? "bg-[#3A3A3C] text-white placeholder-gray-400"
     : "bg-gray-800 text-white";
-
+  const borderFocus = "focus:outline-none focus:ring-2 focus:ring-red-500";
+  const labelText = "text-lg font-medium mb-2";
+  const sectionMargin = "mb-4";
+  const sectionTitle = "text-3xl font-bold text-center mb-6";
+  const previewText = isDarkMode ? "text-gray-300" : "text-gray-600";
+  const textMuted = isDarkMode ? "text-gray-400" : "text-gray-600";
 
   const handleSliderChange = (e) => {
     const { name, value } = e.target;

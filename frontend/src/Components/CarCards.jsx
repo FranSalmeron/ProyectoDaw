@@ -11,16 +11,16 @@ import { deleteCar } from "../helpers/carHelper"; // Importar la función para e
 import { isAdmin } from "../helpers/decodeToken";
 import LoadingSpinner from "./LoadingSpinner/LoadingSpinner";
 import transformCloudinaryUrl  from "../helpers/cloudinaryHelper"; // Importar la función para transformar URLs de Cloudinary
+import { useDarkMode } from "../context/DarkModeContext";
 
 const CarImage = ({ car }) => {
-  
   return (
     <div className="relative w-full h-38 overflow-hidden mb-1">
       {car.images && car.images.length > 0 ? (
         <img
           src={transformCloudinaryUrl(car.images[0]) || "/images/logo-oscuro.png"}
           alt={`${car.brand} ${car.model}`}
-          className="w-full h-full object-contain" // Cambiado a 'object-contain' para que no se recorte
+          className="w-full h-full object-contain"
         />
       ) : (
         <p>No hay imágenes disponibles</p>
@@ -49,13 +49,14 @@ const CarCards = ({
   const { favorites } = useFavorites();
   const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
   const navigate = useNavigate();
+  const { isDarkMode } = useDarkMode();
 
   const isFavorite = (carId) => {
     return favorites.some((fav) => fav.car && fav.car.id === carId);
   };
 
   const handleFavoriteClick = async (e, carId) => {
-    e.stopPropagation(); // Prevenir que el clic del corazón dispare el clic de la tarjeta
+    e.stopPropagation();
 
     try {
       if (isFavorite(carId)) {
@@ -88,57 +89,50 @@ const CarCards = ({
 
   const handleDelete = async (e, carId) => {
     e.stopPropagation();
-    // Llamamos a la función para eliminar el coche
     await deleteCar(carId);
-    localStorage.removeItem("cachedCars"); // Limpiar caché de coches
-    clearCars(); // Limpiar el estado de coches
+    localStorage.removeItem("cachedCars");
+    clearCars();
   };
 
   const handleEdit = (e, car) => {
     e.stopPropagation();
-    setSelectedCar(car); // Establecemos el coche seleccionado para editar
-    localStorage.removeItem("cachedCars"); // Limpiar caché de coches
-    clearCars(); // Limpiar el estado de coches
+    setSelectedCar(car);
+    localStorage.removeItem("cachedCars");
+    clearCars();
   };
 
   const handleCloseEdit = () => {
-    setSelectedCar(null); // Cerrar el formulario de edición
+    setSelectedCar(null);
   };
 
-  // Función para formatear la marca
   const formatBrand = (brand) => {
     if (!brand) return "";
-    // Reemplaza guiones bajos por espacio y convierte las dos primeras letras de cada palabra en mayúscula
     return brand
       .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitaliza la primera letra de cada palabra
-      .join(" "); // Une las palabras con espacio
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
   };
 
   return (
-    <div className="w-full bg-[#F5EFEB] min-h-screen overflow-y-auto mb-4 sm:mb-0 relative z-10">
+    <div className={`w-full ${isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black"} min-h-screen overflow-y-auto mb-4 sm:mb-0 relative z-10`}>
       {loading ? (
         <LoadingSpinner />
       ) : cars && cars.length > 0 ? (
         <ul className="space-y-6">
-          {/* Filtramos los coches según si son subidos o baneados */}
           {cars
             .filter((car) => {
               if (isAdmin()) {
-                // Administradores pueden ver coches subidos o baneados o el mismo usuario
                 return car.CarSold == "subido" || car.CarSold == "baneado";
               }
               if (userId == car.user.id) {
-                // Los usuarios normales ven coches subidos o baneados que ellos han subido
                 return car.CarSold == "subido" || car.CarSold == "baneado";
               }
-              // Usuarios normales solo ven coches subidos
               return car.CarSold == "subido";
             })
             .map((car, index) => (
               <li
                 key={index}
-                className={`bg-white p-4 shadow-md rounded-lg relative ${
+                className={`${isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-white text-black"} p-4 shadow-md rounded-lg relative ${
                   car.CarSold === "baneado" ? "border-2 border-red-500" : ""
                 }`}
               >
@@ -146,14 +140,12 @@ const CarCards = ({
                   className="cursor-pointer"
                   onClick={() => navigate(`/car_details`, { state: { car } })}
                 >
-                  {/* 🚫 Alerta si está baneado */}
                   {car.CarSold === "baneado" && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-2">
+                    <div className={`border px-4 py-2 rounded mb-2 ${isDarkMode ? "bg-red-900 border-red-700 text-red-300" : "bg-red-100 border-red-400 text-red-700"}`}>
                       🚫 Este coche ha sido baneado por un administrador.
                     </div>
                   )}
 
-                  {/* Imagen */}
                   <div className="flex w-full mb-4">
                     <div className="flex-1">
                       <h4 className="text-lg font-semibold">
@@ -167,26 +159,25 @@ const CarCards = ({
                     </div>
                   </div>
 
-                  {/* Imagen y Características */}
                   <div className="flex flex-col sm:flex-row w-full">
                     <div className="w-50 h-auto mr-4">
                       <CarImage car={car} />
                     </div>
                     <div className="flex-1">
                       <ul className="space-y-2">
-                        <li className="text-black-500">
+                        <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
                           <strong>Ubicación:</strong> {car.city}
                         </li>
-                        <li className="text-black-500">
+                        <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
                           <strong>Condición:</strong> {formatCondition(car.CarCondition)}
                         </li>
-                        <li className="text-black-500">
+                        <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
                           <strong>Año:</strong> {car.manufacture_year}
                         </li>
-                        <li className="text-black-500">
+                        <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
                           <strong>Kilómetros:</strong> {car.mileage} km
                         </li>
-                        <li className="text-black-500">
+                        <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
                           <strong>Combustible:</strong> {car.fuelType}
                         </li>
                       </ul>
@@ -210,7 +201,6 @@ const CarCards = ({
                   </div>
                 </div>
 
-                {/* Corazón (solo si el usuario está registrado) y al final de la tarjeta */}
                 {userId != null && (
                   <div className="absolute bottom-2 right-2">
                     <button
@@ -230,7 +220,6 @@ const CarCards = ({
                   </div>
                 )}
 
-                {/* Renderizar el formulario de edición si hay un coche seleccionado */}
                 {selectedCar && (
                   <EditCarForm car={selectedCar} onClose={handleCloseEdit} />
                 )}
