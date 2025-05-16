@@ -337,10 +337,10 @@ function SubmitCar() {
 
   const { isDarkMode } = useDarkMode();
 
-const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black";
+const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-white";
 const formBg = isDarkMode ? "bg-[#2C2C2E]" : "bg-[#2F4156]";
-const inputBg = isDarkMode ? "bg-gray-800 text-white placeholder-gray-400" : "bg-white text-black placeholder-gray-600";
-const mutedText = isDarkMode ? "text-gray-400" : "text-gray-600";
+const inputBg = isDarkMode ? "bg-[#3A3A3C] text-white placeholder-gray-400" : "bg-gray-800 text-white placeholder-gray-400";
+const mutedText = "text-white";
 const buttonBg = "bg-[#43697a] hover:bg-[#567C8D] text-white";
 
   return (
