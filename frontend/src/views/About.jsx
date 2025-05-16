@@ -1,18 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useState,useEffect } from "react";
 import { useDarkMode } from "../context/DarkModeContext";
 
 const About = () => {
   const { isDarkMode } = useDarkMode();
+  const [textPrimary, setTextPrimary] = useState(false);
+  const [textSecondary, setTextSecondary] = useState(false);
+  const [textMuted, setTextMuted] = useState(false);
+  const [bgMain, setBgMain] = useState(false);
+  const [bgCard, setBgCard] = useState(false);
 
-  let textPrimary, textSecondary, textMuted, bgMain, bgCard;
   useEffect(() => {
-    textPrimary = isDarkMode ? "text-white" : "text-gray-800";
-    textSecondary = isDarkMode ? "text-gray-300" : "text-gray-700";
-    textMuted = isDarkMode ? "text-gray-400" : "text-gray-600";
-    bgMain = isDarkMode ? "bg-[#1C1C1E]" : "bg-[#F5EFEB]";
-    bgCard = isDarkMode
+    setTextPrimary(isDarkMode ? "text-white" : "text-black");
+    setTextSecondary(isDarkMode ? "text-gray-300" : "text-gray-700");
+    setTextMuted(isDarkMode ? "text-gray-400" : "text-gray-600");
+    setBg(isDarkMode ? "bg-[#1C1C1E]" : "bg-[#F5EFEB]");
+    setBgCard(isDarkMode
       ? "bg-[#2C2C2E] border-gray-700"
-      : "bg-white border-gray-200";
+      : "bg-white border-gray-200");
   }, [isDarkMode]);
 
   return (
