@@ -13,7 +13,7 @@ const About = () => {
     setTextPrimary(isDarkMode ? "text-white" : "text-black");
     setTextSecondary(isDarkMode ? "text-gray-300" : "text-gray-700");
     setTextMuted(isDarkMode ? "text-gray-400" : "text-gray-600");
-    setBg(isDarkMode ? "bg-[#1C1C1E]" : "bg-[#F5EFEB]");
+    setBgMain(isDarkMode ? "bg-[#1C1C1E]" : "bg-[#F5EFEB]");
     setBgCard(isDarkMode
       ? "bg-[#2C2C2E] border-gray-700"
       : "bg-white border-gray-200");
