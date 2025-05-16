@@ -18,18 +18,6 @@ import { useCars } from "../context/CarContext";
 
 const symfonyUrl = import.meta.env.VITE_API_URL;
 
-const { isDarkMode } = useDarkMode(); // Obtenemos modo oscuro
-
-// 🎨 Estilos condicionales por tema
-const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black";
-const cardBg = isDarkMode ? "bg-[#2C2C2E]" : "bg-[#2F4156]";
-const inputBg = isDarkMode ? "bg-[#3A3A3C] text-white placeholder-gray-400" : "bg-gray-800 text-white";
-const borderFocus = "focus:outline-none focus:ring-2 focus:ring-red-500";
-const labelText = "text-lg font-medium mb-2";
-const sectionMargin = "mb-4";
-const sectionTitle = "text-3xl font-bold text-center mb-6";
-const previewText = isDarkMode ? "text-gray-300" : "text-gray-600";
-
 function SubmitCar() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -180,6 +168,18 @@ function SubmitCar() {
       [name]: value,
     });
   };
+
+  const { isDarkMode } = useDarkMode(); // Obtenemos modo oscuro
+
+  // 🎨 Estilos condicionales por tema
+  const bgMain = isDarkMode
+    ? "bg-[#1C1C1E] text-white"
+    : "bg-[#F5EFEB] text-black";
+  const cardBg = isDarkMode ? "bg-[#2C2C2E]" : "bg-[#2F4156]";
+  const inputBg = isDarkMode
+    ? "bg-[#3A3A3C] text-white placeholder-gray-400"
+    : "bg-gray-800 text-white";
+
 
   const handleSliderChange = (e) => {
     const { name, value } = e.target;
@@ -349,7 +349,9 @@ function SubmitCar() {
 
   return (
     <div className={`${bgMain} min-h-screen p-5`}>
-      <div className={`w-9/10 max-w-2xl mx-auto ${cardBg} p-8 rounded-lg shadow-lg m-5`}>
+      <div
+        className={`w-9/10 max-w-2xl mx-auto ${cardBg} p-8 rounded-lg shadow-lg m-5`}
+      >
         <h2 className="text-3xl font-bold text-center mb-6">
           Introduce los detalles del coche
         </h2>
@@ -357,7 +359,9 @@ function SubmitCar() {
         <form onSubmit={handleSubmit}>
           {/* Marca */}
           <div className="mb-4">
-            <label htmlFor="brand" className="block text-lg font-medium mb-2">Marca:</label>
+            <label htmlFor="brand" className="block text-lg font-medium mb-2">
+              Marca:
+            </label>
             <select
               id="brand"
               name="brand"
@@ -367,14 +371,18 @@ function SubmitCar() {
             >
               <option value="">Selecciona la marca</option>
               {brands.map((brand) => (
-                <option key={brand.value} value={brand.value}>{brand.label}</option>
+                <option key={brand.value} value={brand.value}>
+                  {brand.label}
+                </option>
               ))}
             </select>
           </div>
 
           {/* Modelo */}
           <div className="mb-4">
-            <label htmlFor="model" className="block text-lg font-medium mb-2">Modelo:</label>
+            <label htmlFor="model" className="block text-lg font-medium mb-2">
+              Modelo:
+            </label>
             <input
               id="model"
               type="text"
@@ -389,7 +397,9 @@ function SubmitCar() {
 
           {/* Precio */}
           <div className="mb-4">
-            <label htmlFor="price" className="block text-lg font-medium mb-2">Precio:</label>
+            <label htmlFor="price" className="block text-lg font-medium mb-2">
+              Precio:
+            </label>
             <input
               id="price"
               type="number"
@@ -404,7 +414,9 @@ function SubmitCar() {
 
           {/* Kilometraje */}
           <div className="mb-4">
-            <label htmlFor="mileage" className="block text-lg font-medium mb-2">Kilometraje:</label>
+            <label htmlFor="mileage" className="block text-lg font-medium mb-2">
+              Kilometraje:
+            </label>
             <input
               id="mileage"
               type="number"
@@ -419,7 +431,9 @@ function SubmitCar() {
 
           {/* Año */}
           <div className="mb-4">
-            <label htmlFor="year" className="block text-lg font-medium mb-2">Año:</label>
+            <label htmlFor="year" className="block text-lg font-medium mb-2">
+              Año:
+            </label>
             <input
               id="year"
               type="number"
@@ -436,7 +450,7 @@ function SubmitCar() {
           <div className="mb-4 h-[300px]">
             <label className="block text-lg font-medium mb-2">Ubicación:</label>
             <MapContainer
-              center={[40.416775, -3.703790]}
+              center={[40.416775, -3.70379]}
               zoom={13}
               className="h-full w-full rounded-lg"
             >
