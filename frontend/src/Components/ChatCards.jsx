@@ -1,12 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useDarkMode } from "../context/DarkModeContext"; // Importa el contexto
+import { useDarkMode } from "../context/DarkModeContext"; // Importa el contexto correctamente
 
 const ChatCards = ({ chats }) => {
   const navigate = useNavigate();
-  const { isDarkMode } = useDarkMode();
+  const { isDarkMode } = useDarkMode(); // Obtén el estado
 
-  // Variables para modo claro/oscuro
+  // Clases condicionales para modo oscuro
   const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black";
   const bgCard = isDarkMode ? "bg-[#2C2C2E] border-gray-700" : "bg-white border-gray-200";
   const textPrimary = isDarkMode ? "text-white" : "text-gray-800";

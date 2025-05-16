@@ -100,7 +100,7 @@ const Statistics = () => {
   };
 
   // 🎨 Estilos condicionales por tema
-  const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-white text-black";
+  const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black";
   const cardBg = isDarkMode ? "bg-[#2C2C2E]" : "bg-white";
   const textPrimary = isDarkMode ? "text-white" : "text-gray-800";
   const accent = isDarkMode ? "text-blue-400" : "text-blue-600";
