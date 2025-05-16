@@ -10,6 +10,7 @@ const About = () => {
   const [bgCard, setBgCard] = useState(false);
 
   useEffect(() => {
+    console.log(isDarkMode);
     setTextPrimary(isDarkMode ? "text-white" : "text-black");
     setTextSecondary(isDarkMode ? "text-gray-300" : "text-gray-700");
     setTextMuted(isDarkMode ? "text-gray-400" : "text-gray-600");
