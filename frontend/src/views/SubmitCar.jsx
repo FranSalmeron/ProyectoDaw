@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useDarkMode } from "../context/DarkModeContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -15,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { getUserIdFromToken } from "../helpers/decodeToken";
 import Select from "react-select";
 import { useCars } from "../context/CarContext";
+import { useDarkMode } from "../context/DarkModeContext";
 
 const symfonyUrl = import.meta.env.VITE_API_URL;
 
@@ -168,23 +168,6 @@ function SubmitCar() {
       [name]: value,
     });
   };
-
-  const { isDarkMode } = useDarkMode(); // Obtenemos modo oscuro
-
-  // 🎨 Estilos condicionales por tema
-  const bgMain = isDarkMode
-    ? "bg-[#1C1C1E] text-white"
-    : "bg-[#F5EFEB] text-black";
-  const cardBg = isDarkMode ? "bg-[#2C2C2E]" : "bg-[#2F4156]";
-  const inputBg = isDarkMode
-    ? "bg-[#3A3A3C] text-white placeholder-gray-400"
-    : "bg-gray-800 text-white";
-  const borderFocus = "focus:outline-none focus:ring-2 focus:ring-red-500";
-  const labelText = "text-lg font-medium mb-2";
-  const sectionMargin = "mb-4";
-  const sectionTitle = "text-3xl font-bold text-center mb-6";
-  const previewText = isDarkMode ? "text-gray-300" : "text-gray-600";
-  const textMuted = isDarkMode ? "text-gray-400" : "text-gray-600";
 
   const handleSliderChange = (e) => {
     const { name, value } = e.target;
@@ -352,11 +335,17 @@ function SubmitCar() {
     });
   };
 
+  const { isDarkMode } = useDarkMode();
+
+const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black";
+const formBg = isDarkMode ? "bg-[#2C2C2E]" : "bg-[#2F4156]";
+const inputBg = isDarkMode ? "bg-gray-800 text-white placeholder-gray-400" : "bg-white text-black placeholder-gray-600";
+const mutedText = isDarkMode ? "text-gray-400" : "text-gray-600";
+const buttonBg = "bg-[#43697a] hover:bg-[#567C8D] text-white";
+
   return (
     <div className={`${bgMain} min-h-screen p-5`}>
-      <div
-        className={`w-9/10 max-w-2xl mx-auto ${cardBg} p-8 rounded-lg shadow-lg m-5`}
-      >
+      <div className={`w-9/10 max-w-2xl mx-auto ${formBg} p-8 rounded-lg shadow-lg m-5`}>
         <h2 className="text-3xl font-bold text-center mb-6">
           Introduce los detalles del coche
         </h2>
@@ -395,9 +384,62 @@ function SubmitCar() {
               required
               value={formData.model}
               onChange={handleChange}
-              className={`w-full p-3 rounded-lg ${inputBg} focus:outline-none focus:ring-2 focus:ring-red-500`}
+              className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               placeholder="Modelo del coche"
             />
+          </div>
+
+          {/* Año de fabricación */}
+          <div className="mb-4">
+            <label
+              htmlFor="manufacture_year"
+              className="block text-lg font-medium mb-2"
+            >
+              Año de fabricación:
+            </label>
+            <input
+              id="manufacture_year"
+              type="number"
+              name="manufacture_year"
+              min="1900"
+              max={new Date().getFullYear()}
+              required
+              value={formData.manufacture_year}
+              onChange={handleChange}
+              className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="Año de fabricación"
+            />
+          </div>
+
+          {/* Kilometraje */}
+          <div className="mb-4">
+            <label htmlFor="mileage" className="block text-lg font-medium mb-2">
+              Kilometraje (en km):
+            </label>
+            <div className="flex items-center">
+              <input
+                id="mileage"
+                type="range"
+                name="mileage"
+                min="0"
+                max="500000"
+                step="10000"
+                required
+                value={formData.mileage}
+                onChange={handleSliderChange}
+                className="w-3/4 p-2 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              />
+              <input
+                type="number"
+                name="mileage"
+                value={formData.mileage}
+                onChange={handlePriceOrMileageChange}
+                className="ml-4 w-28 p-3 bg-gray-800 text-white rounded-lg"
+                min="0"
+                required
+              />
+            </div>
+            <p className="text-center">{formData.mileage} km</p>
           </div>
 
           {/* Precio */}
@@ -405,70 +447,200 @@ function SubmitCar() {
             <label htmlFor="price" className="block text-lg font-medium mb-2">
               Precio:
             </label>
-            <input
-              id="price"
-              type="number"
-              name="price"
-              required
-              value={formData.price}
-              onChange={handlePriceOrMileageChange}
-              className={`w-full p-3 rounded-lg ${inputBg} focus:outline-none focus:ring-2 focus:ring-red-500`}
-              placeholder="Precio del vehículo"
-            />
-          </div>
-
-          {/* Kilometraje */}
-          <div className="mb-4">
-            <label htmlFor="mileage" className="block text-lg font-medium mb-2">
-              Kilometraje:
-            </label>
-            <input
-              id="mileage"
-              type="number"
-              name="mileage"
-              required
-              value={formData.mileage}
-              onChange={handlePriceOrMileageChange}
-              className={`w-full p-3 rounded-lg ${inputBg} focus:outline-none focus:ring-2 focus:ring-red-500`}
-              placeholder="Kilometraje del vehículo"
-            />
-          </div>
-
-          {/* Año */}
-          <div className="mb-4">
-            <label htmlFor="year" className="block text-lg font-medium mb-2">
-              Año:
-            </label>
-            <input
-              id="year"
-              type="number"
-              name="year"
-              required
-              value={formData.year}
-              onChange={handleChange}
-              className={`w-full p-3 rounded-lg ${inputBg} focus:outline-none focus:ring-2 focus:ring-red-500`}
-              placeholder="Año del vehículo"
-            />
-          </div>
-
-          {/* Mapa */}
-          <div className="mb-4 h-[300px]">
-            <label className="block text-lg font-medium mb-2">Ubicación:</label>
-            <MapContainer
-              center={[40.416775, -3.70379]}
-              zoom={13}
-              className="h-full w-full rounded-lg"
-            >
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            <div className="flex items-center">
+              <input
+                id="price"
+                type="range"
+                name="price"
+                min="0"
+                max="100000"
+                step="1000"
+                required
+                value={formData.price}
+                onChange={handleSliderChange}
+                className="w-3/4 p-2 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               />
-              <MapClickHandler />
-            </MapContainer>
+              <input
+                type="number"
+                name="price"
+                value={formData.price}
+                onChange={handlePriceOrMileageChange}
+                className="ml-4 w-28 p-3 bg-gray-800 text-white rounded-lg"
+                min="0"
+                step="0.01"
+                required
+              />
+            </div>
+            <p className="text-center">{formData.price}€</p>
           </div>
 
-          {/* Imágenes */}
+          {/* Color (Paleta de colores) */}
           <div className="mb-4">
+            <label htmlFor="color" className="block text-lg font-medium mb-2">
+              Color:
+            </label>
+            <input
+              type="text"
+              name="color"
+              value={formData.color}
+              onChange={handleChange}
+              className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="Escribe el color del coche"
+            />
+          </div>
+
+          {/* Tipo de combustible */}
+          <div className="mb-4">
+            <label
+              htmlFor="fuelType"
+              className="block text-lg font-medium mb-2"
+            >
+              Tipo de combustible:
+            </label>
+            <select
+              id="fuelType"
+              name="fuelType"
+              value={formData.fuelType}
+              required
+              onChange={handleChange}
+              className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            >
+              <option value="">Seleccione tipo de combustible</option>
+              <option value="gasolina">Gasolina</option>
+              <option value="diesel">Diesel</option>
+              <option value="electrico">Eléctrico</option>
+              <option value="hibrido">Híbrido</option>
+            </select>
+          </div>
+
+          {/* Tipo de transmisión */}
+          <div className="mb-4">
+            <label
+              htmlFor="transmission"
+              className="block text-lg font-medium mb-2"
+            >
+              Transmisión:
+            </label>
+            <select
+              id="transmission"
+              name="transmission"
+              required
+              value={formData.transmission}
+              onChange={handleChange}
+              className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            >
+              <option value="">Seleccione tipo de transmisión</option>
+              <option value="manual">Manual</option>
+              <option value="automatico">Automática</option>
+              <option value="cvt">CVT</option>
+              <option value="semi_automatico">Semi-automática</option>
+            </select>
+          </div>
+
+          {/* Tipo de tracción */}
+          <div className="mb-4">
+            <label
+              htmlFor="traction"
+              className="block text-lg font-medium mb-2"
+            >
+              Tracción:
+            </label>
+            <select
+              id="traction"
+              name="traction"
+              value={formData.traction}
+              required
+              onChange={handleChange}
+              className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            >
+              <option value="">Seleccione tipo de tracción</option>
+              <option value="delantera">Delantera</option>
+              <option value="trasera">Trasera</option>
+              <option value="total">Total (4x4)</option>
+            </select>
+          </div>
+
+          {/* Puertas */}
+          <div className="mb-4">
+            <label htmlFor="doors" className="block text-lg font-medium mb-2">
+              Puertas:
+            </label>
+            <input
+              id="doors"
+              type="range"
+              name="doors"
+              min="1"
+              max="5"
+              value={formData.doors}
+              onChange={handleSliderChange}
+              className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+            <p className="text-center">{formData.doors} Puertas</p>
+          </div>
+
+          {/* Sillones */}
+          <div className="mb-4">
+            <label htmlFor="seats" className="block text-lg font-medium mb-2">
+              Sillones:
+            </label>
+            <input
+              id="seats"
+              type="range"
+              name="seats"
+              min="1"
+              max="9"
+              value={formData.seats}
+              onChange={handleSliderChange}
+              className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+            <p className="text-center">{formData.seats} Sillones</p>
+          </div>
+
+          {/* Condición del coche */}
+          <div className="mb-4">
+            <label
+              htmlFor="carCondition"
+              className="block text-lg font-medium mb-2"
+            >
+              Condición del coche:
+            </label>
+            <select
+              id="carCondition"
+              name="carCondition"
+              value={formData.carCondition}
+              required
+              onChange={handleChange}
+              className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            >
+              <option value="">Seleccione condición</option>
+              <option value="nuevo">Nuevo</option>
+              <option value="casi_nuevo">Casi nuevo</option>
+              <option value="regular">Regular</option>
+              <option value="estropeado">Estropeado</option>
+              <option value="roto">Roto</option>
+            </select>
+          </div>
+
+          {/* Descripción */}
+          <div className="mb-4">
+            <label
+              htmlFor="description"
+              className="block text-lg font-medium mb-2"
+            >
+              Descripción:
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="Descripción del coche"
+            />
+          </div>
+
+          {/* Imagen */}
+          <div className="mb-2">
             <p className="text-sm text-red-400 mb-2">
               Puedes subir hasta 3 imágenes como máximo.
             </p>
@@ -479,32 +651,77 @@ function SubmitCar() {
               accept="image/*"
               multiple
               onChange={handleFileChange}
-              className={`w-full p-3 rounded-lg ${inputBg} focus:outline-none focus:ring-2 focus:ring-red-500`}
+              className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               disabled={formData.images.length >= 3}
             />
-            <p className={`text-sm mt-2 ${textMuted}`}>
+            <p className="text-sm text-gray-300 mt-2">
               Imágenes seleccionadas: {formData.images.length} / 3
             </p>
-            {formData.images.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-2">
-                {formData.images.map((image, index) => (
-                  <div key={index} className="relative">
-                    <img
-                      src={URL.createObjectURL(image)}
-                      alt={`Preview ${index + 1}`}
-                      className="w-20 h-20 object-cover rounded"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveImage(index)}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
+          </div>
+
+          {/* Vista previa de imágenes */}
+          <div className="flex flex-wrap gap-4 mt-3">
+            {formData.images.map((img, index) => (
+              <div key={index} className="relative w-24 h-24">
+                <img
+                  src={URL.createObjectURL(img)}
+                  alt={`Preview ${index}`}
+                  className="w-full h-full object-cover rounded-lg"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveImage(index)}
+                  className="absolute top-0 right-0 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-700"
+                >
+                  ×
+                </button>
               </div>
-            )}
+            ))}
+          </div>
+
+          {/* Latitud y Longitud (autocompletado o manual) */}
+          <div className="mb-4">
+            <label htmlFor="lat" className="block text-lg font-medium mb-2">
+              Latitud:
+            </label>
+            <input
+              id="lat"
+              type="number"
+              name="lat"
+              value={formData.lat || ""}
+              onChange={handleChange}
+              className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="Latitud"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="lon" className="block text-lg font-medium mb-2">
+              Longitud:
+            </label>
+            <input
+              id="lon"
+              type="number"
+              name="lon"
+              value={formData.lon || ""}
+              onChange={handleChange}
+              className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="Longitud"
+            />
+          </div>
+
+          {/* Mapa para seleccionar ubicación */}
+          <div className="mb-4" style={{ height: "300px" }}>
+            <MapContainer
+              center={[formData.lat || 37.1775, formData.lon || -3.5986]}
+              zoom={13}
+              scrollWheelZoom={false}
+              style={{ height: "100%", width: "100%" }}
+            >
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+              <MapClickHandler />
+            </MapContainer>
           </div>
 
           {/* Botón de envío */}
