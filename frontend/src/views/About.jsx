@@ -1,20 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDarkMode } from "../context/DarkModeContext";
 
 const About = () => {
   const { isDarkMode } = useDarkMode();
 
-  const textPrimary = isDarkMode ? "text-white" : "text-gray-800";
-  const textSecondary = isDarkMode ? "text-gray-300" : "text-gray-700";
-  const textMuted = isDarkMode ? "text-gray-400" : "text-gray-600";
-  const bgMain = isDarkMode ? "bg-[#1C1C1E]" : "bg-[#F5EFEB]";
-  const bgCard = isDarkMode ? "bg-[#2C2C2E] border-gray-700" : "bg-white border-gray-200";
+  let textPrimary, textSecondary, textMuted, bgMain, bgCard;
+  useEffect(() => {
+    textPrimary = isDarkMode ? "text-white" : "text-gray-800";
+    textSecondary = isDarkMode ? "text-gray-300" : "text-gray-700";
+    textMuted = isDarkMode ? "text-gray-400" : "text-gray-600";
+    bgMain = isDarkMode ? "bg-[#1C1C1E]" : "bg-[#F5EFEB]";
+    bgCard = isDarkMode
+      ? "bg-[#2C2C2E] border-gray-700"
+      : "bg-white border-gray-200";
+  }, [isDarkMode]);
 
   return (
     <div className={`max-w-full mx-auto px-6 py-10 min-h-screen ${bgMain}`}>
       {/* Header */}
       <header className="text-center mb-16">
-        <h1 className={`text-4xl font-semibold ${textPrimary}`}>Sobre Nosotros</h1>
+        <h1 className={`text-4xl font-semibold ${textPrimary}`}>
+          Sobre Nosotros
+        </h1>
         <p className={`mt-2 text-lg ${textMuted}`}>
           Tu aliado confiable en la compra y venta de coches
         </p>
@@ -22,7 +29,9 @@ const About = () => {
 
       {/* Quiénes somos */}
       <section className="mb-16">
-        <h2 className={`text-3xl font-semibold ${textPrimary}`}>Quiénes Somos</h2>
+        <h2 className={`text-3xl font-semibold ${textPrimary}`}>
+          Quiénes Somos
+        </h2>
         <p className={`mt-4 text-lg ${textSecondary}`}>
           En <strong>RenovAuto</strong>, nos dedicamos a conectar compradores y
           vendedores de coches de manera sencilla, segura y confiable...
@@ -31,15 +40,20 @@ const About = () => {
 
       {/* Nuestra Historia */}
       <section className="mb-16">
-        <h2 className={`text-3xl font-semibold ${textPrimary}`}>Nuestra Historia</h2>
+        <h2 className={`text-3xl font-semibold ${textPrimary}`}>
+          Nuestra Historia
+        </h2>
         <p className={`mt-4 text-lg ${textSecondary}`}>
-          <strong>RenovAuto</strong> nació en 2025 con el objetivo de transformar...
+          <strong>RenovAuto</strong> nació en 2025 con el objetivo de
+          transformar...
         </p>
       </section>
 
       {/* Nuestro Equipo */}
       <section className="mb-16">
-        <h2 className={`text-3xl font-semibold ${textPrimary}`}>Nuestro Equipo</h2>
+        <h2 className={`text-3xl font-semibold ${textPrimary}`}>
+          Nuestro Equipo
+        </h2>
         <p className={`mt-4 text-lg ${textSecondary}`}>
           Nuestro equipo está compuesto por expertos en el sector automotriz...
         </p>
@@ -112,12 +126,19 @@ const About = () => {
       <section className="mb-16">
         <h2 className={`text-3xl font-semibold ${textPrimary}`}>Contáctanos</h2>
         <p className={`mt-4 text-lg ${textSecondary}`}>
-          Si tienes alguna pregunta o necesitas ayuda, no dudes en ponerte en contacto con nosotros.
+          Si tienes alguna pregunta o necesitas ayuda, no dudes en ponerte en
+          contacto con nosotros.
         </p>
         <ul className={`mt-4 text-lg ${textSecondary}`}>
-          <li><strong>Teléfono:</strong> +34 123 456 789</li>
-          <li><strong>Email:</strong> contacto@RenovAuto.com</li>
-          <li><strong>Dirección:</strong> Calle Automotriz 123, Ciudad, País</li>
+          <li>
+            <strong>Teléfono:</strong> +34 123 456 789
+          </li>
+          <li>
+            <strong>Email:</strong> contacto@RenovAuto.com
+          </li>
+          <li>
+            <strong>Dirección:</strong> Calle Automotriz 123, Ciudad, País
+          </li>
         </ul>
       </section>
     </div>
