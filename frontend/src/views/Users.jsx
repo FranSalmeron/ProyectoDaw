@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { isAdmin } from "../helpers/decodeToken";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
+import { useDarkMode } from "../context/DarkModeContext";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true); // Estado de carga
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
     if (!isAdmin()) {
@@ -21,10 +23,10 @@ const Users = () => {
       try {
         const allUsers = await getUsers();
         setUsers(allUsers.users);
-        setLoading(false); // Detener la carga después de obtener los usuarios
+        setLoading(false);
       } catch (error) {
         toast.error("Error al cargar usuarios");
-        setLoading(false); // Detener la carga en caso de error
+        setLoading(false);
       }
     };
 
@@ -63,21 +65,26 @@ const Users = () => {
     }
   };
 
+  // Modo oscuro
+  const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black";
+  const tableBg = isDarkMode ? "bg-[#2C2C2E]" : "bg-white";
+  const theadBg = isDarkMode ? "bg-[#3A3A3C]" : "bg-gray-100";
+  const borderColor = isDarkMode ? "border-gray-600" : "border-gray-300";
+
   return (
-    <div className="bg-[#F5EFEB] min-h-screen">
+    <div className={`${bgMain} min-h-screen transition-colors duration-300`}>
       <div className="p-6 max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">Panel de Usuarios</h1>
 
-        {/* Mostrar el spinner mientras cargan los usuarios */}
         {loading ? (
           <div className="flex justify-center items-center h-screen">
-            <LoadingSpinner /> {/* Componente de carga */}
+            <LoadingSpinner />
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-md">
+            <table className={`min-w-full ${tableBg} border ${borderColor} rounded-md shadow-md`}>
               <thead>
-                <tr className="bg-gray-100 text-left">
+                <tr className={`${theadBg} text-left`}>
                   <th className="py-3 px-4">ID</th>
                   <th className="py-3 px-4">Nombre</th>
                   <th className="py-3 px-4">Email</th>
@@ -93,7 +100,7 @@ const Users = () => {
                   const isBanned = user.roles?.includes("ROLE_BANNED");
 
                   return (
-                    <tr key={user.id} className="border-t border-gray-200">
+                    <tr key={user.id} className={`border-t ${borderColor}`}>
                       <td className="py-2 px-4">{user.id}</td>
                       <td className="py-2 px-4">{user.name}</td>
                       <td className="py-2 px-4">{user.email}</td>
@@ -105,7 +112,6 @@ const Users = () => {
                         {isBanned ? "Baneado" : "Activo"}
                       </td>
                       <td className="py-2 px-4 flex flex-col md:flex-row gap-2 justify-center">
-                        {/* Botón de "Hacer/ Quitar Admin" */}
                         {!isAdminRole && (
                           <button
                             className="px-4 py-1 rounded text-white bg-green-500 hover:bg-green-600"
@@ -123,13 +129,10 @@ const Users = () => {
                           </button>
                         )}
 
-                        {/* Botón de "Banear/ Desbanear" */}
                         {!isBanned && (
                           <button
                             className="px-4 py-1 rounded text-white bg-red-500 hover:bg-red-600"
-                            onClick={() =>
-                              handleToggleBanned(user.id, user.roles)
-                            }
+                            onClick={() => handleToggleBanned(user.id, user.roles)}
                           >
                             Banear
                           </button>
@@ -137,9 +140,7 @@ const Users = () => {
                         {isBanned && (
                           <button
                             className="px-4 py-1 rounded text-white bg-blue-500 hover:bg-blue-600"
-                            onClick={() =>
-                              handleToggleBanned(user.id, user.roles)
-                            }
+                            onClick={() => handleToggleBanned(user.id, user.roles)}
                           >
                             Desbanear
                           </button>

@@ -7,16 +7,19 @@ import { buyCar } from "../helpers/BuyHelper";
 import { useCars } from "../context/CarContext";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
+import { useDarkMode } from "../context/DarkModeContext";
 
 const BuyCar = () => {
   const location = useLocation();
   const { car } = location.state || {};
   const { user, addUser } = useUser();
   const { clearCars } = useCars();
+  const { isDarkMode } = useDarkMode();
+
   const userId = getUserIdFromToken ? getUserIdFromToken() : null;
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [paymentStatus, setPaymentStatus] = useState("idle"); // idle | processing | completed
+  const [paymentStatus, setPaymentStatus] = useState("idle");
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -38,22 +41,26 @@ const BuyCar = () => {
   }, [userId]);
 
   const handlePurchase = async () => {
-    if (paymentStatus !== "idle") return; // prevenir múltiples clics
-    setPaymentStatus("processing");
-    if(userId == car.user.id) {
+    if (paymentStatus !== "idle") return;
+
+    if (userId === car.user.id) {
       toast.error("No puedes comprar tu propio coche");
       return;
     }
+
+    setPaymentStatus("processing");
+
     await buyCar(car.id, userId, car.price);
+
     setTimeout(() => {
       setPaymentStatus("completed");
-      localStorage.removeItem("cachedCars"); // Limpiar caché de coches
-      clearCars(); // Limpiar el estado de coches
-    }, 2000); // simula 2 segundos de "proceso de pago"
+      localStorage.removeItem("cachedCars");
+      clearCars();
+    }, 2000);
   };
 
   if (isLoading) {
-    return <LoadingSpinner />; // Usamos el spinner de carga aquí
+    return <LoadingSpinner />;
   }
 
   if (error) {
@@ -61,8 +68,18 @@ const BuyCar = () => {
   }
 
   return (
-    <div className="bg-[#F5EFEB] p-6">
-      <div className="p-8 max-w-md mx-auto border border-gray-300 rounded-lg shadow-md bg-white">
+    <div
+      className={`min-h-screen p-6 transition-colors ${
+        isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black"
+      }`}
+    >
+      <div
+        className={`p-8 max-w-md mx-auto border rounded-lg shadow-md ${
+          isDarkMode
+            ? "bg-[#2C2C2E] border-gray-600"
+            : "bg-white border-gray-300"
+        }`}
+      >
         <h2 className="text-xl font-semibold text-center mb-6">
           Recibo de Compra
         </h2>
@@ -101,17 +118,16 @@ const BuyCar = () => {
           )}
           {paymentStatus === "processing" && (
             <div className="text-center">
-              <LoadingSpinner /> {/* Spinner mientras se procesa el pago */}
-              <p className="text-yellow-600 font-medium">Procesando pago...</p>
+              <LoadingSpinner />
+              <p className="text-yellow-500 font-medium">Procesando pago...</p>
             </div>
           )}
           {paymentStatus === "completed" && (
-            <p className="text-green-600 font-semibold">
+            <p className="text-green-500 font-semibold">
               ✅ Pago realizado con éxito
             </p>
           )}
 
-          {/* Botón de imprimir sigue estando disponible después del pago */}
           <button
             onClick={() => window.print()}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"

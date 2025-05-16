@@ -6,6 +6,7 @@ import CarCards from "../components/CarCards";
 import { useFavorites } from "../context/FavoriteContext"; 
 import { getFavorites } from "../helpers/favoriteHelper"; 
 import { getUserIdFromToken } from "../helpers/decodeToken"; 
+import { useDarkMode } from "../context/DarkModeContext";
 
 const Home = () => {
   const { cars, addCars } = useCars(); 
@@ -26,6 +27,13 @@ const Home = () => {
 
   const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
 
+  // Modo oscuro — VARIABLES PARA CLASES (nuevo)
+  const { isDarkMode } = useDarkMode();
+  const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black"; // fondo principal y texto
+  const bgFilters = isDarkMode ? "bg-[#2C2C2E]" : "bg-gray-100"; // fondo del panel de filtros
+  const borderFilters = isDarkMode ? "border-gray-600 text-white placeholder-gray-400" : "border-gray-300 text-black placeholder-gray-700"; // bordes y texto inputs/select
+  const btnClear = isDarkMode ? "bg-red-600 hover:bg-red-700" : "bg-red-500 hover:bg-red-600"; // botón limpiar filtros
+
   useEffect(() => {
     const getCarsAndFavorites = async () => {
       setLoading(true);
@@ -40,46 +48,26 @@ const Home = () => {
     };
 
     getCarsAndFavorites();
-  }, []); 
+  }, []);
 
   useEffect(() => {
     setFilteredCars(cars);
-  }, [cars]); 
+  }, [cars]);
 
   useEffect(() => {
     const applyFilters = () => {
       const filtered = cars.filter((car) => {
-        // Filtra por ciudad
         const cityMatch = filters.city ? car.city.toLowerCase().includes(filters.city.toLowerCase()) : true;
-        
-        // Filtra por precio (min y max)
         const priceMatch = car.price >= Number(filters.price.min) && car.price <= Number(filters.price.max);
-        
-        // Filtra por kilometraje (min y max)
         const mileageMatch = car.mileage >= Number(filters.mileage.min) && car.mileage <= Number(filters.mileage.max);
-        
-        // Filtra por asientos
         const seatsMatch = car.seats >= filters.seats[0] && car.seats <= filters.seats[1];
-        
-        // Filtra por categoría
         const categoryMatch = filters.category ? car.category.toLowerCase().includes(filters.category.toLowerCase()) : true;
-        
-        // Filtra por marca
         const brandMatch = filters.brand ? car.brand.toLowerCase().includes(filters.brand.toLowerCase()) : true;
-        
-        // Filtra por tracción
         const tractionMatch = filters.traction ? car.traction.toLowerCase().includes(filters.traction.toLowerCase()) : true;
-        
-        // Filtra por tipo de combustible
         const fuelTypeMatch = filters.fuelType ? car.fuelType.toLowerCase().includes(filters.fuelType.toLowerCase()) : true;
-        
-        // Filtra por modelo
         const modelMatch = filters.model ? car.model.toLowerCase().includes(filters.model.toLowerCase()) : true;
-        
-        // Filtra por década
         const decadeMatch = filters.decade ? car.manufacture_year >= filters.decade[0] && car.manufacture_year < filters.decade[1] : true;
   
-        // Si todas las condiciones se cumplen, el coche pasa el filtro
         return (
           cityMatch &&
           priceMatch &&
@@ -93,18 +81,18 @@ const Home = () => {
           decadeMatch
         );
       });
-  
+
       setFilteredCars(filtered);
     };
     applyFilters();
   }, [filters, cars]);
 
   const handleSliderChange = (e, field) => {
-    const value = Number(e.target.value); // El valor del slider
+    const value = Number(e.target.value);
     setFilters((prevFilters) => {
       let updatedFilters = { ...prevFilters };
       if (field === "seats") {
-        updatedFilters.seats[0] = value; // Actualiza el valor mínimo
+        updatedFilters.seats[0] = value;
       }
       return updatedFilters;
     });
@@ -136,7 +124,7 @@ const Home = () => {
   const carBrands = ["Acura", "Alfa Romeo", "Aston Martin", "Audi", "Bentley", "BMW", "Bugatti", "Buick", "Chevrolet", "Chrysler", "Citroën", "Dodge", "Fiat", "Ford", "Ferrari", "Genesis", "GMC", "Honda", "Hyundai", "Infiniti", "Jaguar", "Jeep", "Kia", "Land Rover", "Lamborghini", "Lincoln", "Lexus", "Mazda", "McLaren", "Mercedes-Benz", "Mini", "Mitsubishi", "Maserati", "Nissan", "Opel", "Peugeot", "Porsche", "Ram", "Renault", "Rolls-Royce", "Seat", "Skoda", "Smart", "Subaru", "Suzuki", "Tesla", "Toyota", "Volkswagen", "Volvo"];
 
   return (
-    <div className="flex flex-col sm:flex-row p-4 bg-[#F5EFEB]">
+    <div className={`${bgMain} flex flex-col sm:flex-row p-4 transition-colors duration-300`}>
       <button
         className="sm:hidden bg-blue-500 text-white p-2 rounded-lg mb-4"
         onClick={() => setShowFilters(!showFilters)}
@@ -145,28 +133,26 @@ const Home = () => {
       </button>
 
       <div
-        className={`w-full sm:h-1/4 sm:w-1/4 bg-gray-100 p-4 rounded-lg shadow-lg mb-4 sm:mb-0 transition-all duration-300 ease-in-out ${showFilters ? "block" : "hidden sm:block"}`}
+        className={`w-full sm:h-1/4 sm:w-1/4 ${bgFilters} p-4 rounded-lg shadow-lg mb-4 sm:mb-0 transition-all duration-300 ease-in-out ${showFilters ? "block" : "hidden sm:block"}`}
       >
         <h3 className="text-xl font-semibold mb-4">Filtros de Búsqueda</h3>
 
-        {/* Filtro por modelo */}
         <label className="block mb-2">Buscar por modelo</label>
         <input
           type="text"
           name="model"
           value={filters.model}
           onChange={handleFilterChange}
-          className="p-2 border rounded w-full mb-4"
+          className={`p-2 border rounded w-full mb-4 ${borderFilters}`}
           placeholder="Ej: corolla"
         />
 
-        {/* Filtro por Marca */}
         <label className="block mb-2">Marca</label>
         <select
           name="brand"
           value={filters.brand}
           onChange={handleFilterChange}
-          className="p-2 border rounded w-full mb-4"
+          className={`p-2 border rounded w-full mb-4 ${borderFilters}`}
         >
           <option value="">Seleccionar marca</option>
           {carBrands.map((brand, index) => (
@@ -176,13 +162,12 @@ const Home = () => {
           ))}
         </select>
 
-        {/* Filtro por ciudad */}
         <label className="block mb-2">Seleccionar Ciudad</label>
         <select
           name="city"
           value={filters.city}
           onChange={handleFilterChange}
-          className="p-2 border rounded w-full mb-4"
+          className={`p-2 border rounded w-full mb-4 ${borderFilters}`}
         >
           <option value="">Seleccionar ciudad</option>
           {cities.map((city, index) => (
@@ -192,7 +177,6 @@ const Home = () => {
           ))}
         </select>
 
-        {/* Filtro por precio */}
         <label className="block mb-2">Rango de Precio</label>
         <div className="flex mb-4">
           <input
@@ -200,7 +184,7 @@ const Home = () => {
             name="priceMin"
             value={filters.price.min}
             onChange={(e) => setFilters({ ...filters, price: { ...filters.price, min: e.target.value } })}
-            className="p-2 border rounded w-1/2 mr-2"
+            className={`p-2 border rounded w-1/2 mr-2 ${borderFilters}`}
             placeholder="Mínimo"
           />
           <input
@@ -208,12 +192,11 @@ const Home = () => {
             name="priceMax"
             value={filters.price.max}
             onChange={(e) => setFilters({ ...filters, price: { ...filters.price, max: e.target.value } })}
-            className="p-2 border rounded w-1/2"
+            className={`p-2 border rounded w-1/2 ${borderFilters}`}
             placeholder="Máximo"
           />
         </div>
 
-        {/* Filtro por kilometraje  */}
         <label className="block mb-2">Rango de Kilometraje</label>
         <div className="flex mb-4">
           <input
@@ -221,7 +204,7 @@ const Home = () => {
             name="mileageMin"
             value={filters.mileage.min}
             onChange={(e) => setFilters({ ...filters, mileage: { ...filters.mileage, min: e.target.value } })}
-            className="p-2 border rounded w-1/2 mr-2"
+            className={`p-2 border rounded w-1/2 mr-2 ${borderFilters}`}
             placeholder="Mínimo"
           />
           <input
@@ -229,18 +212,17 @@ const Home = () => {
             name="mileageMax"
             value={filters.mileage.max}
             onChange={(e) => setFilters({ ...filters, mileage: { ...filters.mileage, max: e.target.value } })}
-            className="p-2 border rounded w-1/2"
+            className={`p-2 border rounded w-1/2 ${borderFilters}`}
             placeholder="Máximo"
           />
         </div>
 
-        {/* Filtro por tracción */}
         <label className="block mb-2">Tracción</label>
         <select
           name="traction"
           value={filters.traction}
           onChange={handleFilterChange}
-          className="p-2 border rounded w-full mb-4"
+          className={`p-2 border rounded w-full mb-4 ${borderFilters}`}
         >
           <option value="">Seleccionar tracción</option>
           <option value="delantera">Delantera</option>
@@ -248,35 +230,31 @@ const Home = () => {
           <option value="total">Total</option>
         </select>
 
-        {/* Filtro por tipo de combustible */}
         <label className="block mb-2">Tipo de Combustible</label>
         <select
           name="fuelType"
           value={filters.fuelType}
           onChange={handleFilterChange}
-          className="p-2 border rounded w-full mb-4"
+          className={`p-2 border rounded w-full mb-4 ${borderFilters}`}
         >
           <option value="">Seleccionar combustible</option>
           <option value="gasoline">Gasolina</option>
           <option value="diesel">Diesel</option>
           <option value="electric">Eléctrico</option>
-          {/* Otras opciones de combustible */}
         </select>
 
-        {/* Filtro por década */}
         <label className="block mb-2">Filtrar por década</label>
         <select
           name="decade"
           value={filters.decade}
           onChange={(e) => {
-            // Convertir el valor del select en un array de números
-            const selectedDecade = JSON.parse(e.target.value);
+            const selectedDecade = e.target.value ? JSON.parse(e.target.value) : "";
             setFilters({
               ...filters,
               decade: selectedDecade,
             });
           }}
-          className="p-2 border rounded w-full mb-4"
+          className={`p-2 border rounded w-full mb-4 ${borderFilters}`}
         >
           <option value="">Seleccionar década</option>
           <option value="[1940, 1950]">1940 - 1950</option>
@@ -288,10 +266,8 @@ const Home = () => {
           <option value="[2000, 2010]">2000 - 2010</option>
           <option value="[2010, 2020]">2010 - 2020</option>
           <option value="[2020, 2030]">2020 - 2030</option>
-          {/* Agregar más décadas si es necesario */}
         </select>
 
-        {/* Filtro por número de asientos */}
         <label className="block mb-2">Número de Asientos</label>
         <input
           type="range"
@@ -304,18 +280,16 @@ const Home = () => {
         <span>
           {filters.seats[0]} - {filters.seats[1]} Asientos
         </span>
- 
-        {/* Botón de Limpiar Filtros */}
+
         <button
           onClick={handleClearFilters}
-          className="bg-red-500 text-white p-2 rounded-lg mt-4 w-full"
+          className={`p-2 rounded-lg mt-4 w-full text-white ${btnClear} transition-colors duration-300`}
         >
           Limpiar Filtros
         </button>
       </div>
 
       <div className="w-full sm:w-3/4 p-4">
-        {/* Aquí se usa el componente CarCards para mostrar los coches filtrados */}
         <CarCards
           cars={filteredCars}
           loading={loading}

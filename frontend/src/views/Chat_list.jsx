@@ -3,10 +3,12 @@ import { getChats } from "../helpers/chatHelper";
 import ChatCardList from "../components/ChatCards";
 import { isAdmin } from "../helpers/decodeToken";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
+import { useDarkMode } from "../context/DarkModeContext";
 
 const Chat_list = () => {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -18,17 +20,21 @@ const Chat_list = () => {
     fetchChats();
   }, []);
 
+  const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black";
+  const bgCard = isDarkMode ? "bg-[#2C2C2E]" : "bg-white";
+  const borderStyle = isDarkMode ? "border-gray-700" : "border-gray-300";
+
   if (loading) {
     return (
-      <div className="flex justify-center items-center">
-        <LoadingSpinner /> {/* Usamos un spinner mientras se carga */}
+      <div className={`flex justify-center items-center min-h-screen ${bgMain}`}>
+        <LoadingSpinner />
       </div>
     );
   }
 
   return (
-    <div className="bg-[#F5EFEB]">
-      <div className="max-w-5xl mx-auto p-6">
+    <div className={`${bgMain} min-h-screen transition-colors duration-300`}>
+      <div className={`max-w-5xl mx-auto p-6 rounded-lg shadow-md border ${bgCard} ${borderStyle}`}>
         {isAdmin() ? (
           <>
             <h1 className="text-3xl font-bold mb-6">Lista de Chats</h1>

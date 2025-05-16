@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useDarkMode } from "../context/DarkModeContext";
 
 const ErrorPage = () => {
   const carRef = useRef();
@@ -23,12 +24,14 @@ const ErrorPage = () => {
     height: 135,
   });
 
+  const { isDarkMode } = useDarkMode();
+
   const handleTouchStart = (direction) => {
     touchInterval.current = setInterval(() => {
       moveCar(direction);
     }, 100);
   };
-  
+
   const handleTouchEnd = () => {
     clearInterval(touchInterval.current);
   };
@@ -67,7 +70,6 @@ const ErrorPage = () => {
     const obstacleInterval = setInterval(() => {
       setObstaclePosition((prevPosition) => {
         if (prevPosition <= -obstacleDimensions.width) {
-          // 4 carriles: 0 (top), 1, 2, 3 (bottom)
           const laneHeight = backgroundDimensions.height / 4;
           const randomLane = Math.floor(Math.random() * 4);
           setObstacleVerticalPosition(
@@ -94,7 +96,6 @@ const ErrorPage = () => {
       const carRect = carRef.current.getBoundingClientRect();
       const obstacleRect = obstacleRef.current.getBoundingClientRect();
 
-      // Reducimos la hitbox en un pequeño margen para que las colisiones sean más justas
       const hitboxMargin = 5;
 
       const carHitbox = {
@@ -164,23 +165,33 @@ const ErrorPage = () => {
     setCarPosition(0);
   };
 
+  // Modo oscuro clases
+  const bgPage = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-gray-100 text-black";
+  const textPrimary = isDarkMode ? "text-red-400" : "text-red-600";
+  const textSecondary = isDarkMode ? "text-gray-300" : "text-gray-700";
+  const btnPrimary = isDarkMode
+    ? "bg-green-600 hover:bg-green-700"
+    : "bg-green-500 hover:bg-green-600";
+  const btnSecondary = isDarkMode
+    ? "bg-blue-600 hover:bg-blue-700"
+    : "bg-blue-500 hover:bg-blue-700";
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+    <div className={`flex flex-col items-center justify-center min-h-screen p-6 ${bgPage} transition-colors duration-300`}>
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-red-600">
+        <h1 className={`text-4xl font-bold ${textPrimary}`}>
           ¡Vaya! Algo salió mal...
         </h1>
-        <p className="mt-4 text-lg text-gray-700">
+        <p className={`mt-4 text-lg ${textSecondary}`}>
           Parece que hemos tenido un problema. No te preocupes, puedes volver al
           inicio.
         </p>
       </div>
 
-      {/* Puntuación */}
-      <p className="top-4 left-4 text-black text-lg">{`Score: ${score}`}</p>
+      <p className={`top-4 left-4 text-lg ${isDarkMode ? "text-white" : "text-black"}`}>
+        {`Score: ${score}`}
+      </p>
 
-
-      {/* Cuadro del juego */}
       <div
         ref={gameRef}
         className="relative w-full h-full bg-cover bg-center"
@@ -188,41 +199,38 @@ const ErrorPage = () => {
           backgroundImage: `url('/images/carretera.png')`,
           backgroundSize: `${backgroundDimensions.width}px ${
             backgroundDimensions.height / 2.5
-          }px`, // Reducimos el ancho de la carretera un 10%
+          }px`,
           backgroundPosition: "center",
           width: `${backgroundDimensions.width}px + ${carDimensions.width}px`,
           height: `${backgroundDimensions.height}px`,
         }}
       >
-        {/* Carro */}
         <div
           ref={carRef}
           className="absolute bg-contain"
           style={{
             top: `${carPosition}px`,
             left: "50px",
-            width: `${carDimensions.width * 0.4}px`, // Hacemos los coches más pequeños (40% de su tamaño original)
-            height: `${carDimensions.height * 0.4}px`, // Ajustamos la altura también
+            width: `${carDimensions.width * 0.4}px`,
+            height: `${carDimensions.height * 0.4}px`,
             backgroundImage: "url('/images/car.png')",
             transition: "top 0.1s ease-in-out",
           }}
         ></div>
 
-        {/* Obstáculo */}
         <div
           ref={obstacleRef}
           className="absolute bg-contain"
           style={{
             top: `${obstacleVerticalPosition}px`,
             left: `${obstaclePosition}px`,
-            width: `${obstacleDimensions.width * 0.4}px`, // Ajustamos el tamaño del obstáculo también
+            width: `${obstacleDimensions.width * 0.4}px`,
             height: `${obstacleDimensions.height * 0.4}px`,
             backgroundImage: "url('/images/car-enemy.png')",
           }}
         ></div>
       </div>
 
-      {/* Botones táctiles (solo en móvil) */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex justify-between w-3/4 px-4 md:hidden">
         <button
           className="w-20 h-20 bg-blue-500 text-white rounded-full text-xl hover:bg-blue-600 transition"
@@ -243,16 +251,15 @@ const ErrorPage = () => {
       {gameOver && (
         <button
           onClick={restartGame}
-          className="mt-6 bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition duration-300"
+          className={`mt-6 text-white px-6 py-2 rounded-lg transition duration-300 ${btnPrimary}`}
         >
           Jugar de nuevo
         </button>
       )}
 
-      {/* Botón de Volver al Inicio */}
       <NavLink
         to="/"
-        className="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition duration-300 mt-4"
+        className={`mt-4 text-white py-2 px-6 rounded-lg transition duration-300 ${btnSecondary}`}
       >
         Volver al Inicio
       </NavLink>

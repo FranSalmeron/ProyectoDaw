@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
 import { createUser } from '../helpers/UserHelper';
 import { useNavigate } from 'react-router-dom';
+import { useDarkMode } from '../context/DarkModeContext'; // Importamos el modo oscuro
 
 function Register() {
     const [name, setName] = useState('');
@@ -12,9 +13,9 @@ function Register() {
     const [password, setPassword] = useState('');
     const roles =['ROLE_USER']; 
     const navigate = useNavigate(); 
-    // Función para manejar el envío del formulario
 
-    // Función para validar el formato del email
+    const { isDarkMode } = useDarkMode(); // Obtenemos modo oscuro
+
     const validateEmail = (email) => {
         const emailRegex = /\S+@\S+\.\S+/;
         return emailRegex.test(email);
@@ -34,7 +35,6 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
     
-        // Validar el correo electrónico y el teléfono
         if (validateEmail(email) && validatePhone(phone)) {
             const userData = {
                 name,
@@ -47,17 +47,11 @@ function Register() {
     
             try {
                 const result = await createUser(userData); 
-    
-                // Mostrar el mensaje de éxito
                 toast.success(result.message); 
-
-                // Esperar 4 segundos y luego redirigir al login
                 setTimeout(() => {
-                    navigate('/login'); // Redirige a la página de login
-                }, 4000);  // 4000 ms = 4 segundos
-    
+                    navigate('/login');
+                }, 4000);
             } catch (error) {
-                // Si hay un error en la creación, mostrarlo
                 toast.error(error.message || 'Error al crear el usuario'); 
             }
         } else {
@@ -65,95 +59,96 @@ function Register() {
         }
     };
 
+    // Clases modo oscuro
+    const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black";
+    const formBg = isDarkMode ? "bg-[#2F4156]" : "bg-[#2F4156]"; // Ya oscuro, mantenemos
+    const inputBg = isDarkMode ? "bg-gray-800 text-white placeholder-gray-400" : "bg-gray-800 text-white placeholder-gray-400";
+    const btnBg = isDarkMode ? "bg-red-600 hover:bg-red-700" : "bg-red-500 hover:bg-red-600";
+    const btnFocusRing = "focus:ring-2 focus:ring-red-500";
+
     return (
-        <div class="bg-[#F5EFEB] min-h-screen p-5">
-        <div class="w-9/10 max-w-md mx-auto bg-[#2F4156] text-white p-8 rounded-lg shadow-lg m-5">
-        <h2 class="text-3xl font-bold text-center text-white-300 mb-6">Introduce tus datos</h2>
-        
-        <form onSubmit={handleSubmit}>
-            {/* Nombre completo */}
-            <div class="mb-4">
-                <label htmlFor="name" class="block text-lg font-medium mb-2">Nombre completo:</label>
-                <input
-                    id="name"
-                    type="text"
-                    value={name}
-                    required
-                    onChange={(e) => setName(e.target.value)}
-                    class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                    placeholder="Escribe tu nombre completo"
-                />
-            </div>
+        <div className={`${bgMain} min-h-screen p-5 flex items-center justify-center transition-colors duration-300`}>
+            <div className={`w-9/10 max-w-md mx-auto ${formBg} p-8 rounded-lg shadow-lg m-5`}>
+                <h2 className="text-3xl font-bold text-center mb-6">Introduce tus datos</h2>
+                
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                        <label htmlFor="name" className="block text-lg font-medium mb-2">Nombre completo:</label>
+                        <input
+                            id="name"
+                            type="text"
+                            value={name}
+                            required
+                            onChange={(e) => setName(e.target.value)}
+                            className={`w-full p-3 rounded-lg ${inputBg} focus:outline-none ${btnFocusRing}`}
+                            placeholder="Escribe tu nombre completo"
+                        />
+                    </div>
+                    
+                    <div className="mb-4">
+                        <label htmlFor="email" className="block text-lg font-medium mb-2">Email:</label>
+                        <input
+                            id="email"
+                            type="email"
+                            value={email}
+                            required
+                            onChange={(e) => setEmail(e.target.value)}
+                            className={`w-full p-3 rounded-lg ${inputBg} focus:outline-none ${btnFocusRing}`}
+                            placeholder="Escribe tu email"
+                        />
+                    </div>
             
-            {/* Email */}
-            <div class="mb-4">
-                <label htmlFor="email" class="block text-lg font-medium mb-2">Email:</label>
-                <input
-                    id="email"
-                    type="email"
-                    value={email}
-                    required
-                    onChange={(e) => setEmail(e.target.value)}
-                    class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                    placeholder="Escribe tu email"
-                />
+                    <div className="mb-4">
+                        <label htmlFor="address" className="block text-lg font-medium mb-2">Dirección:</label>
+                        <input
+                            id="address"
+                            type="text"
+                            value={address}
+                            required
+                            onChange={(e) => setAddress(e.target.value)}
+                            className={`w-full p-3 rounded-lg ${inputBg} focus:outline-none ${btnFocusRing}`}
+                            placeholder="Escribe tu dirección"
+                        />
+                    </div>
+            
+                    <div className="mb-4">
+                        <label htmlFor="phone" className="block text-lg font-medium mb-2">Teléfono:</label>
+                        <input
+                            id="phone"
+                            type="text"
+                            value={phone}
+                            required
+                            onChange={(e) => setPhone(e.target.value)}
+                            className={`w-full p-3 rounded-lg ${inputBg} focus:outline-none ${btnFocusRing}`}
+                            placeholder="Escribe tu teléfono"
+                        />
+                    </div>
+            
+                    <div className="mb-6">
+                        <label htmlFor="password" className="block text-lg font-medium mb-2">Contraseña:</label>
+                        <input
+                            id="password"
+                            type="password"
+                            value={password}
+                            required
+                            onChange={(e) => setPassword(e.target.value)}
+                            className={`w-full p-3 rounded-lg ${inputBg} focus:outline-none ${btnFocusRing}`}
+                            placeholder="Crea tu contraseña"
+                        />
+                    </div>
+            
+                    <div className="flex justify-center">
+                        <button
+                            type="submit"
+                            className={`w-full py-3 rounded-lg text-white transition duration-300 focus:outline-none ${btnBg} ${btnFocusRing}`}
+                        >
+                            Registrar
+                        </button>
+                    </div>
+                </form>
             </div>
-    
-            {/* Dirección */}
-            <div class="mb-4">
-                <label htmlFor="address" class="block text-lg font-medium mb-2">Dirección:</label>
-                <input
-                    id="address"
-                    type="text"
-                    value={address}
-                    required
-                    onChange={(e) => setAddress(e.target.value)}
-                    class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                    placeholder="Escribe tu dirección"
-                />
-            </div>
-    
-            {/* Teléfono */}
-            <div class="mb-4">
-                <label htmlFor="phone" class="block text-lg font-medium mb-2">Teléfono:</label>
-                <input
-                    id="phone"
-                    type="text"
-                    value={phone}
-                    required
-                    onChange={(e) => setPhone(e.target.value)}
-                    class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                    placeholder="Escribe tu teléfono"
-                />
-            </div>
-    
-            {/* Contraseña */}
-            <div class="mb-6">
-                <label htmlFor="password" class="block text-lg font-medium mb-2">Contraseña:</label>
-                <input
-                    id="password"
-                    type="password"
-                    value={password}
-                    required
-                    onChange={(e) => setPassword(e.target.value)}
-                    class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                    placeholder="Crea tu contraseña"
-                />
-            </div>
-    
-            {/* Botón */}
-            <div class="flex justify-center">
-                <button
-                    type="submit"
-                    class="w-full py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-500"
-                >
-                    Registrar
-                </button>
-            </div>
-        </form>
-    </div>
-    </div>
-    )    
+        </div>
+    );    
 }
 
 export default Register;

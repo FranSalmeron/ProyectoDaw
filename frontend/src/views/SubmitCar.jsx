@@ -269,9 +269,6 @@ function SubmitCar() {
       }
     } catch (error) {
       console.error("Hubo un error:", error);
-      toast.info(
-        "Tamaño de imagen demasiado grande. Pon menos imágenes. Recargando la página en 4 segundos..."
-      );
       setTimeout(() => {
         window.location.reload(); // Recargar la página después de 4 segundos
       }, 4000);

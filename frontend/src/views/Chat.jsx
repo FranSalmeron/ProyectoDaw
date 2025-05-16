@@ -4,9 +4,9 @@ import { createChat } from '../helpers/chatHelper';
 import { loadMessages, sendMessage } from '../helpers/chatMessageHelper';
 import { getUserIdFromToken } from '../helpers/decodeToken';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useDarkMode } from '../context/DarkModeContext'; // <-- Importa useDarkMode
 
 const Chat = () => {
-  // Extraemos los parámetros de la URL
   const location = useLocation();
   const { sellerId, carId, buyerId } = location.state;
   const [messages, setMessages] = useState([]);
@@ -15,7 +15,7 @@ const Chat = () => {
   const [chatId, setChatId] = useState(0);
   const [isSending, setIsSending] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
-  const [shouldScroll, setShouldScroll] = useState(true); // Nueva bandera para controlar el autoscroll
+  const [shouldScroll, setShouldScroll] = useState(true);
   const navigate = useNavigate();
 
   const MAX_CHARACTERS = 500;
@@ -24,7 +24,15 @@ const Chat = () => {
 
   const canWrite = currentuserId == sellerId || currentuserId == buyerId;
 
-  // **Crear el chat si no existe**
+  const { isDarkMode } = useDarkMode(); // <-- Usamos el hook
+
+  // Clases condicionales para modo oscuro
+  const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black";
+  const bgChatBox = isDarkMode ? "bg-[#2C2C2E]" : "bg-white";
+  const borderInput = isDarkMode ? "border-gray-600 bg-[#1C1C1E] text-white placeholder-gray-400" : "border-gray-300 bg-white text-black placeholder-gray-500";
+  const btnSending = isSending ? "bg-[#B6CADE]" : "bg-[#43697a]";
+  const btnCursor = isSending ? "cursor-not-allowed" : "";
+
   useEffect(() => {
     const createChatIfNotExists = async () => {
       if (!buyerId || !sellerId || !carId) {
@@ -49,7 +57,6 @@ const Chat = () => {
     createChatIfNotExists();
   }, [buyerId, sellerId, carId, navigate]);
 
-  // **Cargar mensajes directamente desde el backend cada 10s (polling)**
   useEffect(() => {
     if (!chatId) return;
 
@@ -58,14 +65,13 @@ const Chat = () => {
       await loadMessages(chatId, setMessages, setLoading);
     };
 
-    fetchMessages(); // Cargar mensajes al inicio
+    fetchMessages();
 
-    const intervalId = setInterval(fetchMessages, 10000); // Polling cada 10s
+    const intervalId = setInterval(fetchMessages, 10000);
 
-    return () => clearInterval(intervalId); // Limpiar el intervalo al desmontarse
+    return () => clearInterval(intervalId);
   }, [chatId]);
 
-  // **Enviar mensaje al chat**
   const sendMessageToChat = async () => {
     if (!messageInput.trim() || !chatId) return;
     if (messageInput.length > MAX_CHARACTERS) {
@@ -79,7 +85,6 @@ const Chat = () => {
       const response = await sendMessage(chatId, currentuserId, messageInput);
       setMessageInput('');
       if (response && response.success) {
-        // Recargar los mensajes después de enviar uno
         await loadMessages(chatId, setMessages, () => {});
       }
     } catch (error) {
@@ -89,37 +94,38 @@ const Chat = () => {
     }
   };
 
-  // **Autoscroll al final del chat (modificado)**
   useEffect(() => {
     if (shouldScroll && isAtBottom && messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-      setShouldScroll(false); // Desactivamos el autoscroll después de hacerlo una vez
+      setShouldScroll(false);
     }
   }, [messages, isAtBottom, shouldScroll]);
 
-  // **Manejo del scroll (detecta si estamos al final)**
   const handleScroll = () => {
     const bottom = messagesEndRef.current?.getBoundingClientRect().top <= window.innerHeight;
     setIsAtBottom(bottom);
 
-    // Si el usuario no está al final, activamos el autoscroll para el siguiente cambio de mensaje
     if (!bottom) {
       setShouldScroll(true);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F5EFEB] p-4">
-      <div className="chat-container p-4 max-w-3xl mx-auto h-auto bg-white rounded-lg">
+    <div className={`${bgMain} min-h-screen p-4 transition-colors duration-300`}>
+      <div className={`chat-container p-4 max-w-3xl mx-auto h-auto rounded-lg shadow-md ${bgChatBox}`}>
         <h2 className="text-2xl font-semibold mb-6">Chat</h2>
-        <div 
-          className="messages-container space-y-4 mb-4 max-h-[400px] overflow-y-auto" 
-          onScroll={handleScroll} // Detectamos el scroll para ver si estamos al final
+        <div
+          className="messages-container space-y-4 mb-4 max-h-[400px] overflow-y-auto"
+          onScroll={handleScroll}
         >
           {messages.map((message) => (
             <div
               key={message.messageId}
-              className={`message p-3 rounded-lg max-w-xs ${message.userId == currentuserId ? 'ml-auto bg-[#9DB6CF] text-white' : 'mr-auto bg-[#D4E4ED] text-gray-800'}`}
+              className={`message p-3 rounded-lg max-w-xs ${
+                message.userId == currentuserId
+                  ? 'ml-auto bg-[#9DB6CF] text-white'
+                  : 'mr-auto bg-[#D4E4ED] text-gray-800'
+              }`}
             >
               <p>{message.content}</p>
               <small className="text-xs opacity-75">
@@ -129,22 +135,22 @@ const Chat = () => {
           ))}
           <div ref={messagesEndRef} />
         </div>
-  
+
         {canWrite ? (
           <div className="mt-4">
             <textarea
               value={messageInput}
               onChange={(e) => setMessageInput(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg"
+              className={`w-full p-2 border rounded-lg resize-none h-24 placeholder-opacity-75 ${borderInput}`}
               placeholder="Escribe un mensaje..."
             />
             <button
               onClick={sendMessageToChat}
-              className={`mt-2 p-2 text-white rounded-lg w-full ${isSending ? 'bg-[#B6CADE]' : 'bg-[#43697a]'} ${isSending ? 'cursor-not-allowed' : ''}`}
+              className={`mt-2 p-2 text-white rounded-lg w-full ${btnSending} ${btnCursor}`}
               disabled={isSending}
             >
               {isSending ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto"></div>
               ) : (
                 'Enviar'
               )}

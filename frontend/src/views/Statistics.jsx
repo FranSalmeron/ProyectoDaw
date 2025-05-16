@@ -3,6 +3,7 @@ import { Bar, Pie } from "react-chartjs-2";
 import "chart.js/auto";
 import { fetchStatistics } from "../helpers/BuyHelper";
 import dayjs from "dayjs";
+import { useDarkMode } from "../context/DarkModeContext"; // Modo oscuro
 
 const Statistics = () => {
   const [statistics, setStatistics] = useState({
@@ -11,8 +12,10 @@ const Statistics = () => {
     monthlyEarnings: [],
     topBuyers: [],
     topCars: [],
-    carStatusCount: {}, // solo este
+    carStatusCount: {},
   });
+
+  const { isDarkMode } = useDarkMode(); // Estado de modo oscuro
 
   useEffect(() => {
     const loadStats = async () => {
@@ -27,7 +30,6 @@ const Statistics = () => {
     loadStats();
   }, []);
 
-  // Rellenar hasta 6 meses incluso si están vacíos
   const getExtendedMonthlyEarnings = () => {
     const earningsMap = new Map(
       statistics.monthlyEarnings.map((e) => [e.month, e.income])
@@ -97,44 +99,48 @@ const Statistics = () => {
     ],
   };
 
+  // 🎨 Estilos condicionales por tema
+  const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-white text-black";
+  const cardBg = isDarkMode ? "bg-[#2C2C2E]" : "bg-white";
+  const textPrimary = isDarkMode ? "text-white" : "text-gray-800";
+  const accent = isDarkMode ? "text-blue-400" : "text-blue-600";
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6 text-center">
+    <div className={`p-6 min-h-screen ${bgMain} transition-colors duration-300`}>
+      <h1 className={`text-2xl font-bold mb-6 text-center ${textPrimary}`}>
         Estadísticas de Ventas
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow-md p-4 text-center">
+        <div className={`${cardBg} rounded-lg shadow-md p-4 text-center`}>
           <h3 className="text-lg font-semibold">Ingresos Totales</h3>
-          <p className="text-xl text-blue-600">{statistics.totalIncome} €</p>
+          <p className={`text-xl ${accent}`}>{statistics.totalIncome} €</p>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-4 text-center">
+        <div className={`${cardBg} rounded-lg shadow-md p-4 text-center`}>
           <h3 className="text-lg font-semibold">Total de Transacciones</h3>
-          <p className="text-xl text-blue-600">
-            {statistics.totalTransactions}
-          </p>
+          <p className={`text-xl ${accent}`}>{statistics.totalTransactions}</p>
         </div>
       </div>
 
-       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white rounded-lg shadow-md p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className={`${cardBg} rounded-lg shadow-md p-4`}>
           <h3 className="text-lg font-semibold mb-2">Ganancias Mensuales</h3>
           <Bar data={monthlyEarningsData} />
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-4">
+        <div className={`${cardBg} rounded-lg shadow-md p-4`}>
           <h3 className="text-lg font-semibold mb-2">
             Usuarios con Más Compras
           </h3>
           <Bar data={topBuyersData} />
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-4">
+        <div className={`${cardBg} rounded-lg shadow-md p-4`}>
           <h3 className="text-lg font-semibold mb-2">Coches Más Vendidos</h3>
           <Pie data={topCarsData} />
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-4">
+        <div className={`${cardBg} rounded-lg shadow-md p-4`}>
           <h3 className="text-lg font-semibold mb-2">Estados de los Coches</h3>
           <Pie data={carStatusData} />
         </div>

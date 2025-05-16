@@ -12,8 +12,8 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { editCar } from "../helpers/carHelper";
 import { useCars } from "../context/CarContext";
-import { useDarkMode } from "../context/DarkModeContext"; // ✅ contexto de modo oscuro
-import transformCloudinaryUrl from "../helpers/cloudinaryHelper"; // Importar la función de transformación de URL
+import { useDarkMode } from "../context/DarkModeContext";
+import transformCloudinaryUrl from "../helpers/cloudinaryHelper";
 
 const CarDetails = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -25,8 +25,12 @@ const CarDetails = () => {
   const { clearCars } = useCars();
   const userId = getUserIdFromToken() || null;
   const [car, setCar] = useState(location.state?.car);
+  const { isDarkMode } = useDarkMode();
 
-  const { isDarkMode, toggleDarkMode } = useDarkMode(); // ✅ usamos el contexto
+  // Estilos condicionales
+  const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black";
+  const bgCard = isDarkMode ? "bg-[#2C2C2E]" : "bg-white";
+  const textWarning = isDarkMode ? "text-red-400" : "text-red-600";
 
   useEffect(() => {
     if (!car && !toastShown) {
@@ -36,38 +40,25 @@ const CarDetails = () => {
     }
   }, [car, toastShown, navigate]);
 
-  const isFavorite = (carId) => {
-    return favorites.some((fav) => fav.car && fav.car.id === carId);
-  };
+  const isFavorite = (carId) => favorites.some((fav) => fav.car && fav.car.id === carId);
 
   const handleFavoriteClick = async (e, carId) => {
     e.stopPropagation();
-
     try {
       if (isFavorite(carId)) {
-        const currentFavorite = favorites.find(
-          (fav) => fav.car && fav.car.id === carId
+        const currentFavorite = favorites.find((fav) => fav.car && fav.car.id === carId);
+        const removed = await removeFavorite(userId, currentFavorite.id, removeFromData);
+        toast[removed ? "success" : "error"](
+          removed ? "Coche eliminado de favoritos." : "Error al eliminar el coche."
         );
-        const removed = await removeFavorite(
-          userId,
-          currentFavorite.id,
-          removeFromData
-        );
-        if (removed) {
-          toast.success("Coche eliminado de favoritos.");
-        } else {
-          toast.error("Error al eliminar el coche de favoritos.");
-        }
       } else {
         const added = await addFavorite(userId, carId, addFavorites);
-        if (added) {
-          toast.success("Coche añadido a favoritos.");
-        } else {
-          toast.error("Error al añadir el coche a favoritos.");
-        }
+        toast[added ? "success" : "error"](
+          added ? "Coche añadido a favoritos." : "Error al añadir el coche."
+        );
       }
     } catch (error) {
-      console.error("Error al manejar el clic en favoritos:", error);
+      console.error("Error al manejar favoritos:", error);
       toast.error("Error al manejar el clic en favoritos.");
     }
   };
@@ -90,35 +81,24 @@ const CarDetails = () => {
 
   const handleBanClick = async () => {
     try {
-      const newCarData = {
-        carSold: car.CarSold === "baneado" ? "subido" : "baneado",
-      };
+      const newStatus = car.CarSold === "baneado" ? "subido" : "baneado";
+      setCar((prev) => ({ ...prev, CarSold: newStatus }));
 
-      setCar((prevCar) => ({
-        ...prevCar,
-        CarSold: newCarData.carSold,
-      }));
-
-      const result = await editCar(car.id, newCarData);
+      const result = await editCar(car.id, { carSold: newStatus });
       if (result) {
         toast.success(
-          newCarData.carSold === "baneado"
-            ? "Coche baneado correctamente."
-            : "Coche desbaneado correctamente."
+          newStatus === "baneado" ? "Coche baneado correctamente." : "Coche desbaneado correctamente."
         );
         localStorage.removeItem("cachedCars");
         clearCars();
       }
     } catch (error) {
-      console.error("Error al banear el coche: ", error);
+      console.error("Error al banear coche:", error);
       toast.error("Error al banear el coche.");
     }
   };
 
-  const isAuthenticated = () => {
-    const token = localStorage.getItem("jwt");
-    return !!token;
-  };
+  const isAuthenticated = () => !!localStorage.getItem("jwt");
 
   const handleBuyClick = () => {
     if (!isAuthenticated()) {
@@ -153,49 +133,26 @@ const CarDetails = () => {
     popupAnchor: [0, -32],
   });
 
-  const formatCondition = (condition) => {
-    if (!condition) return "";
-    return condition
-      .split("_")
+  const formatCondition = (condition) =>
+    condition
+      ?.split("_")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
+      .join(" ") || "";
 
-  if (!car) {
-    return <div>No se ha encontrado el coche</div>;
-  }
+  if (!car) return <div className={`${bgMain} p-6`}>No se ha encontrado el coche</div>;
 
   return (
-    <div
-      className={`${
-        isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black"
-      } p-6 min-h-screen`}
-    >
-      {/* Botón para alternar modo */}
-      <button
-        onClick={toggleDarkMode}
-        className="mb-4 px-4 py-2 bg-gray-300 rounded"
-      >
-        {isDarkMode ? "Modo Claro ☀" : "Modo Oscuro 🌙"}
-      </button>
-
-      <div
-        className={`car-details p-6 max-w-4xl mx-auto rounded-lg shadow-lg ${
-          isDarkMode ? "bg-[#2C2C2E]" : "bg-white"
-        }`}
-      >
-        {/* Carrusel de imágenes */}
-        <div className="car-images mb-6">
+    <div className={`${bgMain} p-6 min-h-screen transition-colors duration-300`}>
+      <div className={`p-6 max-w-4xl mx-auto rounded-lg shadow-lg ${bgCard}`}>
+        {/* Carrusel */}
+        <div className="mb-6">
           <Slider ref={sliderRef} {...settings}>
             {car.images.map((image, index) => (
               <div key={index}>
                 <img
-                  src={transformCloudinaryUrl(
-                    image,
-                    "w_900,c_fit,f_auto,q_auto"
-                  )}
+                  src={transformCloudinaryUrl(image, "w_900,c_fit,f_auto,q_auto")}
                   alt={`Car image ${index + 1}`}
-                  className="w-full h-100 object-contain rounded-lg shadow-md"
+                  className="w-full object-contain rounded-lg shadow-md"
                 />
               </div>
             ))}
@@ -203,18 +160,11 @@ const CarDetails = () => {
         </div>
 
         {/* Miniaturas */}
-        <div className="image-thumbnails flex space-x-4 overflow-x-auto mb-6">
+        <div className="flex space-x-4 overflow-x-auto mb-6">
           {car.images.map((image, index) => (
-            <div
-              key={index}
-              className="w-20 h-20 cursor-pointer"
-              onClick={() => handleImageClick(index)}
-            >
+            <div key={index} className="w-20 h-20 cursor-pointer" onClick={() => handleImageClick(index)}>
               <img
-                src={transformCloudinaryUrl(
-                  image,
-                  "w_100,h_100,c_fill,f_auto,q_auto"
-                )}
+                src={transformCloudinaryUrl(image, "w_100,h_100,c_fill,f_auto,q_auto")}
                 alt={`Thumbnail ${index + 1}`}
                 className={`w-full h-full object-cover rounded-lg hover:opacity-80 ${
                   selectedImageIndex === index ? "border-4 border-blue-500" : ""
@@ -224,93 +174,45 @@ const CarDetails = () => {
           ))}
         </div>
 
-        {/* Alerta si el vendedor está baneado */}
+        {/* Alerta de baneo */}
         {car.user.roles.includes("ROLE_BANNED") && (
-          <div className="text-red-600 font-semibold">
+          <div className={`${textWarning} font-semibold`}>
             ⚠ Este vendedor ha sido baneado y podría no responder.
           </div>
         )}
 
-        {/* Info */}
-        <div className="car-info mt-6">
+        {/* Info del coche */}
+        <div className="mt-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-semibold mb-2">
-                {car.brand} {car.model}
-              </h1>
+              <h1 className="text-3xl font-semibold mb-2">{car.brand} {car.model}</h1>
               <h2 className="text-lg mb-4">Vendedor: {car.user.name}</h2>
             </div>
 
             {userId && (
-              <div>
-                <button
-                  className="text-white cursor-pointer"
-                  onClick={(e) => handleFavoriteClick(e, car.id)}
-                >
-                  <img
-                    src={
-                      isFavorite(car.id)
-                        ? "/images/corazon-relleno.png"
-                        : "/images/corazon-vacio.png"
-                    }
-                    alt="Corazón"
-                    className="w-10 h-10"
-                  />
-                </button>
-              </div>
+              <button onClick={(e) => handleFavoriteClick(e, car.id)}>
+                <img
+                  src={isFavorite(car.id) ? "/images/corazon-relleno.png" : "/images/corazon-vacio.png"}
+                  alt="Favorito"
+                  className="w-10 h-10"
+                />
+              </button>
             )}
           </div>
 
-          {/* Datos del coche */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-              <p className="font-semibold">Ubicación:</p>
-              <p>{car.city}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Precio:</p>
-              <p>{car.price} €</p>
-            </div>
-            <div>
-              <p className="font-semibold">Año:</p>
-              <p>{car.manufacture_year}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Kilómetros:</p>
-              <p>{car.mileage} km</p>
-            </div>
-            <div>
-              <p className="font-semibold">Combustible:</p>
-              <p>{car.fuelType}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Condición:</p>
-              <p>{formatCondition(car.CarCondition)}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Tracción:</p>
-              <p>{car.traction}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Puertas:</p>
-              <p>{car.doors}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Asientos:</p>
-              <p>{car.seats}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Transmisión:</p>
-              <p>{car.transmission}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Color:</p>
-              <p>{car.color}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Fecha Publicación:</p>
-              <p>{new Date(car.publication_date).toLocaleDateString()}</p>
-            </div>
+            <div><p className="font-semibold">Ubicación:</p><p>{car.city}</p></div>
+            <div><p className="font-semibold">Precio:</p><p>{car.price} €</p></div>
+            <div><p className="font-semibold">Año:</p><p>{car.manufacture_year}</p></div>
+            <div><p className="font-semibold">Kilómetros:</p><p>{car.mileage} km</p></div>
+            <div><p className="font-semibold">Combustible:</p><p>{car.fuelType}</p></div>
+            <div><p className="font-semibold">Condición:</p><p>{formatCondition(car.CarCondition)}</p></div>
+            <div><p className="font-semibold">Tracción:</p><p>{car.traction}</p></div>
+            <div><p className="font-semibold">Puertas:</p><p>{car.doors}</p></div>
+            <div><p className="font-semibold">Asientos:</p><p>{car.seats}</p></div>
+            <div><p className="font-semibold">Transmisión:</p><p>{car.transmission}</p></div>
+            <div><p className="font-semibold">Color:</p><p>{car.color}</p></div>
+            <div><p className="font-semibold">Fecha Publicación:</p><p>{new Date(car.publication_date).toLocaleDateString()}</p></div>
             <div className="sm:col-span-2">
               <p className="font-semibold">Descripción:</p>
               <p>{car.description}</p>
@@ -319,38 +221,24 @@ const CarDetails = () => {
         </div>
 
         {/* Mapa */}
-        <div className="mb-4 mt-4" style={{ height: "300px" }}>
-          <MapContainer
-            center={[car.lat, car.lon]}
-            zoom={13}
-            scrollWheelZoom={false}
-            style={{ height: "100%", width: "100%" }}
-          >
+        <div className="my-6" style={{ height: "300px" }}>
+          <MapContainer center={[car.lat, car.lon]} zoom={13} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <Marker position={[car.lat, car.lon]} icon={carIcon} />
           </MapContainer>
         </div>
 
         {/* Botones */}
-        <div className="car-actions mt-6 flex flex-col sm:flex-row justify-between">
-          <button
-            onClick={handleBuyClick}
-            className="btn bg-[#43697a] text-white p-3 rounded-md hover:bg-[#567C8D] m-2"
-          >
+        <div className="mt-6 flex flex-col sm:flex-row justify-between">
+          <button onClick={handleBuyClick} className="bg-[#43697a] text-white p-3 rounded-md hover:bg-[#567C8D] m-2">
             Comprar
           </button>
           {isAdmin() && (
-            <button
-              onClick={handleBanClick}
-              className="btn bg-red-600 text-white p-3 rounded-md hover:bg-red-700 m-2"
-            >
+            <button onClick={handleBanClick} className="bg-red-600 text-white p-3 rounded-md hover:bg-red-700 m-2">
               {car.CarSold === "baneado" ? "Desbanear Coche" : "Banear Coche"}
             </button>
           )}
-          <button
-            onClick={handleChatClick}
-            className="btn bg-[#0E566A] text-white p-3 rounded-md hover:bg-[#42AEB5] m-2"
-          >
+          <button onClick={handleChatClick} className="bg-[#0E566A] text-white p-3 rounded-md hover:bg-[#42AEB5] m-2">
             Chatear
           </button>
         </div>
