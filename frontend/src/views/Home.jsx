@@ -21,7 +21,7 @@ const Home = () => {
     model: "",
     decade: "",
   });
-
+  const { cars, addCars, removeFromData } = useCars();
   const [filteredCars, setFilteredCars] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
