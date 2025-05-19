@@ -13,13 +13,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
-use Psr\Log\LoggerInterface;
+
 
 #[Route('/car')]
 class CarController extends AbstractController
 {
     #[Route('/', name: 'app_car_index', methods: ['GET'])]
-    public function index(CarRepository $carRepository, SerializerInterface $serializer, LoggerInterface $logger): Response
+    public function index(CarRepository $carRepository, SerializerInterface $serializer): Response
     {
         $cars = $carRepository->findMostFavoriteCars();
 
@@ -28,7 +28,6 @@ class CarController extends AbstractController
         }
 
         $jsonCars = $serializer->serialize($cars, 'json', ['groups' => 'car_list']);
-        $logger->info('Coches serializados: ' . $jsonCars);
 
         return new JsonResponse(json_decode($jsonCars), Response::HTTP_OK);
     }
