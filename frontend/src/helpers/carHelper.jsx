@@ -33,11 +33,13 @@ export const carList = async (addCars) => {
 // Función para hacer la petición y almacenar los coches junto con el timestamp
 const fetchAndStoreCars = async (addCars, page = 1, limit = 10) => {
   try {
+    console.log("cargando coches desde la API...");
     const response = await fetch(`${symfonyUrl}/car/?page=${page}&limit=${limit}`);
     if (!response.ok) {
       throw new Error('Error fetching cars');
     }
     const data = await response.json();
+    console.log(data);
     if (Array.isArray(data.cars) && data.cars.length > 0) {
       // Guardamos los datos en localStorage con el timestamp de la última actualización
       const newData = {
@@ -47,6 +49,7 @@ const fetchAndStoreCars = async (addCars, page = 1, limit = 10) => {
         totalPages: data.totalPages,
         currentPage: data.currentPage
       };
+      console.log(newData);
       localStorage.setItem('cachedCars', JSON.stringify(newData));
       data.cars.forEach(car => addCars(car));  // Agregar los coches a la lista
     } else {
