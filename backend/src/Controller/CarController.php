@@ -27,7 +27,9 @@ class CarController extends AbstractController
             return new JsonResponse(['message' => 'No cars found'], Response::HTTP_NOT_FOUND);
         }
 
-        $jsonCars = $serializer->serialize($cars, 'json', ['groups' => 'car_list']);
+       $cars = array_map(fn($item) => $item[0], $carRepository->findMostFavoriteCars());
+       $jsonCars = $serializer->serialize($cars, 'json', ['groups' => 'car_list']);
+
 
         return new JsonResponse(json_decode($jsonCars), Response::HTTP_OK);
     }
