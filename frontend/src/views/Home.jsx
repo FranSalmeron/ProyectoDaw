@@ -47,25 +47,46 @@ const Home = () => {
   useEffect(() => {
     const getCarsAndFavorites = async () => {
       setLoading(true);
+
       try {
         if (userId) await getFavorites(userId, addFavorites);
 
-        const {
-          cars: fetchedCars,
-          totalPages,
-          fromCache,
-        } = await carList(currentPage, limit);
-
-        if (!fromCache) clearCars(); // limpiamos contexto solo si no es caché
-
-        fetchedCars.forEach((car) => addCars(car));
-        setTotalPages(totalPages);
-
-        // Si estás en una página mayor a la que existe ahora, vuelve a la 1
-        if (currentPage > totalPages) {
-          setCurrentPage(1);
+        // 1. Si ya hay coches en el contexto y la página es la misma, usa esos
+        if (cars.length > 0) {
+          setFilteredCars(cars);
+          setLoading(false);
+          return;
         }
-      } catch (error) {
+
+        // 2. Revisamos localStorage
+        const stored = localStorage.getItem("cachedCars");
+        const now = new Date();
+        const cacheDuration = 60 * 1000;
+
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          const lastUpdated = new Date(parsed.lastUpdated);
+          const isValid = now - lastUpdated < cacheDuration;
+
+          // 2a. Si el caché es válido Y es de la misma página
+          if (isValid && parsed.currentPage === currentPage) {
+            clearCars(); // limpiar el contexto anterior por seguridad
+            parsed.cars.forEach((car) => addCars(car));
+            setFilteredCars(parsed.cars);
+            setTotalPages(parsed.totalPages);
+            setLoading(false);
+            return;
+          }
+        }
+
+        // 3. Si no hay caché válido o es otra página, hacemos fetch
+        const result = await carList(currentPage, limit);
+
+        clearCars();
+        result.cars.forEach((car) => addCars(car));
+        setFilteredCars(result.cars);
+        setTotalPages(result.totalPages);
+      } catch (err) {
         toast.error("No se pudieron cargar los coches o los favoritos.");
       } finally {
         setLoading(false);
@@ -73,7 +94,7 @@ const Home = () => {
     };
 
     getCarsAndFavorites();
-  }, [currentPage, limit]);
+  }, [currentPage]);
 
   useEffect(() => {
     setFilteredCars(cars);

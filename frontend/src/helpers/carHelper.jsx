@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 // carHelper.js
 export const carList = async (page = 1, limit = 10) => {
   try {
-    const storedData = localStorage.getItem('cachedCars');
+    const storedData = localStorage.getItem("cachedCars");
     const now = new Date();
     const cacheDuration = 1 * 60 * 1000; // 1 minuto
 
@@ -16,11 +16,14 @@ export const carList = async (page = 1, limit = 10) => {
           cars: parsed.cars,
           totalPages: parsed.totalPages,
           currentPage: parsed.currentPage,
+          fromCache: true, // ✅ añadimos esto
         };
       }
     }
 
-    const response = await fetch(`${symfonyUrl}/car/?page=${page}&limit=${limit}`);
+    const response = await fetch(
+      `${symfonyUrl}/car/?page=${page}&limit=${limit}`
+    );
     if (!response.ok) throw new Error("Error al obtener coches");
 
     const data = await response.json();
@@ -35,17 +38,19 @@ export const carList = async (page = 1, limit = 10) => {
     const result = {
       cars,
       totalPages: data.totalPages,
+      currentPage: data.currentPage,
+      fromCache: false, // ✅ añadimos esto
     };
 
-    localStorage.setItem("cachedCars", JSON.stringify({
-      ...result,
-      lastUpdated: new Date().toISOString(),
-    }));
-    return result;
+    localStorage.setItem(
+      "cachedCars",
+      JSON.stringify({ ...result, lastUpdated: new Date().toISOString() })
+    );
 
+    return result;
   } catch (err) {
     console.error("Error cargando coches", err);
-    return { cars: [], totalPages: 1, currentPage: 1 };
+    return { cars: [], totalPages: 1, currentPage: 1, fromCache: false };
   }
 };
 

@@ -29,7 +29,7 @@ const EditCarForm = ({ car, onClose }) => {
   const { isDarkMode } = useDarkMode();
 
   // Variables para clases según modo oscuro o claro
-  const bgMain = isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-white text-black";
+  const bgMain = isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-white text-white";
   const cardBg = isDarkMode ? "bg-[#1C1C1E]" : "bg-[#2F4156]";
   const inputBg = isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black";
 
