@@ -47,42 +47,23 @@ const Home = () => {
   useEffect(() => {
     const getCarsAndFavorites = async () => {
       setLoading(true);
-
       try {
         if (userId) await getFavorites(userId, addFavorites);
 
-        const storedData = localStorage.getItem("cachedCars");
-        const now = new Date();
-        const cacheDuration = 1 * 60 * 1000; // 1 minuto
+        const {
+          cars: fetchedCars,
+          totalPages,
+          fromCache,
+        } = await carList(currentPage, limit);
 
-        let shouldUseCache = false;
+        if (!fromCache) clearCars(); // limpiamos contexto solo si no es caché
 
-        if (storedData) {
-          const parsed = JSON.parse(storedData);
-          const lastUpdated = new Date(parsed.lastUpdated);
-          const isCacheValid = now - lastUpdated < cacheDuration;
-          shouldUseCache = isCacheValid;
-        }
+        fetchedCars.forEach((car) => addCars(car));
+        setTotalPages(totalPages);
 
-        // Si el contexto está vacío o ha pasado más de 1 minuto desde la última carga
-        if (cars.length === 0 || !shouldUseCache) {
-          const {
-            cars: fetchedCars,
-            totalPages,
-          } = await carList(currentPage, limit);
-
-          // Limpiamos el contexto si vamos a recargar (opcional)
-          if (!shouldUseCache) {
-            clearCars();
-          }
-
-          fetchedCars.forEach((car) => addCars(car));
-          setTotalPages(totalPages);
-
-          // Solo establece currentPage si estás en la primera carga y no lo ha cambiado el usuario
-          if (currentPage > totalPages) {
-            setCurrentPage(1); // Volver a la página 1 si la actual no es válida
-          }
+        // Si estás en una página mayor a la que existe ahora, vuelve a la 1
+        if (currentPage > totalPages) {
+          setCurrentPage(1);
         }
       } catch (error) {
         toast.error("No se pudieron cargar los coches o los favoritos.");

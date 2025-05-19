@@ -1,7 +1,7 @@
 const symfonyUrl = import.meta.env.VITE_API_URL;
 import { toast } from "react-toastify";
 // carHelper.js
-export const carList = async (addCars, page = 1, limit = 10) => {
+export const carList = async (page = 1, limit = 10) => {
   try {
     const storedData = localStorage.getItem('cachedCars');
     const now = new Date();
@@ -41,7 +41,6 @@ export const carList = async (addCars, page = 1, limit = 10) => {
       ...result,
       lastUpdated: new Date().toISOString(),
     }));
-    cars.forEach((car) => {addCars(car);});
     return result;
 
   } catch (err) {
