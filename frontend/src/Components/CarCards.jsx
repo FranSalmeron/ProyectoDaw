@@ -89,16 +89,16 @@ const CarCards = ({
 
   const handleDelete = async (e, carId) => {
     e.stopPropagation();
-    await deleteCar(carId);
+    const response = await deleteCar(carId);
+    if (response) {
     localStorage.removeItem("cachedCars");
     clearCars();
+    }
   };
 
   const handleEdit = (e, car) => {
     e.stopPropagation();
     setSelectedCar(car);
-    localStorage.removeItem("cachedCars");
-    clearCars();
   };
 
   const handleCloseEdit = () => {

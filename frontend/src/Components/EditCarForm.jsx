@@ -41,7 +41,11 @@ const EditCarForm = ({ car, onClose }) => {
     e.preventDefault();
 
     try {
-      await editCar(car.id, formData);
+      const response = await editCar(car.id, formData);
+      if(!response) {
+        toast.error("Error al editar el coche");
+        return;
+      }
       localStorage.removeItem("cachedCars");
       clearCars();
       onClose();
