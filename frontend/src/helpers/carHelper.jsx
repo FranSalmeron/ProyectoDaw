@@ -53,6 +53,8 @@ const fetchAndStoreCars = async (addCars, page = 1, limit = 10) => {
       localStorage.setItem('cachedCars', JSON.stringify(newData));
       data.cars.forEach(car => addCars(car));  // Agregar los coches a la lista
     } else {
+        console.log(data);
+        console.log(response);
       console.error("No hay coches disponibles o la respuesta no es un array válido");
     }
   } catch (error) {
