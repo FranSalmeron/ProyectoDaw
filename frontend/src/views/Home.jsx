@@ -1,48 +1,63 @@
 import React, { useState, useEffect } from "react";
 import { useCars } from "../context/CarContext";
-import { carList } from "../helpers/carHelper"; 
+import { carList } from "../helpers/carHelper";
 import { toast } from "react-toastify";
 import CarCards from "../components/CarCards";
-import { useFavorites } from "../context/FavoriteContext"; 
-import { getFavorites } from "../helpers/favoriteHelper"; 
-import { getUserIdFromToken } from "../helpers/decodeToken"; 
+import { useFavorites } from "../context/FavoriteContext";
+import { getFavorites } from "../helpers/favoriteHelper";
+import { getUserIdFromToken } from "../helpers/decodeToken";
 import { useDarkMode } from "../context/DarkModeContext";
 
 const Home = () => {
-  const { cars, addCars } = useCars(); 
-  const { addFavorites, removeFromData } = useFavorites();
   const [filters, setFilters] = useState({
     city: "",
     category: "",
     brand: "",
     traction: "",
     fuelType: "",
-    seats: [1, 9], 
-    price: { min: 0, max: 1000000 }, 
-    mileage: { min: 0, max: 500000 },  
+    seats: [1, 9],
+    price: { min: 0, max: 1000000 },
+    mileage: { min: 0, max: 500000 },
+    model: "",
+    decade: "",
   });
-  const [filteredCars, setFilteredCars] = useState([]); 
-  const [showFilters, setShowFilters] = useState(false); 
-  const [loading, setLoading] = useState(true);
 
-  const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
+  const [filteredCars, setFilteredCars] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const carsPerPage = 10;
+  const indexOfLastCar = currentPage * carsPerPage;
+  const indexOfFirstCar = indexOfLastCar - carsPerPage;
+  const currentCars = filteredCars.slice(indexOfFirstCar, indexOfLastCar);
+
+  const tokenUserId = getUserIdFromToken();
+  const userId = tokenUserId ? tokenUserId : null;
 
   // Modo oscuro — VARIABLES PARA CLASES (nuevo)
   const { isDarkMode } = useDarkMode();
-  const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black"; // fondo principal y texto
+  const bgMain = isDarkMode
+    ? "bg-[#1C1C1E] text-white"
+    : "bg-[#F5EFEB] text-black"; // fondo principal y texto
   const bgFilters = isDarkMode ? "bg-[#2C2C2E]" : "bg-gray-100"; // fondo del panel de filtros
-  const borderFilters = isDarkMode ? "border-gray-600 text-white placeholder-gray-400" : "border-gray-300 text-black placeholder-gray-700"; // bordes y texto inputs/select
-  const btnClear = isDarkMode ? "bg-red-600 hover:bg-red-700" : "bg-red-500 hover:bg-red-600"; // botón limpiar filtros
+  const borderFilters = isDarkMode
+    ? "border-gray-600 text-white placeholder-gray-400"
+    : "border-gray-300 text-black placeholder-gray-700"; // bordes y texto inputs/select
+  const btnClear = isDarkMode
+    ? "bg-red-600 hover:bg-red-700"
+    : "bg-red-500 hover:bg-red-600"; // botón limpiar filtros
 
   useEffect(() => {
     const getCarsAndFavorites = async () => {
       setLoading(true);
       try {
-        await getFavorites(userId, addFavorites); 
-        await carList(addCars); 
+        await getFavorites(userId, addFavorites);
+        await carList(addCars);
         setLoading(false);
       } catch (error) {
-        toast.error("No se pudieron cargar los coches o los favoritos. Intenta más tarde.");
+        toast.error(
+          "No se pudieron cargar los coches o los favoritos. Intenta más tarde."
+        );
         setLoading(false);
       }
     };
@@ -57,17 +72,37 @@ const Home = () => {
   useEffect(() => {
     const applyFilters = () => {
       const filtered = cars.filter((car) => {
-        const cityMatch = filters.city ? car.city.toLowerCase().includes(filters.city.toLowerCase()) : true;
-        const priceMatch = car.price >= Number(filters.price.min) && car.price <= Number(filters.price.max);
-        const mileageMatch = car.mileage >= Number(filters.mileage.min) && car.mileage <= Number(filters.mileage.max);
-        const seatsMatch = car.seats >= filters.seats[0] && car.seats <= filters.seats[1];
-        const categoryMatch = filters.category ? car.category.toLowerCase().includes(filters.category.toLowerCase()) : true;
-        const brandMatch = filters.brand ? car.brand.toLowerCase().includes(filters.brand.toLowerCase()) : true;
-        const tractionMatch = filters.traction ? car.traction.toLowerCase().includes(filters.traction.toLowerCase()) : true;
-        const fuelTypeMatch = filters.fuelType ? car.fuelType.toLowerCase().includes(filters.fuelType.toLowerCase()) : true;
-        const modelMatch = filters.model ? car.model.toLowerCase().includes(filters.model.toLowerCase()) : true;
-        const decadeMatch = filters.decade ? car.manufacture_year >= filters.decade[0] && car.manufacture_year < filters.decade[1] : true;
-  
+        const cityMatch = filters.city
+          ? car.city.toLowerCase().includes(filters.city.toLowerCase())
+          : true;
+        const priceMatch =
+          car.price >= Number(filters.price.min) &&
+          car.price <= Number(filters.price.max);
+        const mileageMatch =
+          car.mileage >= Number(filters.mileage.min) &&
+          car.mileage <= Number(filters.mileage.max);
+        const seatsMatch =
+          car.seats >= filters.seats[0] && car.seats <= filters.seats[1];
+        const categoryMatch = filters.category
+          ? car.category.toLowerCase().includes(filters.category.toLowerCase())
+          : true;
+        const brandMatch = filters.brand
+          ? car.brand.toLowerCase().includes(filters.brand.toLowerCase())
+          : true;
+        const tractionMatch = filters.traction
+          ? car.traction.toLowerCase().includes(filters.traction.toLowerCase())
+          : true;
+        const fuelTypeMatch = filters.fuelType
+          ? car.fuelType.toLowerCase().includes(filters.fuelType.toLowerCase())
+          : true;
+        const modelMatch = filters.model
+          ? car.model.toLowerCase().includes(filters.model.toLowerCase())
+          : true;
+        const decadeMatch = filters.decade
+          ? car.manufacture_year >= filters.decade[0] &&
+            car.manufacture_year < filters.decade[1]
+          : true;
+
         return (
           cityMatch &&
           priceMatch &&
@@ -120,11 +155,117 @@ const Home = () => {
     });
   };
 
-  const cities = ["Álava", "Ávila", "Alicante", "Algeciras", "Alcalá de Henares", "Almería", "Badalona", "Badajoz", "Barcelona", "Bilbao", "Burgos", "Cádiz", "Cáceres", "Castellón de la Plana", "Córdoba", "Cuenca", "Elche", "Gerona", "Granada", "Gijón", "Huelva", "Huesca", "La Coruña", "La Rasa", "La Rioja", "L'Hospitalet de Llobregat", "Lleida", "Logroño", "Madrid", "Málaga", "Marbella", "Mataró", "Melilla", "Murcia", "Madrid", "Oviedo", "Ourense", "Pamplona", "Pontevedra", "Reus", "Salamanca", "San Cristóbal de La Laguna", "San Sebastián", "Santa Cruz de Tenerife", "Segovia", "Soria", "Santander", "Sevilla", "Toledo", "Terrassa", "Valencia", "Valladolid", "Vigo", "Zaragoza"];
-  const carBrands = ["Acura", "Alfa Romeo", "Aston Martin", "Audi", "Bentley", "BMW", "Bugatti", "Buick", "Chevrolet", "Chrysler", "Citroën", "Dodge", "Fiat", "Ford", "Ferrari", "Genesis", "GMC", "Honda", "Hyundai", "Infiniti", "Jaguar", "Jeep", "Kia", "Land Rover", "Lamborghini", "Lincoln", "Lexus", "Mazda", "McLaren", "Mercedes-Benz", "Mini", "Mitsubishi", "Maserati", "Nissan", "Opel", "Peugeot", "Porsche", "Ram", "Renault", "Rolls-Royce", "Seat", "Skoda", "Smart", "Subaru", "Suzuki", "Tesla", "Toyota", "Volkswagen", "Volvo"];
+  const cities = [
+    "Álava",
+    "Ávila",
+    "Alicante",
+    "Algeciras",
+    "Alcalá de Henares",
+    "Almería",
+    "Badalona",
+    "Badajoz",
+    "Barcelona",
+    "Bilbao",
+    "Burgos",
+    "Cádiz",
+    "Cáceres",
+    "Castellón de la Plana",
+    "Córdoba",
+    "Cuenca",
+    "Elche",
+    "Gerona",
+    "Granada",
+    "Gijón",
+    "Huelva",
+    "Huesca",
+    "La Coruña",
+    "La Rasa",
+    "La Rioja",
+    "L'Hospitalet de Llobregat",
+    "Lleida",
+    "Logroño",
+    "Málaga",
+    "Marbella",
+    "Mataró",
+    "Melilla",
+    "Murcia",
+    "Madrid",
+    "Oviedo",
+    "Ourense",
+    "Pamplona",
+    "Pontevedra",
+    "Reus",
+    "Salamanca",
+    "San Cristóbal de La Laguna",
+    "San Sebastián",
+    "Santa Cruz de Tenerife",
+    "Segovia",
+    "Soria",
+    "Santander",
+    "Sevilla",
+    "Toledo",
+    "Terrassa",
+    "Valencia",
+    "Valladolid",
+    "Vigo",
+    "Zaragoza",
+  ];
+  const carBrands = [
+    "Acura",
+    "Alfa Romeo",
+    "Aston Martin",
+    "Audi",
+    "Bentley",
+    "BMW",
+    "Bugatti",
+    "Buick",
+    "Chevrolet",
+    "Chrysler",
+    "Citroën",
+    "Dodge",
+    "Fiat",
+    "Ford",
+    "Ferrari",
+    "Genesis",
+    "GMC",
+    "Honda",
+    "Hyundai",
+    "Infiniti",
+    "Jaguar",
+    "Jeep",
+    "Kia",
+    "Land Rover",
+    "Lamborghini",
+    "Lincoln",
+    "Lexus",
+    "Mazda",
+    "McLaren",
+    "Mercedes-Benz",
+    "Mini",
+    "Mitsubishi",
+    "Maserati",
+    "Nissan",
+    "Opel",
+    "Peugeot",
+    "Porsche",
+    "Ram",
+    "Renault",
+    "Rolls-Royce",
+    "Seat",
+    "Skoda",
+    "Smart",
+    "Subaru",
+    "Suzuki",
+    "Tesla",
+    "Toyota",
+    "Volkswagen",
+    "Volvo",
+  ];
 
   return (
-    <div className={`${bgMain} flex flex-col sm:flex-row p-4 transition-colors duration-300`}>
+    <div
+      className={`${bgMain} flex flex-col sm:flex-row p-4 transition-colors duration-300`}
+    >
       <button
         className="sm:hidden bg-blue-500 text-white p-2 rounded-lg mb-4"
         onClick={() => setShowFilters(!showFilters)}
@@ -133,7 +274,9 @@ const Home = () => {
       </button>
 
       <div
-        className={`w-full sm:h-1/4 sm:w-1/4 ${bgFilters} p-4 rounded-lg shadow-lg mb-4 sm:mb-0 transition-all duration-300 ease-in-out ${showFilters ? "block" : "hidden sm:block"}`}
+        className={`w-full sm:h-1/4 sm:w-1/4 ${bgFilters} p-4 rounded-lg shadow-lg mb-4 sm:mb-0 transition-all duration-300 ease-in-out ${
+          showFilters ? "block" : "hidden sm:block"
+        }`}
       >
         <h3 className="text-xl font-semibold mb-4">Filtros de Búsqueda</h3>
 
@@ -156,7 +299,10 @@ const Home = () => {
         >
           <option value="">Seleccionar marca</option>
           {carBrands.map((brand, index) => (
-            <option key={index} value={brand.toLowerCase().replace(/\s+/g, "_")}>
+            <option
+              key={index}
+              value={brand.toLowerCase().replace(/\s+/g, "_")}
+            >
               {brand}
             </option>
           ))}
@@ -183,7 +329,12 @@ const Home = () => {
             type="number"
             name="priceMin"
             value={filters.price.min}
-            onChange={(e) => setFilters({ ...filters, price: { ...filters.price, min: e.target.value } })}
+            onChange={(e) =>
+              setFilters({
+                ...filters,
+                price: { ...filters.price, min: e.target.value },
+              })
+            }
             className={`p-2 border rounded w-1/2 mr-2 ${borderFilters}`}
             placeholder="Mínimo"
           />
@@ -191,7 +342,12 @@ const Home = () => {
             type="number"
             name="priceMax"
             value={filters.price.max}
-            onChange={(e) => setFilters({ ...filters, price: { ...filters.price, max: e.target.value } })}
+            onChange={(e) =>
+              setFilters({
+                ...filters,
+                price: { ...filters.price, max: e.target.value },
+              })
+            }
             className={`p-2 border rounded w-1/2 ${borderFilters}`}
             placeholder="Máximo"
           />
@@ -203,7 +359,12 @@ const Home = () => {
             type="number"
             name="mileageMin"
             value={filters.mileage.min}
-            onChange={(e) => setFilters({ ...filters, mileage: { ...filters.mileage, min: e.target.value } })}
+            onChange={(e) =>
+              setFilters({
+                ...filters,
+                mileage: { ...filters.mileage, min: e.target.value },
+              })
+            }
             className={`p-2 border rounded w-1/2 mr-2 ${borderFilters}`}
             placeholder="Mínimo"
           />
@@ -211,7 +372,12 @@ const Home = () => {
             type="number"
             name="mileageMax"
             value={filters.mileage.max}
-            onChange={(e) => setFilters({ ...filters, mileage: { ...filters.mileage, max: e.target.value } })}
+            onChange={(e) =>
+              setFilters({
+                ...filters,
+                mileage: { ...filters.mileage, max: e.target.value },
+              })
+            }
             className={`p-2 border rounded w-1/2 ${borderFilters}`}
             placeholder="Máximo"
           />
@@ -248,7 +414,9 @@ const Home = () => {
           name="decade"
           value={filters.decade}
           onChange={(e) => {
-            const selectedDecade = e.target.value ? JSON.parse(e.target.value) : "";
+            const selectedDecade = e.target.value
+              ? JSON.parse(e.target.value)
+              : "";
             setFilters({
               ...filters,
               decade: selectedDecade,
@@ -291,11 +459,28 @@ const Home = () => {
 
       <div className="w-full sm:w-3/4 p-4">
         <CarCards
-          cars={filteredCars}
+          cars={currentCars}
           loading={loading}
           addFavorites={addFavorites}
           removeFromData={removeFromData}
         />
+        <div className="flex justify-center mt-4">
+          {Array.from({
+            length: Math.ceil(filteredCars.length / carsPerPage),
+          }).map((_, index) => (
+            <button
+              key={index}
+              className={`px-3 py-1 mx-1 rounded ${
+                currentPage === index + 1
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-300"
+              }`}
+              onClick={() => setCurrentPage(index + 1)}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
