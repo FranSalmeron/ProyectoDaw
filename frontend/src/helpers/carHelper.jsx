@@ -36,7 +36,7 @@ const fetchAndStoreCars = async (addCars) => {
         const limit = 10;
         
         // Paso 1: Obtener la primera página para saber el total de páginas
-        const firstResponse = await fetch(`${symfonyUrl}/car?page=1&limit=${limit}`);
+        const firstResponse = await fetch(`https://proyectodaw.railway.internal/public/car?page=1&limit=${limit}`);
         const firstData = await firstResponse.json();
         console.log(firstData);
         
@@ -45,8 +45,22 @@ const fetchAndStoreCars = async (addCars) => {
 
         const totalPages = firstData.pagination.totalPages;
         let allCars = firstData.data;
-        console.log(allCars);
-       
+
+        // Paso 2: Crear llamadas para las páginas restantes (2 hasta totalPages)
+        const fetches = [];
+        for (let page = 2; page <= totalPages; page++) {
+            fetches.push(
+                fetch(`${symfonyUrl}/car?page=${page}&limit=${limit}`).then(res => res.json())
+            );
+        }
+
+        // Paso 3: Ejecutar en paralelo
+        const restData = await Promise.all(fetches);
+        restData.forEach(res => {
+            if (res && res.data) {
+                allCars = allCars.concat(res.data);
+            }
+        });
 
         // Guardar en localStorage
         const newData = {
