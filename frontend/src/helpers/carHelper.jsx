@@ -40,7 +40,7 @@ export const carList = async (page = 1, limit = 10) => {
     localStorage.setItem("cachedCars", JSON.stringify({
       ...result,
       lastUpdated: new Date().toISOString(),
-    }));
+    }));sd
     return result;
 
   } catch (err) {
