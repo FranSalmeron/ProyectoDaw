@@ -9,7 +9,7 @@ import { getUserIdFromToken } from "../helpers/decodeToken";
 import { useDarkMode } from "../context/DarkModeContext";
 
 const Home = () => {
-  const { cars, addCars } = useCars();
+  const { cars, addCars, clearCars } = useCars();
   const { addFavorites, removeFromData } = useFavorites();
   const [filters, setFilters] = useState({
     city: "",
@@ -47,20 +47,49 @@ const Home = () => {
   useEffect(() => {
     const getCarsAndFavorites = async () => {
       setLoading(true);
+
       try {
-        await getFavorites(userId, addFavorites);
-        await carList(addCars, currentPage, limit); 
-        setLoading(false);
+        if (userId) await getFavorites(userId, addFavorites);
+
+        const storedData = localStorage.getItem("cachedCars");
+        const now = new Date();
+        const cacheDuration = 1 * 60 * 1000; // 1 minuto
+
+        let shouldUseCache = false;
+
+        if (storedData) {
+          const parsed = JSON.parse(storedData);
+          const lastUpdated = new Date(parsed.lastUpdated);
+          const isCacheValid = now - lastUpdated < cacheDuration;
+          shouldUseCache = isCacheValid;
+        }
+
+        // Si el contexto está vacío o ha pasado más de 1 minuto desde la última carga
+        if (cars.length === 0 || !shouldUseCache) {
+          const {
+            cars: fetchedCars,
+            totalPages,
+            currentPage: serverPage,
+          } = await carList(currentPage, limit);
+
+          // Limpiamos el contexto si vamos a recargar (opcional)
+          if (!shouldUseCache) {
+            clearCars();
+          }
+
+          fetchedCars.forEach((car) => addCars(car));
+          setTotalPages(totalPages);
+          setCurrentPage(serverPage);
+        }
       } catch (error) {
-        toast.error(
-          "No se pudieron cargar los coches o los favoritos. Intenta más tarde."
-        );
+        toast.error("No se pudieron cargar los coches o los favoritos.");
+      } finally {
         setLoading(false);
       }
     };
 
     getCarsAndFavorites();
-  }, [currentPage, limit]); // Reactuar cuando la página o el límite cambian
+  }, [currentPage, limit]);
 
   useEffect(() => {
     setFilteredCars(cars);

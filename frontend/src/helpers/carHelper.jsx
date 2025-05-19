@@ -1,42 +1,30 @@
 const symfonyUrl = import.meta.env.VITE_API_URL;
 import { toast } from "react-toastify";
+// carHelper.js
 export const carList = async (addCars, page = 1, limit = 10) => {
   try {
-    const storedData = localStorage.getItem("cachedCars");
+    const storedData = localStorage.getItem('cachedCars');
     const now = new Date();
-    const minutes = 1 * 60 * 1000;
+    const cacheDuration = 1 * 60 * 1000; // 1 minuto
 
     if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      const { cars, lastUpdated, totalCars, totalPages, currentPage } =
-        parsedData;
+      const parsed = JSON.parse(storedData);
+      const isValid = now - new Date(parsed.lastUpdated) < cacheDuration;
 
-      if (now - new Date(lastUpdated) < minutes) {
-        cars.forEach((car) => addCars(car));
-        return { totalPages, currentPage };
-      } else {
-        return await fetchAndStoreCars(addCars, page, limit);
+      if (isValid) {
+        return {
+          cars: parsed.cars,
+          totalPages: parsed.totalPages,
+          currentPage: parsed.currentPage,
+        };
       }
-    } else {
-      return await fetchAndStoreCars(addCars, page, limit);
     }
-  } catch (error) {
-    console.error("Error al obtener coches: ", error);
-  }
-};
 
-const fetchAndStoreCars = async (addCars, page = 1, limit = 10) => {
-  try {
-    const response = await fetch(
-      `${symfonyUrl}/car/?page=${page}&limit=${limit}`
-    );
-    if (!response.ok) {
-      throw new Error("Error fetching cars");
-    }
+    const response = await fetch(`${symfonyUrl}/car/?page=${page}&limit=${limit}`);
+    if (!response.ok) throw new Error("Error al obtener coches");
 
     const data = await response.json();
-
-    const formattedCars = data.cars.map((item) => {
+    const cars = data.cars.map((item) => {
       const car = item[0];
       return {
         ...car,
@@ -44,23 +32,22 @@ const fetchAndStoreCars = async (addCars, page = 1, limit = 10) => {
       };
     });
 
-    const newData = {
-      cars: formattedCars,
+    const result = {
+      cars,
+      totalPages: data.totalPages,
+      currentPage: data.currentPage,
+    };
+
+    localStorage.setItem("cachedCars", JSON.stringify({
+      ...result,
       lastUpdated: new Date().toISOString(),
-      totalCars: data.totalCars,
-      totalPages: data.totalPages,
-      currentPage: data.currentPage,
-    };
+    }));
+    cars.forEach((car) => {addCars(car);});
+    return result;
 
-    localStorage.setItem("cachedCars", JSON.stringify(newData));
-    formattedCars.forEach((car) => addCars(car));
-
-    return {
-      totalPages: data.totalPages,
-      currentPage: data.currentPage,
-    };
-  } catch (error) {
-    console.error("Error al obtener coches: ", error);
+  } catch (err) {
+    console.error("Error cargando coches", err);
+    return { cars: [], totalPages: 1, currentPage: 1 };
   }
 };
 
