@@ -19,30 +19,18 @@ use Psr\Log\LoggerInterface;
 class CarController extends AbstractController
 {
     #[Route('/', name: 'app_car_index', methods: ['GET'])]
-    public function index(Request $request, CarRepository $carRepository, SerializerInterface $serializer): Response
+    public function index(CarRepository $carRepository, SerializerInterface $serializer, LoggerInterface $logger): Response
     {
-        $page = max(1, (int) $request->query->get('page', 1)); // valor por defecto: 1
-        $limit = min(50, (int) $request->query->get('limit', 10)); // máximo 50 por seguridad
-        $offset = ($page - 1) * $limit;
-
-        $cars = $carRepository->findBy([], null, $limit, $offset);
-        $totalCars = $carRepository->count([]);
+        $cars = $carRepository->findMostFavoriteCars();
 
         if (empty($cars)) {
             return new JsonResponse(['message' => 'No cars found'], Response::HTTP_NOT_FOUND);
         }
 
         $jsonCars = $serializer->serialize($cars, 'json', ['groups' => 'car_list']);
+        $logger->info('Coches serializados: ' . $jsonCars);
 
-        return new JsonResponse([
-            'data' => json_decode($jsonCars),
-            'pagination' => [
-                'total' => $totalCars,
-                'page' => $page,
-                'limit' => $limit,
-                'totalPages' => ceil($totalCars / $limit),
-            ],
-        ], Response::HTTP_OK);
+        return new JsonResponse(json_decode($jsonCars), Response::HTTP_OK);
     }
 
     #[Route('/car/user/{id}', name: 'app_car_index_by_user', methods: ['GET'])]

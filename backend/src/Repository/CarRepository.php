@@ -33,6 +33,18 @@ class CarRepository extends ServiceEntityRepository
             ->getArrayResult();
     }
 
+    public function findMostFavoriteCars(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c.id, c.brand, c.model, COALESCE(COUNT(cf.id), 0) AS favorites_count')
+            ->leftJoin('App\Entity\CarFavorite', 'cf', 'WITH', 'cf.car = c.id')
+            ->groupBy('c.id')
+            ->orderBy('favorites_count', 'DESC')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
+
 
     //    /**
     //     * @return Car[] Returns an array of Car objects

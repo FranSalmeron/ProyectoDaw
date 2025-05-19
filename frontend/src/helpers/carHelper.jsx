@@ -33,49 +33,26 @@ export const carList = async (addCars) => {
 // Función para hacer la petición y almacenar los coches junto con el timestamp
 const fetchAndStoreCars = async (addCars) => {
     try {
-        const limit = 10;
-        
-        // Paso 1: Obtener la primera página para saber el total de páginas
-        const firstResponse = await fetch(`https://proyectodaw.railway.internal/public/car?page=1&limit=${limit}`);
-        const firstData = await firstResponse.json();
-        console.log(firstData);
-        
-        // Aseguramos que symfonyUrl esté correctamente configurado
-        console.log("symfonyUrl en fetchAndStoreCars:", symfonyUrl);  // Asegúrate de que esté correcto
-
-        const totalPages = firstData.pagination.totalPages;
-        let allCars = firstData.data;
-
-        // Paso 2: Crear llamadas para las páginas restantes (2 hasta totalPages)
-        const fetches = [];
-        for (let page = 2; page <= totalPages; page++) {
-            fetches.push(
-                fetch(`${symfonyUrl}/car?page=${page}&limit=${limit}`).then(res => res.json())
-            );
+        const response = await fetch(`${symfonyUrl}/car/`);
+        if (!response.ok) {
+            throw new Error('Error fetching cars');
         }
-
-        // Paso 3: Ejecutar en paralelo
-        const restData = await Promise.all(fetches);
-        restData.forEach(res => {
-            if (res && res.data) {
-                allCars = allCars.concat(res.data);
-            }
-        });
-
-        // Guardar en localStorage
-        const newData = {
-            cars: allCars,
-            lastUpdated: new Date().toISOString(),
-        };
-        localStorage.setItem("cachedCars", JSON.stringify(newData));
-        console.log(allCars);
-        // Pasar al estado global
-        allCars.forEach(car => addCars(car));
+        const data = await response.json();
+        if (Array.isArray(data) && data.length > 0) {
+            // Guardamos los datos en localStorage con el timestamp de la última actualización
+            const newData = {
+                cars: data,
+                lastUpdated: new Date().toISOString()  // Guardamos la fecha actual
+            };
+            localStorage.setItem('cachedCars', JSON.stringify(newData));
+            data.forEach(car => addCars(car));
+        } else {
+            console.error("No hay coches disponibles o la respuesta no es un array válido");
+        }
     } catch (error) {
         console.error("Error al obtener coches: ", error);
     }
 };
-
 
 // Obtener coches por usuario
 export const carByUser = async (userId) => {
