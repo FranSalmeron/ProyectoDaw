@@ -17,7 +17,7 @@ export const carList = async (addCars) => {
             if (now - new Date(lastUpdated) < minutes) {
                 cars.forEach(car => addCars(car));  // Agregamos los coches desde localStorage
             } else {
-                // Si han pasado más de 30 minutos, necesitamos actualizar los datos
+                // Si han pasado más de 1 minutos, necesitamos actualizar los datos
                 console.log("La caché ha caducado. Actualizando datos...");
                 await fetchAndStoreCars(addCars);
             }
@@ -38,10 +38,10 @@ const fetchAndStoreCars = async (addCars) => {
     // Paso 1: Obtener la primera página para saber el total de páginas
     const firstResponse = await fetch(`${symfonyUrl}/car?page=1&limit=${limit}`);
     const firstData = await firstResponse.json();
-
+    console.log(firstData);
     const totalPages = firstData.pagination.totalPages;
     let allCars = firstData.data;
-
+    console.log(allCars);
     // Paso 2: Crear llamadas para las páginas restantes (2 hasta totalPages)
     const fetches = [];
     for (let page = 2; page <= totalPages; page++) {
