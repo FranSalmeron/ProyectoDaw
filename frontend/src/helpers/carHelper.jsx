@@ -64,7 +64,7 @@ const fetchAndStoreCars = async (addCars) => {
       lastUpdated: new Date().toISOString(),
     };
     localStorage.setItem("cachedCars", JSON.stringify(newData));
-
+    console.log(allCars);
     // Pasar al estado global
     allCars.forEach(car => addCars(car));
   } catch (error) {
