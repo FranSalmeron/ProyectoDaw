@@ -2,33 +2,29 @@ const symfonyUrl = import.meta.env.VITE_API_URL
 import { toast } from 'react-toastify'; 
 
 // Obtener todos los coches
-export const carList = async (addCars) => {
-    try {
-        // Primero, revisamos si hay datos en el localStorage
-        const storedData = localStorage.getItem('cachedCars');
-        
-        const now = new Date();
-        const minutes = 1 * 60 * 1000; 
-        // Si existe cachedData en localStorage
-        if (storedData) {
-            const { cars, lastUpdated } = JSON.parse(storedData);  // Desestructuramos el objeto
+export const carList = async (addCars, page = 1, limit = 10) => {
+  try {
+    const storedData = localStorage.getItem('cachedCars');
+    const now = new Date();
+    const minutes = 1 * 60 * 1000;
 
-            // Verificamos si los datos son válidos y si no ha pasado el tiempo de expiración
-            if (now - new Date(lastUpdated) < minutes) {
-                cars.forEach(car => addCars(car));  // Agregamos los coches desde localStorage
-            } else {
-                // Si han pasado más de 30 minutos, necesitamos actualizar los datos
-                console.log("La caché ha caducado. Actualizando datos...");
-                await fetchAndStoreCars(addCars, 1, 10); // Actualizamos los datos
-            }
-        } else {
-            // Si no hay datos en localStorage, hacer la petición a la API
-            await fetchAndStoreCars(addCars, 1, 10); // Hacemos la petición a la API
-        }
-    } catch (error) {
-        console.error("Error al obtener coches: ", error);
+    if (storedData) {
+      const { cars, lastUpdated } = JSON.parse(storedData);
+
+      if (now - new Date(lastUpdated) < minutes) {
+        cars.forEach(car => addCars(car));
+      } else {
+        console.log("La caché ha caducado. Actualizando datos...");
+        await fetchAndStoreCars(addCars, page, limit);
+      }
+    } else {
+      await fetchAndStoreCars(addCars, page, limit);
     }
+  } catch (error) {
+    console.error("Error al obtener coches: ", error);
+  }
 };
+
 
 // Función para hacer la petición y almacenar los coches junto con el timestamp
 const fetchAndStoreCars = async (addCars, page = 1, limit = 10) => {

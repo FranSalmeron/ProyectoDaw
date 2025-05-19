@@ -49,7 +49,7 @@ const Home = () => {
       setLoading(true);
       try {
         await getFavorites(userId, addFavorites);
-        await fetchAndStoreCars(addCars, currentPage, limit); // Llamada con parámetros de paginación
+        await carList(addCars, currentPage, limit); // Llamada con parámetros de paginación
         setLoading(false);
       } catch (error) {
         toast.error(
