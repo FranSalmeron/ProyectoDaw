@@ -45,22 +45,8 @@ const fetchAndStoreCars = async (addCars) => {
 
         const totalPages = firstData.pagination.totalPages;
         let allCars = firstData.data;
-
-        // Paso 2: Crear llamadas para las páginas restantes (2 hasta totalPages)
-        const fetches = [];
-        for (let page = 2; page <= totalPages; page++) {
-            fetches.push(
-                fetch(`${symfonyUrl}/car?page=${page}&limit=${limit}`).then(res => res.json())
-            );
-        }
-
-        // Paso 3: Ejecutar en paralelo
-        const restData = await Promise.all(fetches);
-        restData.forEach(res => {
-            if (res && res.data) {
-                allCars = allCars.concat(res.data);
-            }
-        });
+        console.log(allCars);
+       
 
         // Guardar en localStorage
         const newData = {
