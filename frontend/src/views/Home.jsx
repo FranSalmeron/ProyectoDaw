@@ -69,7 +69,6 @@ const Home = () => {
           const {
             cars: fetchedCars,
             totalPages,
-            currentPage: serverPage,
           } = await carList(currentPage, limit);
 
           // Limpiamos el contexto si vamos a recargar (opcional)
@@ -79,7 +78,11 @@ const Home = () => {
 
           fetchedCars.forEach((car) => addCars(car));
           setTotalPages(totalPages);
-          setCurrentPage(serverPage);
+
+          // Solo establece currentPage si estás en la primera carga y no lo ha cambiado el usuario
+          if (currentPage > totalPages) {
+            setCurrentPage(1); // Volver a la página 1 si la actual no es válida
+          }
         }
       } catch (error) {
         toast.error("No se pudieron cargar los coches o los favoritos.");

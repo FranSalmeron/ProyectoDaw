@@ -35,7 +35,6 @@ export const carList = async (addCars, page = 1, limit = 10) => {
     const result = {
       cars,
       totalPages: data.totalPages,
-      currentPage: data.currentPage,
     };
 
     localStorage.setItem("cachedCars", JSON.stringify({
