@@ -32,17 +32,20 @@ class CarRepository extends ServiceEntityRepository
             ->getQuery()
             ->getArrayResult();
     }
-
-    public function findMostFavoriteCars(): array
+    
+    public function findMostFavoriteCars(int $limit, int $offset): array
     {
         return $this->createQueryBuilder('c')
             ->select('c, COUNT(cf.id) AS favorites_count')
             ->leftJoin('App\Entity\CarFavorite', 'cf', 'WITH', 'cf.car = c')
             ->groupBy('c.id')
             ->orderBy('favorites_count', 'DESC')
+            ->setMaxResults($limit) // Número máximo de resultados (por página)
+            ->setFirstResult($offset) // Desplazamiento según la página
             ->getQuery()
             ->getResult();
     }
+
 
 
 

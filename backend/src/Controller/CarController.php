@@ -19,20 +19,33 @@ use Symfony\Component\Serializer\SerializerInterface;
 class CarController extends AbstractController
 {
     #[Route('/', name: 'app_car_index', methods: ['GET'])]
-    public function index(CarRepository $carRepository, SerializerInterface $serializer): Response
+    public function index(CarRepository $carRepository, SerializerInterface $serializer, Request $request): Response
     {
-        $cars = $carRepository->findMostFavoriteCars();
+        $page = (int) $request->query->get('page', 1);
+        $limit = (int) $request->query->get('limit', 10);
+        $offset = ($page - 1) * $limit;
+
+        // Obtener coches y el total de coches
+        $cars = $carRepository->findMostFavoriteCars($limit, $offset);
+        $totalCars = count($carRepository->findMostFavoriteCars(1000000, 0)); // Obtener el total de coches (sin paginación)
 
         if (empty($cars)) {
             return new JsonResponse(['message' => 'No cars found'], Response::HTTP_NOT_FOUND);
         }
 
-       $cars = array_map(fn($item) => $item[0], $carRepository->findMostFavoriteCars());
-       $jsonCars = $serializer->serialize($cars, 'json', ['groups' => 'car_list']);
+        $jsonCars = $serializer->serialize($cars, 'json', ['groups' => 'car_list']);
 
+        // Calcular el total de páginas
+        $totalPages = ceil($totalCars / $limit);
 
-        return new JsonResponse(json_decode($jsonCars), Response::HTTP_OK);
+        return new JsonResponse([
+            'cars' => json_decode($jsonCars),
+            'totalCars' => $totalCars,
+            'totalPages' => $totalPages,
+            'currentPage' => $page
+        ], Response::HTTP_OK);
     }
+
 
     #[Route('/car/user/{id}', name: 'app_car_index_by_user', methods: ['GET'])]
     public function indexByUser(CarRepository $carRepository, SerializerInterface $serializer, $id): Response
