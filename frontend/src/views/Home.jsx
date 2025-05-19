@@ -21,7 +21,7 @@ const Home = () => {
     model: "",
     decade: "",
   });
-  const { cars, addCars, removeFromData } = useCars();
+  const { cars, addCars } = useCars();
   const [filteredCars, setFilteredCars] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -30,7 +30,7 @@ const Home = () => {
   const indexOfLastCar = currentPage * carsPerPage;
   const indexOfFirstCar = indexOfLastCar - carsPerPage;
   const currentCars = filteredCars.slice(indexOfFirstCar, indexOfLastCar);
-
+  const { addFavorites, removeFromData } = useFavorites();
   const tokenUserId = getUserIdFromToken();
   const userId = tokenUserId ? tokenUserId : null;
 
