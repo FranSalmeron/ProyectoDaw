@@ -27,7 +27,7 @@ class CarController extends AbstractController
 
         // Obtener coches y el total de coches
         $cars = $carRepository->findMostFavoriteCars($limit, $offset);
-        $totalCars = count($carRepository->findMostFavoriteCars(1000000, 0)); // Obtener el total de coches (sin paginación)
+        $totalCars = count($carRepository->findMostFavoriteCars(100, 0)); // Obtener el total de coches (sin paginación)
 
         if (empty($cars)) {
             return new JsonResponse(['message' => 'No cars found'], Response::HTTP_NOT_FOUND);

@@ -31,27 +31,30 @@ export const carList = async (addCars) => {
 };
 
 // Función para hacer la petición y almacenar los coches junto con el timestamp
-const fetchAndStoreCars = async (addCars) => {
-    try {
-        const response = await fetch(`${symfonyUrl}/car/`);
-        if (!response.ok) {
-            throw new Error('Error fetching cars');
-        }
-        const data = await response.json();
-        if (Array.isArray(data) && data.length > 0) {
-            // Guardamos los datos en localStorage con el timestamp de la última actualización
-            const newData = {
-                cars: data,
-                lastUpdated: new Date().toISOString()  // Guardamos la fecha actual
-            };
-            localStorage.setItem('cachedCars', JSON.stringify(newData));
-            data.forEach(car => addCars(car));
-        } else {
-            console.error("No hay coches disponibles o la respuesta no es un array válido");
-        }
-    } catch (error) {
-        console.error("Error al obtener coches: ", error);
+const fetchAndStoreCars = async (addCars, page = 1, limit = 10) => {
+  try {
+    const response = await fetch(`${symfonyUrl}/car/?page=${page}&limit=${limit}`);
+    if (!response.ok) {
+      throw new Error('Error fetching cars');
     }
+    const data = await response.json();
+    if (Array.isArray(data.cars) && data.cars.length > 0) {
+      // Guardamos los datos en localStorage con el timestamp de la última actualización
+      const newData = {
+        cars: data.cars,
+        lastUpdated: new Date().toISOString(),  // Guardamos la fecha actual
+        totalCars: data.totalCars,
+        totalPages: data.totalPages,
+        currentPage: data.currentPage
+      };
+      localStorage.setItem('cachedCars', JSON.stringify(newData));
+      data.cars.forEach(car => addCars(car));  // Agregar los coches a la lista
+    } else {
+      console.error("No hay coches disponibles o la respuesta no es un array válido");
+    }
+  } catch (error) {
+    console.error("Error al obtener coches: ", error);
+  }
 };
 
 // Obtener coches por usuario
