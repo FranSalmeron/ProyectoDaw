@@ -3,11 +3,15 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { ROUTES } from "../routes/paths";
 import { isAdmin } from "../helpers/decodeToken";
 import { useDarkMode } from "../context/DarkModeContext"; // Usar el contexto de modo oscuro
+import { useCars } from "../context/CarContext"; // Usar el contexto de coches
+import { useFavorites } from "../context/FavoriteContext";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const userName = localStorage.getItem("username");
+  const { clearCars } = useCars();
+  const { clearFavorites } = useFavorites();
 
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
@@ -16,6 +20,8 @@ const NavBar = () => {
 
   const handleLogout = () => {
     localStorage.clear();
+    clearCars();
+    clearFavorites();
     navigate(ROUTES.HOME);
   };
 
