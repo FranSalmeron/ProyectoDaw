@@ -20,7 +20,6 @@ const NavBar = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-    clearCars();
     clearFavorites();
     navigate(ROUTES.HOME);
   };

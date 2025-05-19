@@ -33,7 +33,7 @@ const Chat_list = () => {
   }
 
   return (
-    <div className={`${bgMain} min-h-screen transition-colors duration-300`}>
+    <div className={`${bgMain} min-h-screen transition-colors duration-300 pt-6 pb-6`}>
       <div className={`max-w-5xl mx-auto p-6 rounded-lg shadow-md border ${bgCard} ${borderStyle}`}>
         {isAdmin() ? (
           <>
