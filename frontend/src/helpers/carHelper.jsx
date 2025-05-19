@@ -19,11 +19,11 @@ export const carList = async (addCars) => {
             } else {
                 // Si han pasado más de 30 minutos, necesitamos actualizar los datos
                 console.log("La caché ha caducado. Actualizando datos...");
-                await fetchAndStoreCars(addCars);
+                await fetchAndStoreCars(addCars, 1, 10); // Actualizamos los datos
             }
         } else {
             // Si no hay datos en localStorage, hacer la petición a la API
-            await fetchAndStoreCars(addCars);
+            await fetchAndStoreCars(addCars, 1, 10); // Hacemos la petición a la API
         }
     } catch (error) {
         console.error("Error al obtener coches: ", error);
