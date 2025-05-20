@@ -41,8 +41,9 @@ const Home = () => {
     ? "bg-[#1C1C1E] text-white"
     : "bg-[#F5EFEB] text-black"; // fondo principal y texto
   const borderFilters = isDarkMode
-    ? "border-gray-600 text-white placeholder-gray-400"
-    : "border-gray-300 text-black placeholder-gray-700  bg-white"; // bordes y texto inputs/select
+    ? "border-gray-600 text-white placeholder-gray-400 bg-[#2C2C2E]" // Fondo oscuro y texto blanco
+    : "border-gray-300 text-black placeholder-gray-700  bg-white"; // Fondo blanco y texto negro
+  // bordes y texto inputs/select
   const btnClear = isDarkMode
     ? "bg-red-600 hover:bg-red-700"
     : "bg-red-500 hover:bg-red-600"; // botón limpiar filtros
@@ -381,7 +382,7 @@ const Home = () => {
           placeholder="Ej: corolla"
         />
 
-        <label className="block mb-2">Marca</label>
+       <label className={`block mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>Marca</label>
         <select
           name="brand"
           value={filters.brand}
@@ -399,7 +400,7 @@ const Home = () => {
           ))}
         </select>
 
-        <label className="block mb-2">Seleccionar Ciudad</label>
+        <label className={`block mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>Seleccionar ciudad</label>
         <select
           name="city"
           value={filters.city}
@@ -474,7 +475,7 @@ const Home = () => {
           />
         </div>
 
-        <label className="block mb-2">Tracción</label>
+        <label className={`block mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>Tracción</label>
         <select
           name="traction"
           value={filters.traction}
@@ -487,7 +488,7 @@ const Home = () => {
           <option value="total">Total</option>
         </select>
 
-        <label className="block mb-2">Tipo de Combustible</label>
+        <label className={`block mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>Combustible</label>
         <select
           name="fuelType"
           value={filters.fuelType}
@@ -500,7 +501,7 @@ const Home = () => {
           <option value="electric">Eléctrico</option>
         </select>
 
-        <label className="block mb-2">Filtrar por década</label>
+        <label className={`block mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>Filtrar por década</label>
         <select
           name="decade"
           value={filters.decade}
