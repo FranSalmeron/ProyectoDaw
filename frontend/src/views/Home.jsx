@@ -51,6 +51,7 @@ const Home = () => {
     const getAllCars = async () => {
       setLoading(true);
       try {
+        // Cargar favoritos si existe un usuario
         if (userId) await getFavorites(userId, addFavorites);
 
         const cacheDuration = 1 * 60 * 1000; // 1 minuto
@@ -87,25 +88,34 @@ const Home = () => {
           }
         }
 
-        // Si no hay caché válida: traemos todas las páginas
+        // Si no hay caché válida, traemos todas las páginas
         const firstPage = await carList(1, limit);
-        let allCars = [...firstPage.cars];
         const pagesToFetch = firstPage.totalPages;
+        const pagePromises = [];
 
+        // Agregar promesas para cada página a cargar
         for (let i = 2; i <= pagesToFetch; i++) {
-          const nextPage = await carList(i, limit);
-          allCars = allCars.concat(nextPage.cars);
+          pagePromises.push(carList(i, limit));
         }
 
+        // Esperar todas las respuestas de las páginas en paralelo
+        const results = await Promise.all(pagePromises);
+        let allCars = [
+          firstPage.cars,
+          ...results.map((res) => res.cars),
+        ].flat();
+
+        // Limpiar el contexto y agregar los coches obtenidos
         clearCars();
         allCars.forEach((car) => addCars(car));
 
+        // Filtrar los coches según los filtros seleccionados
         const filteredCars = applyFilters(allCars);
-
         setFilteredCars(filteredCars);
         setTotalPages(pagesToFetch);
         setCurrentPage(1);
 
+        // Guardar los coches en caché
         localStorage.setItem(
           "cachedCars",
           JSON.stringify({
@@ -123,7 +133,7 @@ const Home = () => {
     };
 
     getAllCars();
-  }, [clearCars]);
+  }, []); // Solo ejecutarlo una vez cuando el componente se monte
 
   // Función que aplica los filtros a la lista de coches
   const applyFilters = (cars) => {
