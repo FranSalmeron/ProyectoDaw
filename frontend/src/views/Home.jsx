@@ -18,9 +18,10 @@ const Home = () => {
     traction: "",
     fuelType: "",
     seats: [1, 9],
-    price: { min: 0, max: 1000000 },
-    mileage: { min: 0, max: 500000 },
+    price: { min: 0 },
+    mileage: { min: 0},
     decade: "",
+    model: "",
   });
   const [filteredCars, setFilteredCars] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
@@ -63,9 +64,6 @@ const Home = () => {
           cars.length &&
           now - new Date(cars[0]?.lastUpdated) < cacheDuration
         ) {
-          const filteredFromContext = applyFilters(cars);
-          setFilteredCars(filteredFromContext);
-          setTotalPages(Math.ceil(filteredFromContext.length / limit));
           setCurrentPage(1);
           setLoading(false);
           return;
@@ -104,15 +102,10 @@ const Home = () => {
           firstPage.cars,
           ...results.map((res) => res.cars),
         ].flat();
-
+        allCars = allCars.map(car => ({ ...car, lastUpdated: new Date().toISOString() }));
         // Limpiar el contexto y agregar los coches obtenidos
         clearCars();
         allCars.forEach((car) => addCars(car));
-
-        // Filtrar los coches según los filtros seleccionados
-        const filteredCars = applyFilters(allCars);
-        setFilteredCars(filteredCars);
-        setTotalPages(pagesToFetch);
         setCurrentPage(1);
 
         // Guardar los coches en caché
@@ -137,9 +130,9 @@ const Home = () => {
   }, []); // Solo ejecutarlo una vez cuando el componente se monte
 
   useEffect(() => {
-    const filtered = applyFilters(cars);
-    setFilteredCars(filtered);
-    setCurrentPage(1); // Reinicia a la primera página si cambian los filtros
+    const filtered = applyFilters(cars); // Aplica filtros a TODOS los coches
+    setFilteredCars(filtered); // Guarda los coches filtrados
+    setCurrentPage(1); // Resetea la paginación
     setTotalPages(Math.ceil(filtered.length / limit));
   }, [filters, cars]);
 
