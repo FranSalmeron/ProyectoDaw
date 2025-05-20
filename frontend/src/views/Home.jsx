@@ -123,7 +123,7 @@ const Home = () => {
     };
 
     getAllCars();
-  }, [cars, addCars, clearCars, userId, limit, filters]);
+  }, [clearCars]);
 
   // Función que aplica los filtros a la lista de coches
   const applyFilters = (cars) => {
