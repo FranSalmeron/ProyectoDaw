@@ -7,10 +7,9 @@ import { useCars } from "../context/CarContext";
 import { getUserIdFromToken, isAdmin } from "../helpers/decodeToken";
 import EditCarForm from "./EditCarForm";
 import { deleteCar } from "../helpers/carHelper";
-import LoadingSpinner from "./LoadingSpinner/LoadingSpinner";
 import transformCloudinaryUrl from "../helpers/cloudinaryHelper";
 import { useDarkMode } from "../context/DarkModeContext";
-import loadingSpinner from "./LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "./LoadingSpinner/LoadingSpinner";
 
 const CarImage = ({ car }) => (
   <div className="relative w-full h-38 overflow-hidden mb-1">
@@ -115,7 +114,7 @@ const CarCards = ({
       } min-h-screen overflow-y-auto mb-4 sm:mb-0 relative z-10`}
     >
       {loading || !cars || cars.length === 0 ? (
-        <loadingSpinner />
+        <LoadingSpinner />
       ) : (
         (() => {
           const visibleCars = cars.filter((car) => {
