@@ -19,7 +19,7 @@ const Home = () => {
     fuelType: "",
     seats: [1, 9],
     price: { min: 0, max: 99999999 },
-    mileage: { min: 0, max: 99999999},
+    mileage: { min: 0, max: 99999999 },
     decade: "",
     model: "",
   });
@@ -50,84 +50,71 @@ const Home = () => {
 
   useEffect(() => {
     const getAllCars = async () => {
-      setLoading(true);
-      try {
-        // Cargar favoritos si existe un usuario
-        if (userId) await getFavorites(userId, addFavorites);
-
-        const cacheDuration = 1 * 60 * 1000; // 1 minuto
+      // Si ya tenemos coches en el estado global (con caché válido), aplicamos los filtros y terminamos
+      if (cars.length) {
         const now = new Date();
-        const stored = localStorage.getItem("cachedCars");
-
-        // Si hay coches en el contexto y no ha pasado un minuto desde la última carga
-        if (
-          cars.length &&
-          now - new Date(cars[0]?.lastUpdated) < cacheDuration
-        ) {
+        const isCacheValid =
+          now - new Date(cars[0]?.lastUpdated) < cacheDuration;
+        if (isCacheValid) {
+          const filtered = applyFilters(cars); // Filtrar coches según los filtros actuales
+          setFilteredCars(filtered);
+          setTotalPages(Math.ceil(filtered.length / limit));
           setCurrentPage(1);
           setLoading(false);
-          return;
+          return; // Si el caché es válido, no hacer nada más
         }
-
-        // Si no hay caché válida ni coches en el contexto, hacer la petición
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          const isValid = now - new Date(parsed.lastUpdated) < cacheDuration;
-
-          if (isValid && parsed.cars?.length) {
-            clearCars();
-            parsed.cars.forEach((car) => addCars(car));
-            const filteredFromCache = applyFilters(parsed.cars);
-            setFilteredCars(filteredFromCache);
-            setTotalPages(Math.ceil(filteredFromCache.length / limit));
-            setCurrentPage(1);
-            setLoading(false);
-            return;
-          }
-        }
-
-        // Si no hay caché válida, traemos todas las páginas
-        const firstPage = await carList(1, limit);
-        const pagesToFetch = firstPage.totalPages;
-        const pagePromises = [];
-
-        // Agregar promesas para cada página a cargar
-        for (let i = 2; i <= pagesToFetch; i++) {
-          pagePromises.push(carList(i, limit));
-        }
-
-        // Esperar todas las respuestas de las páginas en paralelo
-        const results = await Promise.all(pagePromises);
-        let allCars = [
-          firstPage.cars,
-          ...results.map((res) => res.cars),
-        ].flat();
-        allCars = allCars.map(car => ({ ...car, lastUpdated: new Date().toISOString() }));
-        // Limpiar el contexto y agregar los coches obtenidos
-        clearCars();
-        allCars.forEach((car) => addCars(car));
-        setCurrentPage(1);
-
-        // Guardar los coches en caché
-        localStorage.setItem(
-          "cachedCars",
-          JSON.stringify({
-            cars: allCars,
-            totalPages: pagesToFetch,
-            currentPage: 1,
-            lastUpdated: new Date().toISOString(),
-          })
-        );
-      } catch (err) {
-        toast.error("No se pudieron cargar los coches o los favoritos.");
-        console.error("Error al cargar coches o favoritos:", err);
-      } finally {
-        setLoading(false);
       }
+
+      // Si no hay coches en el estado global o el caché ha expirado, revisamos el localStorage
+      const stored = localStorage.getItem("cars");
+      const now = new Date();
+
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const isValid = now - new Date(parsed.lastUpdated) < cacheDuration;
+
+        if (isValid && parsed.cars?.length) {
+          // Si el caché del localStorage es válido, lo usamos
+          clearCars(); // Limpiar los coches actuales en el estado global
+          parsed.cars.forEach((car) => addCars(car)); // Añadir los coches del localStorage
+
+          // Aplicar filtros a los coches obtenidos del caché
+          const filteredFromCache = applyFilters(parsed.cars);
+          setFilteredCars(filteredFromCache);
+          setTotalPages(Math.ceil(filteredFromCache.length / limit));
+          setCurrentPage(1);
+          setLoading(false);
+          return; // Finalizamos aquí si usamos el caché
+        }
+      }
+
+      // Si no tenemos coches válidos en el caché, hacemos la llamada a la API para obtener los coches
+      const response = await axios.get("/api/cars");
+      const fetchedCars = response.data.cars;
+      const fetchedDate = new Date();
+
+      // Actualizar los coches en el estado global
+      fetchedCars.forEach((car) => addCars(car));
+
+      // Guardar los coches en el localStorage con la fecha de la última actualización
+      localStorage.setItem(
+        "cars",
+        JSON.stringify({
+          cars: fetchedCars,
+          lastUpdated: fetchedDate.toISOString(),
+        })
+      );
+
+      // Filtrar los coches recién obtenidos
+      const filtered = applyFilters(fetchedCars);
+      setFilteredCars(filtered);
+      setTotalPages(Math.ceil(filtered.length / limit));
+      setCurrentPage(1);
+      setLoading(false);
     };
 
-    getAllCars();
-  }, []); // Solo ejecutarlo una vez cuando el componente se monte
+    getAllCars(); // Llamada a la función que carga los coches
+  }, []);
 
   useEffect(() => {
     const filtered = applyFilters(cars); // Aplica filtros a TODOS los coches
@@ -484,7 +471,7 @@ const Home = () => {
           className={`p-2 border rounded w-full mb-4 ${borderFilters}`}
         >
           <option value="">Seleccionar combustible</option>
-          <option value="gasoline">Gasolina</option>
+          <option value="gasolina">Gasolina</option>
           <option value="diesel">Diesel</option>
           <option value="electric">Eléctrico</option>
         </select>
