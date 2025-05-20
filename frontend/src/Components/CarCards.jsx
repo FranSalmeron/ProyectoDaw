@@ -37,7 +37,9 @@ const formatBrand = (brand) =>
   brand
     ? brand
         .split("_")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .map(
+          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        )
         .join(" ")
     : "";
 
@@ -54,6 +56,7 @@ const CarCards = ({
   const userId = getUserIdFromToken();
   const navigate = useNavigate();
   const { isDarkMode } = useDarkMode();
+  console.log("cars", cars);
 
   const isFavorite = (carId) =>
     favorites.some((fav) => fav.car && fav.car.id === carId);
@@ -112,7 +115,11 @@ const CarCards = ({
     >
       {loading ? (
         <LoadingSpinner />
-      ) : (() => {
+      ) : (
+        (() => {
+          if (!cars || !Array.isArray(cars))
+            return <p>Error al cargar coches.</p>;
+
           const visibleCars = cars.filter((car) => {
             if (isAdmin()) {
               return car.CarSold === "subido" || car.CarSold === "baneado";
@@ -122,6 +129,10 @@ const CarCards = ({
             }
             return car.CarSold === "subido";
           });
+          if (cars.length === 0) {
+            // No se han cargado coches todavía
+            return <LoadingSpinner />;
+          }
 
           return visibleCars.length > 0 ? (
             <ul className="space-y-6">
@@ -133,16 +144,12 @@ const CarCards = ({
                       ? "bg-[#2C2C2E] text-white"
                       : "bg-white text-black"
                   } p-4 shadow-md rounded-lg relative ${
-                    car.CarSold === "baneado"
-                      ? "border-2 border-red-500"
-                      : ""
+                    car.CarSold === "baneado" ? "border-2 border-red-500" : ""
                   }`}
                 >
                   <div
                     className="cursor-pointer"
-                    onClick={() =>
-                      navigate(`/car_details`, { state: { car } })
-                    }
+                    onClick={() => navigate(`/car_details`, { state: { car } })}
                   >
                     {car.CarSold === "baneado" && (
                       <div
@@ -260,7 +267,8 @@ const CarCards = ({
           ) : (
             <p>No hay coches disponibles en este momento.</p>
           );
-        })()}
+        })()
+      )}
     </div>
   );
 };
