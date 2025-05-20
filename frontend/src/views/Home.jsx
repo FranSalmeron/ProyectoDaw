@@ -53,7 +53,7 @@ const Home = () => {
       try {
         if (userId) await getFavorites(userId, addFavorites);
 
-        const cacheDuration = 60 * 1000;
+        const cacheDuration = 1 * 60 * 1000; // 1 minuto
         const now = new Date();
         const stored = localStorage.getItem("cachedCars");
 
@@ -61,22 +61,23 @@ const Home = () => {
           const parsed = JSON.parse(stored);
           const isValid = now - new Date(parsed.lastUpdated) < cacheDuration;
 
-          if (isValid) {
+          if (isValid && parsed.cars?.length) {
             clearCars();
             parsed.cars.forEach((car) => addCars(car));
             setFilteredCars(parsed.cars);
             setTotalPages(parsed.totalPages);
+            setCurrentPage(1);
             setLoading(false);
             return;
           }
         }
 
-        // Si no hay caché válido: traemos todas las páginas
+        // Si no hay caché válida: traemos todas las páginas
         const firstPage = await carList(1, limit);
         let allCars = [...firstPage.cars];
+        const pagesToFetch = firstPage.totalPages;
 
-        // Traemos el resto de las páginas si las hay
-        for (let i = 2; i <= firstPage.totalPages; i++) {
+        for (let i = 2; i <= pagesToFetch; i++) {
           const nextPage = await carList(i, limit);
           allCars = allCars.concat(nextPage.cars);
         }
@@ -84,14 +85,15 @@ const Home = () => {
         clearCars();
         allCars.forEach((car) => addCars(car));
         setFilteredCars(allCars);
-        setTotalPages(firstPage.totalPages);
+        setTotalPages(pagesToFetch);
+        setCurrentPage(1);
 
-        // Guardamos TODO en caché
+        // Guardamos todo en caché
         localStorage.setItem(
           "cachedCars",
           JSON.stringify({
             cars: allCars,
-            totalPages: firstPage.totalPages,
+            totalPages: pagesToFetch,
             currentPage: 1,
             lastUpdated: new Date().toISOString(),
           })
