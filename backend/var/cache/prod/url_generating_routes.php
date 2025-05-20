@@ -10,7 +10,7 @@ return [
     'app_login' => [[], ['_controller' => 'App\\Controller\\AuthController::login'], [], [['text', '/api/login']], [], [], []],
     'app_refresh_token' => [[], ['_controller' => 'App\\Controller\\AuthController::refreshToken'], [], [['text', '/api/refreshToken']], [], [], []],
     'app_car_index' => [[], ['_controller' => 'App\\Controller\\CarController::index'], [], [['text', '/car/']], [], [], []],
-    'app_car_index_by_user' => [['id'], ['_controller' => 'App\\Controller\\CarController::indexByUser'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/car/car/user']], [], [], []],
+    'app_car_index_by_user' => [['id'], ['_controller' => 'App\\Controller\\CarController::indexByUser'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/car/user']], [], [], []],
     'app_car_new' => [[], ['_controller' => 'App\\Controller\\CarController::new'], [], [['text', '/car/new']], [], [], []],
     'app_car_show' => [['id'], ['_controller' => 'App\\Controller\\CarController::showById'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/car']], [], [], []],
     'app_car_edit' => [['id'], ['_controller' => 'App\\Controller\\CarController::edit'], [], [['text', '/edit'], ['variable', '/', '[^/]++', 'id', true], ['text', '/car']], [], [], []],

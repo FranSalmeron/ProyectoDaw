@@ -47,7 +47,7 @@ class CarController extends AbstractController
     }
 
 
-    #[Route('/car/user/{id}', name: 'app_car_index_by_user', methods: ['GET'])]
+    #[Route('/user/{id}', name: 'app_car_index_by_user', methods: ['GET'])]
     public function indexByUser(CarRepository $carRepository, SerializerInterface $serializer, $id): Response
     {
         $cars = $carRepository->findBy(['user' => $id]);
