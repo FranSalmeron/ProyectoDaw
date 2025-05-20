@@ -40,7 +40,7 @@ const NavBar = () => {
             <img
               src={isDarkMode ? "images/home-bl.png" : "images/home2.png"}
               alt="RenovAuto"
-              className="h-10 w-10"
+              className="h-10 w-10 transition duration-500 ease-in-out"
             />
           </button>
 
@@ -63,13 +63,23 @@ const NavBar = () => {
                   isDarkMode ? "images/logo-b.png" : "images/logo-blanco.png"
                 }
                 alt="RenovAuto"
-                className="h-20 w-30"
+                className="h-20 w-30 transition duration-500 ease-in-out"
               />
             </NavLink>
           </div>
 
-          {/* Usuario o ícono de perfil */}
-          <div className="text-white absolute right-0 pr-4 text-xl">
+          {/* Icono de modo oscuro y perfil */}
+          <div className="absolute right-0 flex items-center gap-4 pr-4 text-white text-xl">
+            {/* Botón de modo oscuro sin texto */}
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 rounded-full transition duration-300 ease-in-out hover:scale-110"
+              title="Cambiar modo"
+            >
+              {isDarkMode ? "☀️" : "🌙"}
+            </button>
+
+            {/* Icono de perfil */}
             {userName ? (
               <button onClick={() => navigate(ROUTES.PROFILE)}>
                 <img
@@ -77,7 +87,7 @@ const NavBar = () => {
                     isDarkMode ? "images/perfil-bl.png" : "images/perfil2.png"
                   }
                   alt="Usuario"
-                  className="h-15 w-15"
+                  className="h-10 w-10 rounded-full transition duration-500 ease-in-out"
                 />
               </button>
             ) : (
@@ -85,14 +95,6 @@ const NavBar = () => {
             )}
           </div>
         </div>
-
-        {/* Botón para cambiar el modo oscuro */}
-        <button
-          onClick={toggleDarkMode}
-          className="text-white absolute top-4 right-4 p-2 rounded-full bg-[#43697a] hover:bg-[#567C8D]"
-        >
-          {isDarkMode ? "Modo Claro ☀" : "Modo Oscuro 🌙"}
-        </button>
       </nav>
 
       {/* Sidebar */}
