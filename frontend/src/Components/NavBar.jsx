@@ -38,7 +38,7 @@ const NavBar = () => {
             className="text-white text-2xl mr-10"
           >
             <img
-              src="images/home2.png"
+              src={isDarkMode ? "images/home2.png" : "images/home-bl.png"}
               alt="RenovAuto"
               className="h-10 w-10"
             />
@@ -47,7 +47,10 @@ const NavBar = () => {
           {/* Menú hamburguesa */}
           <button
             onClick={toggleMenu}
-            className="text-white text-3xl absolute left-10 z-50"
+            className={`text-3xl absolute left-10 z-50 ${
+              isDarkMode ? "" : "text-black"
+            }`}
+            style={isDarkMode ? { color: "#2462C6" } : {}}
           >
             {isMenuOpen ? "✕" : "☰"}
           </button>
@@ -56,7 +59,9 @@ const NavBar = () => {
           <div className="flex-1 flex justify-center">
             <NavLink to={ROUTES.HOME}>
               <img
-                src="images/logo-blanco.png"
+                src={
+                  isDarkMode ? "images/logo-blanco.png" : "images/logo-b.png"
+                }
                 alt="RenovAuto"
                 className="h-20 w-30"
               />
@@ -68,7 +73,9 @@ const NavBar = () => {
             {userName ? (
               <button onClick={() => navigate(ROUTES.PROFILE)}>
                 <img
-                  src="images/perfil2.png"
+                  src={
+                    isDarkMode ? "images/perfil2.png" : "images/perfil-bl.png"
+                  }
                   alt="Usuario"
                   className="h-15 w-15"
                 />
@@ -92,7 +99,9 @@ const NavBar = () => {
       <div
         className={`absolute left-0 w-64 p-6 shadow-lg transition-transform duration-300 ease-in-out ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
-        } ${isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-[#43697a] text-white"}`}
+        } ${
+          isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-[#43697a] text-white"
+        }`}
         style={{ top: "100%" }}
       >
         <ul className="space-y-4">
