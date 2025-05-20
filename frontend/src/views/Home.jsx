@@ -31,7 +31,6 @@ const Home = () => {
   const startIdx = (currentPage - 1) * limit;
   const endIdx = startIdx + limit;
   const paginatedCars = filteredCars.slice(startIdx, endIdx);
-  const [carsReady, setCarsReady] = useState(false);
 
   const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
 
@@ -58,6 +57,20 @@ const Home = () => {
         const now = new Date();
         const stored = localStorage.getItem("cachedCars");
 
+        // Si hay coches en el contexto y no ha pasado un minuto desde la última carga
+        if (
+          cars.length &&
+          now - new Date(cars[0]?.lastUpdated) < cacheDuration
+        ) {
+          const filteredFromContext = applyFilters(cars);
+          setFilteredCars(filteredFromContext);
+          setTotalPages(Math.ceil(filteredFromContext.length / limit));
+          setCurrentPage(1);
+          setLoading(false);
+          return;
+        }
+
+        // Si no hay caché válida ni coches en el contexto, hacer la petición
         if (stored) {
           const parsed = JSON.parse(stored);
           const isValid = now - new Date(parsed.lastUpdated) < cacheDuration;
@@ -88,8 +101,9 @@ const Home = () => {
         allCars.forEach((car) => addCars(car));
 
         const filteredCars = applyFilters(allCars);
+
         setFilteredCars(filteredCars);
-        setTotalPages(Math.ceil(filteredCars.length / limit));
+        setTotalPages(pagesToFetch);
         setCurrentPage(1);
 
         localStorage.setItem(
@@ -109,11 +123,11 @@ const Home = () => {
     };
 
     getAllCars();
-  }, []);
+  }, [cars, addCars, clearCars, userId, limit, filters]);
 
   // Función que aplica los filtros a la lista de coches
-  const applyFilters = (carsList) => {
-    return carsList.filter((car) => {
+  const applyFilters = (cars) => {
+    return cars.filter((car) => {
       const cityMatch = filters.city
         ? car.city.toLowerCase().includes(filters.city.toLowerCase())
         : true;
@@ -159,10 +173,6 @@ const Home = () => {
       );
     });
   };
-
-  useEffect(() => {
-    setFilteredCars(cars);
-  }, [cars]);
 
   useEffect(() => {
     const pages = Math.ceil(filteredCars.length / limit);
@@ -519,16 +529,12 @@ const Home = () => {
 
       {/* CarCards */}
       <div className="w-full sm:w-3/4 p-4">
-        {loading || !cars || cars.length === 0 ? (
-          <LoadingSpinner />
-        ) : (
-          <CarCards
-            cars={paginatedCars}
-            loading={loading}
-            addFavorites={addFavorites}
-            removeFromData={removeFromData}
-          />
-        )}
+        <CarCards
+          cars={paginatedCars}
+          loading={loading}
+          addFavorites={addFavorites}
+          removeFromData={removeFromData}
+        />
       </div>
 
       {/* Paginación */}
