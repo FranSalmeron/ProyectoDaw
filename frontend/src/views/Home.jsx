@@ -64,7 +64,6 @@ const Home = () => {
           if (isValid && parsed.cars?.length) {
             clearCars();
             parsed.cars.forEach((car) => addCars(car));
-            // Aplicar filtros si es que los coches vienen de la caché
             const filteredFromCache = applyFilters(parsed.cars);
             setFilteredCars(filteredFromCache);
             setTotalPages(Math.ceil(filteredFromCache.length / limit));
@@ -87,14 +86,11 @@ const Home = () => {
         clearCars();
         allCars.forEach((car) => addCars(car));
 
-        // Aplicar filtros a los coches obtenidos
         const filteredCars = applyFilters(allCars);
-
         setFilteredCars(filteredCars);
-        setTotalPages(pagesToFetch);
+        setTotalPages(Math.ceil(filteredCars.length / limit));
         setCurrentPage(1);
 
-        // Guardamos todo en caché
         localStorage.setItem(
           "cachedCars",
           JSON.stringify({
@@ -115,8 +111,8 @@ const Home = () => {
   }, []);
 
   // Función que aplica los filtros a la lista de coches
-  const applyFilters = (cars) => {
-    return cars.filter((car) => {
+  const applyFilters = (carsList) => {
+    return carsList.filter((car) => {
       const cityMatch = filters.city
         ? car.city.toLowerCase().includes(filters.city.toLowerCase())
         : true;
