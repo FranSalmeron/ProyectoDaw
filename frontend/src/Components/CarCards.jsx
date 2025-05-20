@@ -113,13 +113,10 @@ const CarCards = ({
         isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black"
       } min-h-screen overflow-y-auto mb-4 sm:mb-0 relative z-10`}
     >
-      {loading ? (
+      {loading || !cars || cars.length === 0 ? (
         <LoadingSpinner />
       ) : (
         (() => {
-          if (!cars || !Array.isArray(cars))
-            return <p>Error al cargar coches.</p>;
-
           const visibleCars = cars.filter((car) => {
             if (isAdmin()) {
               return car.CarSold === "subido" || car.CarSold === "baneado";
@@ -129,10 +126,6 @@ const CarCards = ({
             }
             return car.CarSold === "subido";
           });
-          if (cars.length === 0) {
-            // No se han cargado coches todavía
-            return <LoadingSpinner />;
-          }
 
           return visibleCars.length > 0 ? (
             <ul className="space-y-6">

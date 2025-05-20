@@ -111,13 +111,6 @@ const Home = () => {
     getAllCars();
   }, []);
 
-  useEffect(() => {
-    if (cars.length > 0) {
-      setFilteredCars(cars); // Ya lo tienes
-      setCarsReady(true); // 👈 Activamos el render con datos
-    }
-  }, [cars]);
-
   // Función que aplica los filtros a la lista de coches
   const applyFilters = (carsList) => {
     return carsList.filter((car) => {
@@ -526,15 +519,15 @@ const Home = () => {
 
       {/* CarCards */}
       <div className="w-full sm:w-3/4 p-4">
-        {carsReady ? (
+        {loading || !cars || cars.length === 0 ? (
+          <LoadingSpinner />
+        ) : (
           <CarCards
             cars={paginatedCars}
             loading={loading}
             addFavorites={addFavorites}
             removeFromData={removeFromData}
           />
-        ) : (
-          <div className="text-center text-gray-500">Cargando coches...</div>
         )}
       </div>
 
