@@ -70,18 +70,22 @@ const NavBar = () => {
 
           {/* Icono de modo oscuro y perfil */}
           <div className="absolute right-0 flex items-center gap-4 pr-4 text-white text-xl">
-            {/* Toggle modo oscuro con slider */}
+            {/* Toggle modo oscuro con slider dinámico */}
             <div
-              className="relative w-12 h-6 bg-gray-300 dark:bg-gray-700 rounded-full cursor-pointer transition-colors duration-300"
+              className={`relative w-12 h-6 rounded-full cursor-pointer transition-colors duration-300 ${
+                isDarkMode ? "bg-[#2462C6]" : "bg-gray-300"
+              }`}
               onClick={toggleDarkMode}
             >
               <div
-                className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
-                  isDarkMode ? "translate-x-6" : ""
+                className={`absolute top-0.5 w-5 h-5 rounded-full flex items-center justify-center text-xs text-white transition-transform duration-300 ${
+                  isDarkMode
+                    ? "translate-x-6 bg-gray-800"
+                    : "translate-x-1 bg-yellow-400"
                 }`}
-              ></div>
-              <span className="absolute left-1 text-xs top-[1px]">☀️</span>
-              <span className="absolute right-1 text-xs top-[1px]">🌙</span>
+              >
+                {isDarkMode ? "🌙" : "☀️"}
+              </div>
             </div>
 
             {/* Icono de perfil */}
