@@ -40,13 +40,13 @@ const Home = () => {
   const bgMain = isDarkMode
     ? "bg-[#1C1C1E] text-white"
     : "bg-[#F5EFEB] text-black"; // fondo principal y texto
-  const bgFilters = isDarkMode ? "bg-[#2C2C2E]" : "bg-gray-100"; // fondo del panel de filtros
   const borderFilters = isDarkMode
     ? "border-gray-600 text-white placeholder-gray-400"
-    : "border-gray-300 text-black placeholder-gray-700"; // bordes y texto inputs/select
+    : "border-gray-300 text-black placeholder-gray-700  bg-white"; // bordes y texto inputs/select
   const btnClear = isDarkMode
     ? "bg-red-600 hover:bg-red-700"
     : "bg-red-500 hover:bg-red-600"; // botón limpiar filtros
+  const bgFilters = isDarkMode ? "bg-[#2C2C2E]" : "bg-gray-100"; // Fondo del panel de filtros
 
   useEffect(() => {
     const getAllCars = async () => {
