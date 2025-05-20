@@ -76,7 +76,6 @@ const Home = () => {
 
           if (isValid && parsed.cars?.length) {
             // Si el caché del localStorage es válido, lo usamos
-            clearCars(); // Limpiar el estado global de coches
             parsed.cars.forEach((car) => addCars(car)); // Añadir coches desde localStorage
 
             // Filtrar los coches desde el caché
@@ -111,7 +110,6 @@ const Home = () => {
         }));
 
         // Limpiar el estado global y agregar los coches
-        clearCars();
         allCars.forEach((car) => addCars(car));
 
         // Guardar los coches en localStorage
