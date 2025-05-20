@@ -18,8 +18,8 @@ const Home = () => {
     traction: "",
     fuelType: "",
     seats: [1, 9],
-    price: { min: 0 },
-    mileage: { min: 0},
+    price: { min: 0, max: 99999999 },
+    mileage: { min: 0, max: 99999999},
     decade: "",
     model: "",
   });
@@ -264,7 +264,6 @@ const Home = () => {
     "L'Hospitalet de Llobregat",
     "Lleida",
     "Logroño",
-    "Madrid",
     "Málaga",
     "Marbella",
     "Mataró",
