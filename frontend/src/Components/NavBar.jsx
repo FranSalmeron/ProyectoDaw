@@ -70,14 +70,19 @@ const NavBar = () => {
 
           {/* Icono de modo oscuro y perfil */}
           <div className="absolute right-0 flex items-center gap-4 pr-4 text-white text-xl">
-            {/* Botón de modo oscuro sin texto */}
-            <button
+            {/* Toggle modo oscuro con slider */}
+            <div
+              className="relative w-12 h-6 bg-gray-300 dark:bg-gray-700 rounded-full cursor-pointer transition-colors duration-300"
               onClick={toggleDarkMode}
-              className="p-2 rounded-full transition duration-300 ease-in-out hover:scale-110"
-              title="Cambiar modo"
             >
-              {isDarkMode ? "☀️" : "🌙"}
-            </button>
+              <div
+                className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+                  isDarkMode ? "translate-x-6" : ""
+                }`}
+              ></div>
+              <span className="absolute left-1 text-xs top-[1px]">☀️</span>
+              <span className="absolute right-1 text-xs top-[1px]">🌙</span>
+            </div>
 
             {/* Icono de perfil */}
             {userName ? (
@@ -87,7 +92,7 @@ const NavBar = () => {
                     isDarkMode ? "images/perfil-bl.png" : "images/perfil2.png"
                   }
                   alt="Usuario"
-                  className="h-10 w-10 rounded-full transition duration-500 ease-in-out"
+                  className="h-15 w-15 rounded-full transition duration-500 ease-in-out"
                 />
               </button>
             ) : (
