@@ -362,7 +362,7 @@ const buttonBg = "bg-[#43697a] hover:bg-[#567C8D] text-white";
               name="brand"
               value={formData.brand}
               onChange={(e) => handleBrandChange(e.target)}
-              className={`w-full p-3 rounded-lg ${inputBg} focus:outline-none focus:ring-2 focus:ring-red-500`}
+              className={`w-full p-3 rounded-lg  bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500`}
             >
               <option value="">Selecciona la marca</option>
               {brands.map((brand) => (
