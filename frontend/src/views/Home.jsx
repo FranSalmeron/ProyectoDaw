@@ -127,6 +127,7 @@ const Home = () => {
         );
       } catch (err) {
         toast.error("No se pudieron cargar los coches o los favoritos.");
+        console.error("Error al cargar coches o favoritos:", err);
       } finally {
         setLoading(false);
       }
