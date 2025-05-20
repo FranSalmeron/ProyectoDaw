@@ -38,7 +38,7 @@ const NavBar = () => {
             className="text-white text-2xl mr-10"
           >
             <img
-              src={isDarkMode ? "images/home2.png" : "images/home-bl.png"}
+              src={isDarkMode ? "images/home-bl.png" : "images/home2.png"}
               alt="RenovAuto"
               className="h-10 w-10"
             />
@@ -48,7 +48,7 @@ const NavBar = () => {
           <button
             onClick={toggleMenu}
             className={`text-3xl absolute left-10 z-50 ${
-              isDarkMode ? "" : "text-black"
+              isDarkMode ? "" : "text-white"
             }`}
             style={isDarkMode ? { color: "#2462C6" } : {}}
           >
@@ -60,7 +60,7 @@ const NavBar = () => {
             <NavLink to={ROUTES.HOME}>
               <img
                 src={
-                  isDarkMode ? "images/logo-blanco.png" : "images/logo-b.png"
+                  isDarkMode ? "images/logo-b.png" : "images/logo-blanco.png"
                 }
                 alt="RenovAuto"
                 className="h-20 w-30"
@@ -74,7 +74,7 @@ const NavBar = () => {
               <button onClick={() => navigate(ROUTES.PROFILE)}>
                 <img
                   src={
-                    isDarkMode ? "images/perfil2.png" : "images/perfil-bl.png"
+                    isDarkMode ? "images/perfil-bl.png" : "images/perfil2.png"
                   }
                   alt="Usuario"
                   className="h-15 w-15"
