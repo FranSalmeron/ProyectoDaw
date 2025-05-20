@@ -28,6 +28,9 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1); // Página actual
   const [totalPages, setTotalPages] = useState(1); // Total de páginas
   const [limit, setLimit] = useState(10); // Limite de coches por página
+  const startIdx = (currentPage - 1) * limit;
+  const endIdx = startIdx + limit;
+  const paginatedCars = filteredCars.slice(startIdx, endIdx);
 
   const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
 
@@ -45,32 +48,21 @@ const Home = () => {
     : "bg-red-500 hover:bg-red-600"; // botón limpiar filtros
 
   useEffect(() => {
-    const getCarsAndFavorites = async () => {
+    const getAllCars = async () => {
       setLoading(true);
-
       try {
         if (userId) await getFavorites(userId, addFavorites);
 
-        // 1. Si ya hay coches en el contexto y la página es la misma, usa esos
-        if (cars.length > 0) {
-          setFilteredCars(cars);
-          setLoading(false);
-          return;
-        }
-
-        // 2. Revisamos localStorage
-        const stored = localStorage.getItem("cachedCars");
-        const now = new Date();
         const cacheDuration = 60 * 1000;
+        const now = new Date();
+        const stored = localStorage.getItem("cachedCars");
 
         if (stored) {
           const parsed = JSON.parse(stored);
-          const lastUpdated = new Date(parsed.lastUpdated);
-          const isValid = now - lastUpdated < cacheDuration;
+          const isValid = now - new Date(parsed.lastUpdated) < cacheDuration;
 
-          // 2a. Si el caché es válido Y es de la misma página
-          if (isValid && parsed.currentPage === currentPage) {
-            clearCars(); // limpiar el contexto anterior por seguridad
+          if (isValid) {
+            clearCars();
             parsed.cars.forEach((car) => addCars(car));
             setFilteredCars(parsed.cars);
             setTotalPages(parsed.totalPages);
@@ -79,13 +71,31 @@ const Home = () => {
           }
         }
 
-        // 3. Si no hay caché válido o es otra página, hacemos fetch
-        const result = await carList(currentPage, limit);
+        // Si no hay caché válido: traemos todas las páginas
+        const firstPage = await carList(1, limit);
+        let allCars = [...firstPage.cars];
+
+        // Traemos el resto de las páginas si las hay
+        for (let i = 2; i <= firstPage.totalPages; i++) {
+          const nextPage = await carList(i, limit);
+          allCars = allCars.concat(nextPage.cars);
+        }
 
         clearCars();
-        result.cars.forEach((car) => addCars(car));
-        setFilteredCars(result.cars);
-        setTotalPages(result.totalPages);
+        allCars.forEach((car) => addCars(car));
+        setFilteredCars(allCars);
+        setTotalPages(firstPage.totalPages);
+
+        // Guardamos TODO en caché
+        localStorage.setItem(
+          "cachedCars",
+          JSON.stringify({
+            cars: allCars,
+            totalPages: firstPage.totalPages,
+            currentPage: 1,
+            lastUpdated: new Date().toISOString(),
+          })
+        );
       } catch (err) {
         toast.error("No se pudieron cargar los coches o los favoritos.");
       } finally {
@@ -93,12 +103,22 @@ const Home = () => {
       }
     };
 
-    getCarsAndFavorites();
-  }, [currentPage]);
+    getAllCars();
+  }, []);
 
   useEffect(() => {
     setFilteredCars(cars);
   }, [cars]);
+
+  useEffect(() => {
+    const pages = Math.ceil(filteredCars.length / limit);
+    setTotalPages(pages);
+
+    // Si el filtro deja menos páginas que la actual, volvemos a la 1
+    if (currentPage > pages) {
+      setCurrentPage(1);
+    }
+  }, [filteredCars, limit]);
 
   // Función para cambiar de página
   const handlePageChange = (newPage) => {
@@ -159,6 +179,11 @@ const Home = () => {
     };
     applyFilters();
   }, [filters, cars]);
+
+  useEffect(() => {
+    const pages = Math.ceil(filteredCars.length / limit);
+    setTotalPages(pages);
+  }, [filteredCars, limit]);
 
   const handleSliderChange = (e, field) => {
     const value = Number(e.target.value);
@@ -499,7 +524,7 @@ const Home = () => {
       {/* CarCards */}
       <div className="w-full sm:w-3/4 p-4">
         <CarCards
-          cars={filteredCars}
+          cars={paginatedCars}
           loading={loading}
           addFavorites={addFavorites}
           removeFromData={removeFromData}
@@ -507,23 +532,25 @@ const Home = () => {
       </div>
 
       {/* Paginación */}
-      <div className="pagination mt-4">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          Anterior
-        </button>
-        <span>
-          Página {currentPage} de {totalPages}
-        </span>
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          Siguiente
-        </button>
-      </div>
+      {totalPages > 1 && (
+        <div className="pagination mt-4">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Anterior
+          </button>
+          <span>
+            Página {currentPage} de {totalPages}
+          </span>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Siguiente
+          </button>
+        </div>
+      )}
     </div>
   );
 };

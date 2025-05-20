@@ -256,7 +256,7 @@ function SubmitCar() {
       });
 
       if (response.ok) {
-        toast.success("Coche creado con éxito");
+        toast.success("Coche añadido con éxito");
         localStorage.removeItem("cachedCars");
         clearCars(); // Limpiar el estado de coches
       } else {
