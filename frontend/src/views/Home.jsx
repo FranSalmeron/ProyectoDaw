@@ -134,7 +134,14 @@ const Home = () => {
     };
 
     getAllCars();
-  }, [filteredCars]); // Solo ejecutarlo una vez cuando el componente se monte
+  }, []); // Solo ejecutarlo una vez cuando el componente se monte
+
+  useEffect(() => {
+    const filtered = applyFilters(cars);
+    setFilteredCars(filtered);
+    setCurrentPage(1); // Reinicia a la primera página si cambian los filtros
+    setTotalPages(Math.ceil(filtered.length / limit));
+  }, [filters, cars]);
 
   // Función que aplica los filtros a la lista de coches
   const applyFilters = (cars) => {
