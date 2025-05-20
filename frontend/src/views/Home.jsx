@@ -31,6 +31,7 @@ const Home = () => {
   const startIdx = (currentPage - 1) * limit;
   const endIdx = startIdx + limit;
   const paginatedCars = filteredCars.slice(startIdx, endIdx);
+  const [carsReady, setCarsReady] = useState(false);
 
   const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
 
@@ -109,6 +110,13 @@ const Home = () => {
 
     getAllCars();
   }, []);
+
+  useEffect(() => {
+    if (cars.length > 0) {
+      setFilteredCars(cars); // Ya lo tienes
+      setCarsReady(true); // 👈 Activamos el render con datos
+    }
+  }, [cars]);
 
   // Función que aplica los filtros a la lista de coches
   const applyFilters = (carsList) => {
@@ -518,12 +526,16 @@ const Home = () => {
 
       {/* CarCards */}
       <div className="w-full sm:w-3/4 p-4">
-        <CarCards
-          cars={paginatedCars}
-          loading={loading}
-          addFavorites={addFavorites}
-          removeFromData={removeFromData}
-        />
+        {carsReady ? (
+          <CarCards
+            cars={paginatedCars}
+            loading={loading}
+            addFavorites={addFavorites}
+            removeFromData={removeFromData}
+          />
+        ) : (
+          <div className="text-center text-gray-500">Cargando coches...</div>
+        )}
       </div>
 
       {/* Paginación */}
