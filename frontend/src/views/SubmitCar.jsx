@@ -258,6 +258,7 @@ function SubmitCar() {
       if (response.ok) {
         toast.success("Coche añadido con éxito");
         localStorage.removeItem("cachedCars");
+        localStorage.removeItem("myCars");
         clearCars(); // Limpiar el estado de coches
       } else {
         toast.error("Error al crear el coche");

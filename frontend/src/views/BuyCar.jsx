@@ -55,6 +55,7 @@ const BuyCar = () => {
     setTimeout(() => {
       setPaymentStatus("completed");
       localStorage.removeItem("cachedCars");
+      localStorage.removeItem("myCars");
       clearCars();
     }, 2000);
   };

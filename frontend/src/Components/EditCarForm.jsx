@@ -47,6 +47,7 @@ const EditCarForm = ({ car, onClose }) => {
         return;
       }
       localStorage.removeItem("cachedCars");
+      localStorage.removeItem("myCars");
       clearCars();
       onClose();
     } catch (error) {

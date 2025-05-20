@@ -92,6 +92,7 @@ const CarCards = ({
     const response = await deleteCar(carId);
     if (response) {
     localStorage.removeItem("cachedCars");
+    localStorage.removeItem("myCars");
     clearCars();
     }
   };

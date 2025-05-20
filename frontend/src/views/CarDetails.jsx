@@ -90,6 +90,7 @@ const CarDetails = () => {
           newStatus === "baneado" ? "Coche baneado correctamente." : "Coche desbaneado correctamente."
         );
         localStorage.removeItem("cachedCars");
+        localStorage.removeItem("myCars");
         clearCars();
       }
     } catch (error) {
