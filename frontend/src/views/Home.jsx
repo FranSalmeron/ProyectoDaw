@@ -133,7 +133,7 @@ const Home = () => {
     };
 
     getAllCars();
-  }, []); // Solo ejecutarlo una vez cuando el componente se monte
+  }, [filteredCars]); // Solo ejecutarlo una vez cuando el componente se monte
 
   // Función que aplica los filtros a la lista de coches
   const applyFilters = (cars) => {
