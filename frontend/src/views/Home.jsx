@@ -64,8 +64,10 @@ const Home = () => {
           if (isValid && parsed.cars?.length) {
             clearCars();
             parsed.cars.forEach((car) => addCars(car));
-            setFilteredCars(parsed.cars);
-            setTotalPages(parsed.totalPages);
+            // Aplicar filtros si es que los coches vienen de la caché
+            const filteredFromCache = applyFilters(parsed.cars);
+            setFilteredCars(filteredFromCache);
+            setTotalPages(Math.ceil(filteredFromCache.length / limit));
             setCurrentPage(1);
             setLoading(false);
             return;
@@ -84,7 +86,11 @@ const Home = () => {
 
         clearCars();
         allCars.forEach((car) => addCars(car));
-        setFilteredCars(allCars);
+
+        // Aplicar filtros a los coches obtenidos
+        const filteredCars = applyFilters(allCars);
+
+        setFilteredCars(filteredCars);
         setTotalPages(pagesToFetch);
         setCurrentPage(1);
 
@@ -108,6 +114,55 @@ const Home = () => {
     getAllCars();
   }, []);
 
+  // Función que aplica los filtros a la lista de coches
+  const applyFilters = (cars) => {
+    return cars.filter((car) => {
+      const cityMatch = filters.city
+        ? car.city.toLowerCase().includes(filters.city.toLowerCase())
+        : true;
+      const priceMatch =
+        car.price >= Number(filters.price.min) &&
+        car.price <= Number(filters.price.max);
+      const mileageMatch =
+        car.mileage >= Number(filters.mileage.min) &&
+        car.mileage <= Number(filters.mileage.max);
+      const seatsMatch =
+        car.seats >= filters.seats[0] && car.seats <= filters.seats[1];
+      const categoryMatch = filters.category
+        ? car.category.toLowerCase().includes(filters.category.toLowerCase())
+        : true;
+      const brandMatch = filters.brand
+        ? car.brand.toLowerCase().includes(filters.brand.toLowerCase())
+        : true;
+      const tractionMatch = filters.traction
+        ? car.traction.toLowerCase().includes(filters.traction.toLowerCase())
+        : true;
+      const fuelTypeMatch = filters.fuelType
+        ? car.fuelType.toLowerCase().includes(filters.fuelType.toLowerCase())
+        : true;
+      const modelMatch = filters.model
+        ? car.model.toLowerCase().includes(filters.model.toLowerCase())
+        : true;
+      const decadeMatch = filters.decade
+        ? car.manufacture_year >= filters.decade[0] &&
+          car.manufacture_year < filters.decade[1]
+        : true;
+
+      return (
+        cityMatch &&
+        priceMatch &&
+        mileageMatch &&
+        seatsMatch &&
+        categoryMatch &&
+        brandMatch &&
+        tractionMatch &&
+        fuelTypeMatch &&
+        modelMatch &&
+        decadeMatch
+      );
+    });
+  };
+
   useEffect(() => {
     setFilteredCars(cars);
   }, [cars]);
@@ -128,64 +183,6 @@ const Home = () => {
       setCurrentPage(newPage);
     }
   };
-
-  useEffect(() => {
-    const applyFilters = () => {
-      const filtered = cars.filter((car) => {
-        const cityMatch = filters.city
-          ? car.city.toLowerCase().includes(filters.city.toLowerCase())
-          : true;
-        const priceMatch =
-          car.price >= Number(filters.price.min) &&
-          car.price <= Number(filters.price.max);
-        const mileageMatch =
-          car.mileage >= Number(filters.mileage.min) &&
-          car.mileage <= Number(filters.mileage.max);
-        const seatsMatch =
-          car.seats >= filters.seats[0] && car.seats <= filters.seats[1];
-        const categoryMatch = filters.category
-          ? car.category.toLowerCase().includes(filters.category.toLowerCase())
-          : true;
-        const brandMatch = filters.brand
-          ? car.brand.toLowerCase().includes(filters.brand.toLowerCase())
-          : true;
-        const tractionMatch = filters.traction
-          ? car.traction.toLowerCase().includes(filters.traction.toLowerCase())
-          : true;
-        const fuelTypeMatch = filters.fuelType
-          ? car.fuelType.toLowerCase().includes(filters.fuelType.toLowerCase())
-          : true;
-        const modelMatch = filters.model
-          ? car.model.toLowerCase().includes(filters.model.toLowerCase())
-          : true;
-        const decadeMatch = filters.decade
-          ? car.manufacture_year >= filters.decade[0] &&
-            car.manufacture_year < filters.decade[1]
-          : true;
-
-        return (
-          cityMatch &&
-          priceMatch &&
-          mileageMatch &&
-          seatsMatch &&
-          categoryMatch &&
-          brandMatch &&
-          tractionMatch &&
-          fuelTypeMatch &&
-          modelMatch &&
-          decadeMatch
-        );
-      });
-
-      setFilteredCars(filtered);
-    };
-    applyFilters();
-  }, [filters, cars]);
-
-  useEffect(() => {
-    const pages = Math.ceil(filteredCars.length / limit);
-    setTotalPages(pages);
-  }, [filteredCars, limit]);
 
   const handleSliderChange = (e, field) => {
     const value = Number(e.target.value);
