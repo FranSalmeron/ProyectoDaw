@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import UserProfileForm from "../components/UserProfileForm";
 import ChangePasswordForm from "../components/ChangePasswordForm";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
+import { useDarkMode } from "../context/DarkModeContext"; // Importar el contexto de modo oscuro
 
 const Profile = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -24,6 +25,12 @@ const Profile = () => {
   const userId = getUserIdFromToken ? getUserIdFromToken() : null;
   const navigate = useNavigate();
   const { user, addUser, removeUserData } = useUser();
+  const { isDarkMode } = useDarkMode(); // Obtener el estado de modo oscuro
+
+  // Aplicar clases según el modo oscuro
+  const bgMain = isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-[#F5EFEB] text-black";
+  const bgCard = isDarkMode ? "bg-[#1C1C1E]" : "bg-white";
+  const borderStyle = isDarkMode ? "border-gray-700" : "border-gray-300";
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -108,9 +115,9 @@ const Profile = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 bg-[#F5EFEB] min-h-screen min-w-screen">
-      <div className="bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+    <div className={`${bgMain} p-6 min-h-screen`}>
+      <div className={`p-8 rounded-lg shadow-md border ${bgCard} ${borderStyle}`}>
+        <h1 className="text-3xl font-bold text-center mb-6">
           Perfil de Usuario
         </h1>
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
@@ -123,7 +130,7 @@ const Profile = () => {
           />
         ) : (
           <div>
-            <div className="text-gray-700">
+            <div>
               <p>
                 <strong>Nombre:</strong> {userInfo.name}
               </p>

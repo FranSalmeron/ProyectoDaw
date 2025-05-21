@@ -7,6 +7,10 @@ import { Footer, NavBar } from "../components/indexComponents.jsx";
 const ProtectedLayout = () => {
   const location = useLocation();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
   // Lógica de autenticación y baneo
   const isAuthenticated = getUserIdFromToken() !== null; // Verificamos si el usuario está autenticado
   const isUserBanned = isBanned(); // Verificamos si el usuario está baneado

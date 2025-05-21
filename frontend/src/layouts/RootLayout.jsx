@@ -6,6 +6,10 @@ import { ROUTES } from "../routes/paths.js";
 const RootLayout = () => {
   const location = useLocation();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
   const isBannedPage = location.pathname === ROUTES.BANNED;
   const isErrorPage = location.pathname === "/error"; // Ajusta según tu ruta de error real
 
