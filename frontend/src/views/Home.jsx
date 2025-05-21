@@ -10,7 +10,7 @@ import { useDarkMode } from "../context/DarkModeContext";
 
 const Home = () => {
   const { cars, addCars, clearCars } = useCars();
-  const { favorites, addFavorites, removeFromData } = useFavorites();
+  const { addFavorites, removeFromData } = useFavorites();
   const [filters, setFilters] = useState({
     city: "",
     category: "",
@@ -50,9 +50,11 @@ const Home = () => {
   const bgFilters = isDarkMode ? "bg-[#2C2C2E]" : "bg-gray-100"; // Fondo del panel de filtros
 
   useEffect(() => {
-    const getAllCarsAndFavorites = async () => {
+    const getAllCars = async () => {
       setLoading(true);
       try {
+        await getFavorites(userId, addFavorites);
+    
         // Verificar si ya tenemos coches en el estado global (con caché válido)
         const cacheDuration = 1 * 60 * 1000; // 1 minuto
         const now = new Date();
@@ -60,8 +62,6 @@ const Home = () => {
           cars.length &&
           now - new Date(cars[0]?.lastUpdated) < cacheDuration
         ) {
-          // Si los coches están en caché y son válidos, cargamos los favoritos
-          await loadFavoritesFromLocalStorage();
           const filtered = applyFilters(cars); // Filtrar coches si ya están en el estado
           setFilteredCars(filtered);
           setTotalPages(Math.ceil(filtered.length / limit));
@@ -85,7 +85,6 @@ const Home = () => {
             setFilteredCars(filteredFromCache);
             setTotalPages(Math.ceil(filteredFromCache.length / limit));
             setCurrentPage(1);
-            await loadFavoritesFromLocalStorage(); // Cargar los favoritos
             setLoading(false);
             return; // Si usamos el caché, salir
           }
@@ -131,7 +130,6 @@ const Home = () => {
         setFilteredCars(filtered);
         setTotalPages(Math.ceil(filtered.length / limit));
         setCurrentPage(1);
-        await loadFavoritesFromLocalStorage(); // Cargar los favoritos
       } catch (err) {
         toast.error("No se pudieron cargar los coches o los favoritos.");
         console.error("Error al cargar coches o favoritos:", err);
@@ -140,42 +138,8 @@ const Home = () => {
       }
     };
 
-    getAllCarsAndFavorites(); // Llamada para cargar los coches y favoritos
+    getAllCars(); // Llamada para cargar los coches
   }, []); // Solo se ejecuta cuando el componente se monta
-
-  // Cargar favoritos del localStorage si están disponibles
-  const loadFavoritesFromLocalStorage = () => {
-    if (userId) {
-      const favoritesKey = `favorites_${userId}`;
-      const storedFavorites = localStorage.getItem(favoritesKey);
-      if (storedFavorites) {
-        const parsedFavorites = JSON.parse(storedFavorites);
-        parsedFavorites.forEach((favorite) => addFavorites(favorite)); // Añadir los favoritos al contexto
-      }
-    }
-  };
-
-  // Actualizar los favoritos en el localStorage
-  const updateFavoritesInLocalStorage = (newFavorites) => {
-    if (userId) {
-      const favoritesKey = `favorites_${userId}`;
-      localStorage.setItem(favoritesKey, JSON.stringify(newFavorites));
-    }
-  };
-
-  // Función para manejar la adición de un favorito
-  const handleAddFavorite = (car) => {
-    const updatedFavorites = [...favorites, car];
-    addFavorites(car); // Añadir al contexto
-    updateFavoritesInLocalStorage(updatedFavorites); // Guardar en localStorage
-  };
-
-  // Función para manejar la eliminación de un favorito
-  const handleRemoveFavorite = (carId) => {
-    const updatedFavorites = favorites.filter((fav) => fav.id !== carId);
-    removeFromData(carId); // Eliminar del contexto
-    updateFavoritesInLocalStorage(updatedFavorites); // Actualizar en localStorage
-  };
 
   useEffect(() => {
     const filtered = applyFilters(cars); // Aplica filtros a TODOS los coches
@@ -230,6 +194,60 @@ const Home = () => {
         modelMatch &&
         decadeMatch
       );
+    });
+  };
+
+  useEffect(() => {
+    const pages = Math.ceil(filteredCars.length / limit);
+    setTotalPages(pages);
+
+    // Si el filtro deja menos páginas que la actual, volvemos a la 1
+    if (currentPage > pages) {
+      setCurrentPage(1);
+    }
+  }, [filteredCars, limit]);
+
+  // Función para cambiar de página
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+      // Asegurarse de que el scroll ocurra después de la actualización del estado
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 100); // Retraso opcional de 100ms para asegurar el comportamiento
+    }
+  };
+
+  const handleSliderChange = (e, field) => {
+    const value = Number(e.target.value);
+    setFilters((prevFilters) => {
+      let updatedFilters = { ...prevFilters };
+      if (field === "seats") {
+        updatedFilters.seats[0] = value;
+      }
+      return updatedFilters;
+    });
+  };
+
+  const handleClearFilters = () => {
+    setFilters({
+      city: "",
+      category: "",
+      brand: "",
+      traction: "",
+      fuelType: "",
+      seats: [1, 9],
+      price: { min: 0, max: 1000000 },
+      mileage: { min: 0, max: 500000 },
+      model: "",
+      decade: "",
+    });
+  };
+
+  const handleFilterChange = (e) => {
+    setFilters({
+      ...filters,
+      [e.target.name]: e.target.value,
     });
   };
 
