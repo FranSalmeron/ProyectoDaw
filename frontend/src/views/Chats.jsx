@@ -8,7 +8,7 @@ import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 import { useDarkMode } from "../context/DarkModeContext";
 
 const Chats = ({ userId = null }) => {
-  const { chats, addChats } = useChats(); 
+  const { chats, addChats } = useChats();
   const [loading, setLoading] = useState(true);
   const [chatDetails, setChatDetails] = useState([]);
   const navigate = useNavigate();
@@ -85,7 +85,7 @@ const Chats = ({ userId = null }) => {
             {chatDetails.map((chatDetailsItem) => (
               <li
                 key={chatDetailsItem.chatId}
-                className={`flex items-center space-x-4 p-4 ${bgCard} border ${borderColor} rounded-lg shadow hover:shadow-lg transition-shadow cursor-pointer`}
+                className={`flex items-center space-x-4 p-4 ${bgCard} border ${borderColor} rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 cursor-pointer`}
                 onClick={() => handleChatClick(chatDetailsItem)}
               >
                 <div className="w-16 h-16 flex-shrink-0">
