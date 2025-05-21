@@ -18,7 +18,9 @@ const CarImage = ({ car }) => {
     <div className="relative w-full h-38 overflow-hidden mb-1">
       {car.images && car.images.length > 0 ? (
         <img
-          src={transformCloudinaryUrl(car.images[0]) || "/images/logo-oscuro.png"}
+          src={
+            transformCloudinaryUrl(car.images[0]) || "/images/logo-oscuro.png"
+          }
           alt={`${car.brand} ${car.model}`}
           className="w-full h-full object-contain"
         />
@@ -59,8 +61,14 @@ const CarCards = ({
     e.stopPropagation();
     try {
       if (isFavorite(carId)) {
-        const currentFavorite = favorites.find((fav) => fav.car && fav.car.id === carId);
-        const remove = await removeFavorite(userId, currentFavorite.id, removeFromData);
+        const currentFavorite = favorites.find(
+          (fav) => fav.car && fav.car.id === carId
+        );
+        const remove = await removeFavorite(
+          userId,
+          currentFavorite.id,
+          removeFromData
+        );
         if (remove) {
           toast.success("Coche eliminado de favoritos.");
           return;
@@ -109,7 +117,9 @@ const CarCards = ({
 
   return (
     <div
-      className={`w-full ${isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black"} min-h-screen overflow-hidden`}
+      className={`w-full ${
+        isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black"
+      } min-h-screen overflow-hidden`}
     >
       {loading ? (
         <LoadingSpinner />
@@ -129,21 +139,37 @@ const CarCards = ({
               .map((car, index) => (
                 <motion.li
                   key={index}
-                  className={`transition-all duration-700 ease-in-out ${isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-white text-black"} p-4 shadow-md rounded-lg relative overflow-hidden ${car.CarSold === "baneado" ? "border-2 border-red-500" : ""}`}
+                  className={`transition-all duration-700 ease-in-out ${
+                    isDarkMode
+                      ? "bg-[#2C2C2E] text-white"
+                      : "bg-white text-black"
+                  } p-4 shadow-md rounded-lg relative overflow-visible ${
+                    car.CarSold === "baneado" ? "border-2 border-red-500" : ""
+                  }`}
                   initial={{ opacity: 0, scale: 0.95 }} // Animación inicial
                   animate={{ opacity: 1, scale: 1 }} // Animación cuando entra
                   exit={{ opacity: 0, scale: 0.95 }} // Animación cuando sale
                   transition={{ duration: 0.5 }}
                   whileHover={{
-                    scale: 1.05, // Se agranda ligeramente al pasar el mouse
-                    borderColor: isDarkMode ? "#4CAF50" : "#008CBA", // Cambia el color del borde
+                    scale: 1.05, 
+                    borderColor: isDarkMode ? "#4CAF50" : "#008CBA", // Cambia el color del borde según el modo
+                    boxShadow: isDarkMode
+                      ? "0 4px 12px rgba(30, 144, 255, 0.5)" 
+                      : "0 4px 12px rgba(30, 144, 255, 0.1)",
                   }}
                   style={{ cursor: "pointer" }} // Asegura que sea clickeable
                 >
-                  <div className="cursor-pointer" onClick={() => navigate(`/car_details`, { state: { car } })}>
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => navigate(`/car_details`, { state: { car } })}
+                  >
                     {car.CarSold === "baneado" && (
                       <div
-                        className={`border px-4 py-2 rounded mb-2 ${isDarkMode ? "bg-red-900 border-red-700 text-red-300" : "bg-red-100 border-red-400 text-red-700"}`}
+                        className={`border px-4 py-2 rounded mb-2 ${
+                          isDarkMode
+                            ? "bg-red-900 border-red-700 text-red-300"
+                            : "bg-red-100 border-red-400 text-red-700"
+                        }`}
                       >
                         🚫 Este coche ha sido baneado por un administrador.
                       </div>
@@ -168,19 +194,40 @@ const CarCards = ({
                       </div>
                       <div className="flex-1">
                         <ul className="space-y-2">
-                          <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
+                          <li
+                            className={`${
+                              isDarkMode ? "text-gray-300" : "text-black-500"
+                            }`}
+                          >
                             <strong>Ubicación:</strong> {car.city}
                           </li>
-                          <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
-                            <strong>Condición:</strong> {formatCondition(car.CarCondition)}
+                          <li
+                            className={`${
+                              isDarkMode ? "text-gray-300" : "text-black-500"
+                            }`}
+                          >
+                            <strong>Condición:</strong>{" "}
+                            {formatCondition(car.CarCondition)}
                           </li>
-                          <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
+                          <li
+                            className={`${
+                              isDarkMode ? "text-gray-300" : "text-black-500"
+                            }`}
+                          >
                             <strong>Año:</strong> {car.manufacture_year}
                           </li>
-                          <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
+                          <li
+                            className={`${
+                              isDarkMode ? "text-gray-300" : "text-black-500"
+                            }`}
+                          >
                             <strong>Kilómetros:</strong> {car.mileage} km
                           </li>
-                          <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
+                          <li
+                            className={`${
+                              isDarkMode ? "text-gray-300" : "text-black-500"
+                            }`}
+                          >
                             <strong>Combustible:</strong> {car.fuelType}
                           </li>
                         </ul>
@@ -214,7 +261,11 @@ const CarCards = ({
                         transition={{ duration: 0.3 }}
                       >
                         <img
-                          src={isFavorite(car.id) ? "/images/corazon-relleno.png" : "/images/corazon-vacio.png"}
+                          src={
+                            isFavorite(car.id)
+                              ? "/images/corazon-relleno.png"
+                              : "/images/corazon-vacio.png"
+                          }
                           alt="Corazón"
                           className="w-6 h-6 transition-transform duration-300 ease-in-out"
                         />
