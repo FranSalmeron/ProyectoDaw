@@ -585,13 +585,14 @@ const Home = () => {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
-                  currentPage === 1
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400"
-                    : isDarkMode
-                    ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                    : "bg-white text-gray-800 hover:bg-gray-100"
-                }`}
+                className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 
+              ${
+                currentPage === 1
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400"
+                  : isDarkMode
+                  ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                  : "bg-white text-gray-800 hover:bg-gray-100"
+              }`}
               >
                 ⏮
               </button>
@@ -624,13 +625,14 @@ const Home = () => {
                     <button
                       key={item}
                       onClick={() => handlePageChange(item)}
-                      className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
-                        currentPage === item
-                          ? "bg-blue-500 text-white dark:bg-blue-600"
-                          : isDarkMode
-                          ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                          : "bg-white text-gray-800 hover:bg-gray-100"
-                      }`}
+                      className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 
+                    ${
+                      currentPage === item
+                        ? "bg-blue-500 text-white dark:bg-blue-600"
+                        : isDarkMode
+                        ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                        : "bg-white text-gray-800 hover:bg-gray-100"
+                    }`}
                     >
                       {item}
                     </button>
@@ -641,13 +643,14 @@ const Home = () => {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
-                  currentPage === totalPages
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400"
-                    : isDarkMode
-                    ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                    : "bg-white text-gray-800 hover:bg-gray-100"
-                }`}
+                className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 
+              ${
+                currentPage === totalPages
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400"
+                  : isDarkMode
+                  ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                  : "bg-white text-gray-800 hover:bg-gray-100"
+              }`}
               >
                 ⏭
               </button>
