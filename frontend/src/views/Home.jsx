@@ -380,7 +380,11 @@ const Home = () => {
           placeholder="Ej: corolla"
         />
 
-       <label className={`block mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>Marca</label>
+        <label
+          className={`block mb-2 ${isDarkMode ? "text-white" : "text-black"}`}
+        >
+          Marca
+        </label>
         <select
           name="brand"
           value={filters.brand}
@@ -398,7 +402,11 @@ const Home = () => {
           ))}
         </select>
 
-        <label className={`block mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>Seleccionar ciudad</label>
+        <label
+          className={`block mb-2 ${isDarkMode ? "text-white" : "text-black"}`}
+        >
+          Seleccionar ciudad
+        </label>
         <select
           name="city"
           value={filters.city}
@@ -473,7 +481,11 @@ const Home = () => {
           />
         </div>
 
-        <label className={`block mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>Tracción</label>
+        <label
+          className={`block mb-2 ${isDarkMode ? "text-white" : "text-black"}`}
+        >
+          Tracción
+        </label>
         <select
           name="traction"
           value={filters.traction}
@@ -486,7 +498,11 @@ const Home = () => {
           <option value="total">Total</option>
         </select>
 
-        <label className={`block mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>Combustible</label>
+        <label
+          className={`block mb-2 ${isDarkMode ? "text-white" : "text-black"}`}
+        >
+          Combustible
+        </label>
         <select
           name="fuelType"
           value={filters.fuelType}
@@ -499,7 +515,11 @@ const Home = () => {
           <option value="electric">Eléctrico</option>
         </select>
 
-        <label className={`block mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>Filtrar por década</label>
+        <label
+          className={`block mb-2 ${isDarkMode ? "text-white" : "text-black"}`}
+        >
+          Filtrar por década
+        </label>
         <select
           name="decade"
           value={filters.decade}
@@ -559,21 +579,37 @@ const Home = () => {
 
       {/* Paginación */}
       {totalPages > 1 && (
-        <div className="pagination mt-4">
+        <div className="w-full flex justify-center items-center gap-4 mt-6 mb-10">
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 ${
+              currentPage === 1
+                ? "bg-gray-300 text-gray-600 dark:bg-gray-700 dark:text-gray-400 cursor-not-allowed"
+                : "bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+            }`}
           >
-            Anterior
+            ◀ Anterior
           </button>
-          <span>
+
+          <span
+            className={`px-4 py-2 rounded-lg font-semibold ${
+              isDarkMode ? "text-white" : "text-gray-800"
+            }`}
+          >
             Página {currentPage} de {totalPages}
           </span>
+
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 ${
+              currentPage === totalPages
+                ? "bg-gray-300 text-gray-600 dark:bg-gray-700 dark:text-gray-400 cursor-not-allowed"
+                : "bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+            }`}
           >
-            Siguiente
+            Siguiente ▶
           </button>
         </div>
       )}

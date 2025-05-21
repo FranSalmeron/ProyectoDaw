@@ -72,6 +72,22 @@ const Statistics = () => {
       },
     ],
   };
+  
+  const generateColors = (count) => {
+    const colors = [
+      "#FF6384",
+      "#36A2EB",
+      "#FFCE56",
+      "#4BC0C0",
+      "#9966FF",
+      "#FF9F40",
+      "#8BC34A",
+      "#00ACC1",
+      "#E91E63",
+      "#F44336",
+    ];
+    return Array.from({ length: count }, (_, i) => colors[i % colors.length]);
+  };
 
   const topCarsData = {
     labels: statistics.topCars.map((car) => `${car.brand} ${car.model}`),
@@ -79,7 +95,7 @@ const Statistics = () => {
       {
         label: "Ventas",
         data: statistics.topCars.map((car) => car.count),
-        backgroundColor: "#FFCE56",
+        backgroundColor: generateColors(statistics.topCars.length),
       },
     ],
   };
@@ -100,13 +116,17 @@ const Statistics = () => {
   };
 
   // 🎨 Estilos condicionales por tema
-  const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black";
+  const bgMain = isDarkMode
+    ? "bg-[#1C1C1E] text-white"
+    : "bg-[#F5EFEB] text-black";
   const cardBg = isDarkMode ? "bg-[#2C2C2E]" : "bg-white";
   const textPrimary = isDarkMode ? "text-white" : "text-gray-800";
   const accent = isDarkMode ? "text-blue-400" : "text-blue-600";
 
   return (
-    <div className={`p-6 min-h-screen ${bgMain} transition-colors duration-300`}>
+    <div
+      className={`p-6 min-h-screen ${bgMain} transition-colors duration-300`}
+    >
       <h1 className={`text-2xl font-bold mb-6 text-center ${textPrimary}`}>
         Estadísticas de Ventas
       </h1>
