@@ -195,6 +195,7 @@ const Home = () => {
     });
   };
 
+ 
   useEffect(() => {
     const pages = Math.ceil(filteredCars.length / limit);
     setTotalPages(pages);
@@ -209,6 +210,7 @@ const Home = () => {
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -579,38 +581,73 @@ const Home = () => {
 
       {/* Paginación */}
       {totalPages > 1 && (
-        <div className="w-full flex justify-center items-center gap-4 mt-6 mb-10">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 ${
-              currentPage === 1
-                ? "bg-gray-300 text-gray-600 dark:bg-gray-700 dark:text-gray-400 cursor-not-allowed"
-                : "bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
-            }`}
-          >
-            ◀ Anterior
-          </button>
+        <div className="w-full flex justify-center mt-6 mb-10">
+          <div className="flex gap-2 flex-wrap items-center">
+            {/* Botón Anterior */}
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+                currentPage === 1
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400"
+                  : "bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+              }`}
+            >
+              ⏮
+            </button>
 
-          <span
-            className={`px-4 py-2 rounded-lg font-semibold ${
-              isDarkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
-            Página {currentPage} de {totalPages}
-          </span>
+            {/* Números de página con truncamiento */}
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter((page) => {
+                return (
+                  page === 1 ||
+                  page === totalPages ||
+                  (page >= currentPage - 1 && page <= currentPage + 1)
+                );
+              })
+              .reduce((acc, page, index, array) => {
+                if (index > 0 && page - array[index - 1] > 1) {
+                  acc.push("ellipsis");
+                }
+                acc.push(page);
+                return acc;
+              }, [])
+              .map((item, i) =>
+                item === "ellipsis" ? (
+                  <span
+                    key={`ellipsis-${i}`}
+                    className="px-2 py-2 text-gray-500 dark:text-gray-400"
+                  >
+                    ...
+                  </span>
+                ) : (
+                  <button
+                    key={item}
+                    onClick={() => handlePageChange(item)}
+                    className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+                      currentPage === item
+                        ? "bg-blue-500 text-white dark:bg-blue-600"
+                        : "bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                    }`}
+                  >
+                    {item}
+                  </button>
+                )
+              )}
 
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 ${
-              currentPage === totalPages
-                ? "bg-gray-300 text-gray-600 dark:bg-gray-700 dark:text-gray-400 cursor-not-allowed"
-                : "bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
-            }`}
-          >
-            Siguiente ▶
-          </button>
+            {/* Botón Siguiente */}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+                currentPage === totalPages
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400"
+                  : "bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+              }`}
+            >
+              ⏭
+            </button>
+          </div>
         </div>
       )}
     </div>
