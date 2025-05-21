@@ -1,30 +1,30 @@
-import React, { useState } from 'react';
-import { editCar } from '../helpers/carHelper';
-import { toast } from 'react-toastify';
-import { useCars } from '../context/CarContext';
-import { useDarkMode } from '../context/DarkModeContext';  // Importa contexto modo oscuro
+import React, { useState } from "react";
+import { editCar } from "../helpers/carHelper";
+import { toast } from "react-toastify";
+import { useCars } from "../context/CarContext";
+import { useDarkMode } from "../context/DarkModeContext"; // Importa contexto modo oscuro
 
 const EditCarForm = ({ car, onClose }) => {
   const [formData, setFormData] = useState({
-    brand: car.brand || '',
-    model: car.model || '',
-    manufacture_year: car.manufacture_year || '',
+    brand: car.brand || "",
+    model: car.model || "",
+    manufacture_year: car.manufacture_year || "",
     mileage: car.mileage || 0,
     price: car.price || 0,
-    color: car.color || '',
-    fuelType: car.fuelType || '',
-    transmission: car.transmission || '',
-    traction: car.traction || '',
+    color: car.color || "",
+    fuelType: car.fuelType || "",
+    transmission: car.transmission || "",
+    traction: car.traction || "",
     doors: car.doors || 4,
     seats: car.seats || 5,
-    carCondition: car.carCondition || '',
-    description: car.description || '',
-    image: car.image || '',
-    lat: car.lat || '',
-    lon: car.lon || '',
+    carCondition: car.carCondition || "",
+    description: car.description || "",
+    image: car.image || "",
+    lat: car.lat || "",
+    lon: car.lon || "",
   });
   const { clearCars } = useCars();
-  
+
   // Obtener estado del modo oscuro
   const { isDarkMode } = useDarkMode();
 
@@ -42,7 +42,7 @@ const EditCarForm = ({ car, onClose }) => {
 
     try {
       const response = await editCar(car.id, formData);
-      if(!response) {
+      if (!response) {
         toast.error("Error al editar el coche");
         return;
       }
@@ -58,12 +58,18 @@ const EditCarForm = ({ car, onClose }) => {
 
   return (
     <div className={`${bgMain} min-h-screen p-5`}>
-      <div className={`w-9/10 max-w-2xl mx-auto ${cardBg} p-8 rounded-lg shadow-lg m-5`}>
-        <h2 className="text-3xl font-bold text-center mb-6">Edita los detalles del coche</h2>
+      <div
+        className={`w-9/10 max-w-2xl mx-auto ${cardBg} p-8 rounded-lg shadow-lg m-5`}
+      >
+        <h2 className="text-3xl font-bold text-center mb-6">
+          Edita los detalles del coche
+        </h2>
         <form onSubmit={handleSubmit}>
           {/* Marca */}
           <div className="mb-4">
-            <label htmlFor="brand" className="block text-lg font-medium mb-2">Marca:</label>
+            <label htmlFor="brand" className="block text-lg font-medium mb-2">
+              Marca:
+            </label>
             <input
               type="text"
               name="brand"
@@ -75,7 +81,9 @@ const EditCarForm = ({ car, onClose }) => {
 
           {/* Modelo */}
           <div className="mb-4">
-            <label htmlFor="model" className="block text-lg font-medium mb-2">Modelo:</label>
+            <label htmlFor="model" className="block text-lg font-medium mb-2">
+              Modelo:
+            </label>
             <input
               type="text"
               name="model"
@@ -88,7 +96,12 @@ const EditCarForm = ({ car, onClose }) => {
 
           {/* Año de fabricación */}
           <div className="mb-4">
-            <label htmlFor="manufacture_year" className="block text-lg font-medium mb-2">Año de fabricación:</label>
+            <label
+              htmlFor="manufacture_year"
+              className="block text-lg font-medium mb-2"
+            >
+              Año de fabricación:
+            </label>
             <input
               type="number"
               name="manufacture_year"
@@ -103,7 +116,9 @@ const EditCarForm = ({ car, onClose }) => {
 
           {/* Kilometraje */}
           <div className="mb-4">
-            <label htmlFor="mileage" className="block text-lg font-medium mb-2">Kilometraje (km):</label>
+            <label htmlFor="mileage" className="block text-lg font-medium mb-2">
+              Kilometraje (km):
+            </label>
             <input
               type="number"
               name="mileage"
@@ -116,7 +131,9 @@ const EditCarForm = ({ car, onClose }) => {
 
           {/* Precio */}
           <div className="mb-4">
-            <label htmlFor="price" className="block text-lg font-medium mb-2">Precio (€):</label>
+            <label htmlFor="price" className="block text-lg font-medium mb-2">
+              Precio (€):
+            </label>
             <input
               type="number"
               name="price"
@@ -129,7 +146,9 @@ const EditCarForm = ({ car, onClose }) => {
 
           {/* Color */}
           <div className="mb-4">
-            <label htmlFor="color" className="block text-lg font-medium mb-2">Color:</label>
+            <label htmlFor="color" className="block text-lg font-medium mb-2">
+              Color:
+            </label>
             <input
               type="text"
               name="color"
@@ -141,7 +160,12 @@ const EditCarForm = ({ car, onClose }) => {
 
           {/* Tipo de combustible */}
           <div className="mb-4">
-            <label htmlFor="fuelType" className="block text-lg font-medium mb-2">Tipo de combustible:</label>
+            <label
+              htmlFor="fuelType"
+              className="block text-lg font-medium mb-2"
+            >
+              Tipo de combustible:
+            </label>
             <select
               name="fuelType"
               value={formData.fuelType}
@@ -158,7 +182,12 @@ const EditCarForm = ({ car, onClose }) => {
 
           {/* Transmisión */}
           <div className="mb-4">
-            <label htmlFor="transmission" className="block text-lg font-medium mb-2">Transmisión:</label>
+            <label
+              htmlFor="transmission"
+              className="block text-lg font-medium mb-2"
+            >
+              Transmisión:
+            </label>
             <select
               name="transmission"
               value={formData.transmission}
@@ -175,7 +204,12 @@ const EditCarForm = ({ car, onClose }) => {
 
           {/* Descripción */}
           <div className="mb-4">
-            <label htmlFor="description" className="block text-lg font-medium mb-2">Descripción:</label>
+            <label
+              htmlFor="description"
+              className="block text-lg font-medium mb-2"
+            >
+              Descripción:
+            </label>
             <textarea
               name="description"
               value={formData.description}
@@ -183,6 +217,15 @@ const EditCarForm = ({ car, onClose }) => {
               className={`w-full p-3 rounded-lg ${inputBg} focus:outline-none focus:ring-2 focus:ring-red-500`}
             />
           </div>
+
+          {/* Boton de cierre */}
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full mt-2 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300"
+          >
+            Cancelar / Cerrar
+          </button>
 
           {/* Botón de Enviar */}
           <div className="flex justify-center mt-4">
