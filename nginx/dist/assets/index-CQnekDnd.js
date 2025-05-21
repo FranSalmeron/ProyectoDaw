@@ -72,11 +72,10 @@ Please change the parent <Route path="${z}"> to <Route path="${z==="/"?"*":`${z}
           px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200
           ${M===1?"opacity-50 cursor-not-allowed":""}
           ${k?"bg-gray-700 text-gray-200 hover:bg-gray-600":"bg-white text-gray-800 hover:bg-gray-100"}
-        `,children:"⏮"}),Array.from({length:O},(Y,F)=>F+1).filter(Y=>Y===1||Y===O||Y>=M-1&&Y<=M+1).reduce((Y,F,w,j)=>(w>0&&F-j[w-1]>1&&Y.push("ellipsis"),Y.push(F),Y),[]).map((Y,F)=>Y==="ellipsis"?S.jsx("span",{className:"px-2 py-2 text-gray-500 dark:text-gray-400",children:"..."},`ellipsis-${F}`):S.jsx("button",{onClick:()=>ot(Y),className:`
-                px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200
-                ${M===Y?"bg-blue-500 text-white":""}
-                ${k?"bg-gray-700 text-gray-200 hover:bg-gray-600":"bg-white text-gray-800 hover:bg-gray-100"}
-              `,children:Y},Y)),S.jsx("button",{onClick:()=>ot(M+1),disabled:M===O,className:`
+        `,children:"⏮"}),Array.from({length:O},(Y,F)=>F+1).filter(Y=>Y===1||Y===O||Y>=M-1&&Y<=M+1).reduce((Y,F,w,j)=>(w>0&&F-j[w-1]>1&&Y.push("ellipsis"),Y.push(F),Y),[]).map((Y,F)=>Y==="ellipsis"?S.jsx("span",{className:"px-2 py-2 text-gray-500 dark:text-gray-400",children:"..."},`ellipsis-${F}`):S.jsx("button",{onClick:()=>ot(Y),disabled:M===Y,className:`
+                        px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200
+                        ${M===Y?k?"bg-blue-600 text-white":"bg-blue-100 text-blue-800 border border-blue-400 shadow-sm":k?"bg-gray-700 text-gray-200 hover:bg-gray-600":"bg-white text-gray-800 hover:bg-gray-100"}
+                      `,children:Y},Y)),S.jsx("button",{onClick:()=>ot(M+1),disabled:M===O,className:`
           px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200
           ${M===O?"opacity-50 cursor-not-allowed":""}
           ${k?"bg-gray-700 text-gray-200 hover:bg-gray-600":"bg-white text-gray-800 hover:bg-gray-100"}

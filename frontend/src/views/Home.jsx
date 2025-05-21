@@ -626,15 +626,19 @@ const Home = () => {
                     <button
                       key={item}
                       onClick={() => handlePageChange(item)}
+                      disabled={currentPage === item}
                       className={`
-                px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200
-                ${currentPage === item ? "bg-blue-500 text-white" : ""}
-                ${
-                  isDarkMode
-                    ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                    : "bg-white text-gray-800 hover:bg-gray-100"
-                }
-              `}
+                        px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200
+                        ${
+                          currentPage === item
+                            ? isDarkMode
+                              ? "bg-blue-600 text-white"
+                              : "bg-blue-100 text-blue-800 border border-blue-400 shadow-sm"
+                            : isDarkMode
+                            ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                            : "bg-white text-gray-800 hover:bg-gray-100"
+                        }
+                      `}
                     >
                       {item}
                     </button>
