@@ -7,13 +7,12 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-        fadeIn: "fadeIn 0.5s ease-in forwards",
-        pulseSlow: "pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        fadeIn: "fadeIn 0.5s ease-out forwards", // Nueva animación de aparición
       },
       keyframes: {
         fadeIn: {
-          '0%': { opacity: 0, transform: "translateY(20px)" },
-          '100%': { opacity: 1, transform: "translateY(0)" },
+          '0%': { opacity: '0', transform: 'translateY(30px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
     },

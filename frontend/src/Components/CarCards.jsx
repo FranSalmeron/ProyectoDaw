@@ -1,16 +1,15 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { addFavorite, removeFavorite } from "../helpers/favoriteHelper"; // Importar las funciones necesarias
+import { addFavorite, removeFavorite } from "../helpers/favoriteHelper";
 import { useFavorites } from "../context/FavoriteContext";
 import { useCars } from "../context/CarContext";
 import { getUserIdFromToken } from "../helpers/decodeToken";
 import EditCarForm from "./EditCarForm";
-import { deleteCar } from "../helpers/carHelper"; // Importar la función para eliminar coches
+import { deleteCar } from "../helpers/carHelper";
 import { isAdmin } from "../helpers/decodeToken";
 import LoadingSpinner from "./LoadingSpinner/LoadingSpinner";
-import transformCloudinaryUrl from "../helpers/cloudinaryHelper"; // Importar la función para transformar URLs de Cloudinary
+import transformCloudinaryUrl from "../helpers/cloudinaryHelper";
 import { useDarkMode } from "../context/DarkModeContext";
 
 const CarImage = ({ car }) => {
@@ -18,9 +17,7 @@ const CarImage = ({ car }) => {
     <div className="relative w-full h-38 overflow-hidden mb-1">
       {car.images && car.images.length > 0 ? (
         <img
-          src={
-            transformCloudinaryUrl(car.images[0]) || "/images/logo-oscuro.png"
-          }
+          src={transformCloudinaryUrl(car.images[0]) || "/images/logo-oscuro.png"}
           alt={`${car.brand} ${car.model}`}
           className="w-full h-full object-contain"
         />
@@ -59,17 +56,10 @@ const CarCards = ({
 
   const handleFavoriteClick = async (e, carId) => {
     e.stopPropagation();
-
     try {
       if (isFavorite(carId)) {
-        const currentFavorite = favorites.find(
-          (fav) => fav.car && fav.car.id === carId
-        );
-        const remove = await removeFavorite(
-          userId,
-          currentFavorite.id,
-          removeFromData
-        );
+        const currentFavorite = favorites.find((fav) => fav.car && fav.car.id === carId);
+        const remove = await removeFavorite(userId, currentFavorite.id, removeFromData);
         if (remove) {
           toast.success("Coche eliminado de favoritos.");
           return;
@@ -118,9 +108,7 @@ const CarCards = ({
 
   return (
     <div
-      className={`w-full ${
-        isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black"
-      } min-h-screen overflow-y-auto mb-4 sm:mb-0 relative z-10`}
+      className={`w-full ${isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black"} min-h-screen overflow-hidden`}
     >
       {loading ? (
         <LoadingSpinner />
@@ -139,16 +127,13 @@ const CarCards = ({
             .map((car, index) => (
               <li
                 key={index}
-                className={`animate-fadeIn transition-transform duration-500 transform hover:scale-105 hover:shadow-xl ${
+                className={`animate-fadeIn transition-all duration-700 ease-in-out ${
                   isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-white text-black"
-                } p-4 shadow-md rounded-lg relative ${
+                } p-4 shadow-md rounded-lg relative overflow-hidden ${
                   car.CarSold === "baneado" ? "border-2 border-red-500" : ""
                 }`}
               >
-                <div
-                  className="cursor-pointer"
-                  onClick={() => navigate(`/car_details`, { state: { car } })}
-                >
+                <div className="cursor-pointer" onClick={() => navigate(`/car_details`, { state: { car } })}>
                   {car.CarSold === "baneado" && (
                     <div
                       className={`border px-4 py-2 rounded mb-2 ${
@@ -180,40 +165,19 @@ const CarCards = ({
                     </div>
                     <div className="flex-1">
                       <ul className="space-y-2">
-                        <li
-                          className={`${
-                            isDarkMode ? "text-gray-300" : "text-black-500"
-                          }`}
-                        >
+                        <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
                           <strong>Ubicación:</strong> {car.city}
                         </li>
-                        <li
-                          className={`${
-                            isDarkMode ? "text-gray-300" : "text-black-500"
-                          }`}
-                        >
-                          <strong>Condición:</strong>{" "}
-                          {formatCondition(car.CarCondition)}
+                        <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
+                          <strong>Condición:</strong> {formatCondition(car.CarCondition)}
                         </li>
-                        <li
-                          className={`${
-                            isDarkMode ? "text-gray-300" : "text-black-500"
-                          }`}
-                        >
+                        <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
                           <strong>Año:</strong> {car.manufacture_year}
                         </li>
-                        <li
-                          className={`${
-                            isDarkMode ? "text-gray-300" : "text-black-500"
-                          }`}
-                        >
+                        <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
                           <strong>Kilómetros:</strong> {car.mileage} km
                         </li>
-                        <li
-                          className={`${
-                            isDarkMode ? "text-gray-300" : "text-black-500"
-                          }`}
-                        >
+                        <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
                           <strong>Combustible:</strong> {car.fuelType}
                         </li>
                       </ul>
