@@ -586,13 +586,15 @@ const Home = () => {
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
                 className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 
-              ${
-                currentPage === 1
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400"
-                  : isDarkMode
-                  ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                  : "bg-white text-gray-800 hover:bg-gray-100"
-              }`}
+        ${
+          currentPage === 1
+            ? isDarkMode
+              ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            : isDarkMode
+            ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+            : "bg-white text-gray-800 hover:bg-gray-100"
+        }`}
               >
                 ⏮
               </button>
@@ -626,13 +628,15 @@ const Home = () => {
                       key={item}
                       onClick={() => handlePageChange(item)}
                       className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 
-                    ${
-                      currentPage === item
-                        ? "bg-blue-500 text-white dark:bg-blue-600"
-                        : isDarkMode
-                        ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                        : "bg-white text-gray-800 hover:bg-gray-100"
-                    }`}
+                ${
+                  currentPage === item
+                    ? isDarkMode
+                      ? "bg-blue-500 text-white dark:bg-blue-600"
+                      : "bg-blue-500 text-white"
+                    : isDarkMode
+                    ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                    : "bg-white text-gray-800 hover:bg-gray-100"
+                }`}
                     >
                       {item}
                     </button>
@@ -644,13 +648,15 @@ const Home = () => {
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 
-              ${
-                currentPage === totalPages
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400"
-                  : isDarkMode
-                  ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                  : "bg-white text-gray-800 hover:bg-gray-100"
-              }`}
+        ${
+          currentPage === totalPages
+            ? isDarkMode
+              ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            : isDarkMode
+            ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+            : "bg-white text-gray-800 hover:bg-gray-100"
+        }`}
               >
                 ⏭
               </button>
