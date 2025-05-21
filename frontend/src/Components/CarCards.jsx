@@ -11,7 +11,7 @@ import { isAdmin } from "../helpers/decodeToken";
 import LoadingSpinner from "./LoadingSpinner/LoadingSpinner";
 import transformCloudinaryUrl from "../helpers/cloudinaryHelper";
 import { useDarkMode } from "../context/DarkModeContext";
-import { motion } from "framer-motion"; // Importando framer-motion
+import { motion, AnimatePresence } from "framer-motion"; // Importando framer-motion
 
 const CarImage = ({ car }) => {
   return (
@@ -114,114 +114,121 @@ const CarCards = ({
       {loading ? (
         <LoadingSpinner />
       ) : cars && cars.length > 0 ? (
-        <ul className="space-y-6">
-          {cars
-            .filter((car) => {
-              if (isAdmin()) {
-                return car.CarSold == "subido" || car.CarSold == "baneado";
-              }
-              if (userId == car.user.id) {
-                return car.CarSold == "subido" || car.CarSold == "baneado";
-              }
-              return car.CarSold == "subido";
-            })
-            .map((car, index) => (
-              <motion.li
-                key={index}
-                className={`transition-all duration-700 ease-in-out ${isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-white text-black"} p-4 shadow-md rounded-lg relative overflow-hidden ${car.CarSold === "baneado" ? "border-2 border-red-500" : ""}`}
-                initial={{ opacity: 0, scale: 0.95 }} // Estableciendo valores iniciales para la animación
-                animate={{ opacity: 1, scale: 1 }} // Valores cuando la animación termina
-                exit={{ opacity: 0, scale: 0.95 }} // Cómo desaparecerá el elemento
-                transition={{ duration: 0.5 }} // Duración de la animación
-              >
-                <div className="cursor-pointer" onClick={() => navigate(`/car_details`, { state: { car } })}>
-                  {car.CarSold === "baneado" && (
-                    <div
-                      className={`border px-4 py-2 rounded mb-2 ${isDarkMode ? "bg-red-900 border-red-700 text-red-300" : "bg-red-100 border-red-400 text-red-700"}`}
-                    >
-                      🚫 Este coche ha sido baneado por un administrador.
+        <AnimatePresence>
+          <ul className="space-y-6">
+            {cars
+              .filter((car) => {
+                if (isAdmin()) {
+                  return car.CarSold == "subido" || car.CarSold == "baneado";
+                }
+                if (userId == car.user.id) {
+                  return car.CarSold == "subido" || car.CarSold == "baneado";
+                }
+                return car.CarSold == "subido";
+              })
+              .map((car, index) => (
+                <motion.li
+                  key={index}
+                  className={`transition-all duration-700 ease-in-out ${isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-white text-black"} p-4 shadow-md rounded-lg relative overflow-hidden ${car.CarSold === "baneado" ? "border-2 border-red-500" : ""}`}
+                  initial={{ opacity: 0, scale: 0.95 }} // Animación inicial
+                  animate={{ opacity: 1, scale: 1 }} // Animación cuando entra
+                  exit={{ opacity: 0, scale: 0.95 }} // Animación cuando sale
+                  transition={{ duration: 0.5 }}
+                  whileHover={{
+                    scale: 1.05, // Se agranda ligeramente al pasar el mouse
+                    borderColor: isDarkMode ? "#4CAF50" : "#008CBA", // Cambia el color del borde
+                  }}
+                  style={{ cursor: "pointer" }} // Asegura que sea clickeable
+                >
+                  <div className="cursor-pointer" onClick={() => navigate(`/car_details`, { state: { car } })}>
+                    {car.CarSold === "baneado" && (
+                      <div
+                        className={`border px-4 py-2 rounded mb-2 ${isDarkMode ? "bg-red-900 border-red-700 text-red-300" : "bg-red-100 border-red-400 text-red-700"}`}
+                      >
+                        🚫 Este coche ha sido baneado por un administrador.
+                      </div>
+                    )}
+
+                    <div className="flex w-full mb-4">
+                      <div className="flex-1">
+                        <h4 className="text-lg font-semibold">
+                          {formatBrand(car.brand)} {car.model}
+                        </h4>
+                      </div>
+                      <div className="flex-none">
+                        <p className="text-black-500">
+                          <strong>{car.price} €</strong>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row w-full">
+                      <div className="w-50 h-auto mr-4">
+                        <CarImage car={car} />
+                      </div>
+                      <div className="flex-1">
+                        <ul className="space-y-2">
+                          <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
+                            <strong>Ubicación:</strong> {car.city}
+                          </li>
+                          <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
+                            <strong>Condición:</strong> {formatCondition(car.CarCondition)}
+                          </li>
+                          <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
+                            <strong>Año:</strong> {car.manufacture_year}
+                          </li>
+                          <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
+                            <strong>Kilómetros:</strong> {car.mileage} km
+                          </li>
+                          <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
+                            <strong>Combustible:</strong> {car.fuelType}
+                          </li>
+                        </ul>
+
+                        {showEditDeleteButtons && (
+                          <div className="flex justify-between p-4">
+                            <button
+                              className="bg-[#43697a] text-white px-4 py-2 rounded-lg hover:bg-[#567C8D] focus:outline-none transition duration-300"
+                              onClick={(e) => handleEdit(e, car)}
+                            >
+                              Editar
+                            </button>
+                            <button
+                              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none transition duration-300"
+                              onClick={(e) => handleDelete(e, car.id)}
+                            >
+                              Eliminar
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {userId != null && (
+                    <div className="absolute bottom-2 right-2">
+                      <motion.button
+                        className="text-white cursor-pointer"
+                        onClick={(e) => handleFavoriteClick(e, car.id)}
+                        whileHover={{ scale: 1.2 }} // Agranda el ícono al pasar el mouse
+                        transition={{ duration: 0.3 }}
+                      >
+                        <img
+                          src={isFavorite(car.id) ? "/images/corazon-relleno.png" : "/images/corazon-vacio.png"}
+                          alt="Corazón"
+                          className="w-6 h-6 transition-transform duration-300 ease-in-out"
+                        />
+                      </motion.button>
                     </div>
                   )}
 
-                  <div className="flex w-full mb-4">
-                    <div className="flex-1">
-                      <h4 className="text-lg font-semibold">
-                        {formatBrand(car.brand)} {car.model}
-                      </h4>
-                    </div>
-                    <div className="flex-none">
-                      <p className="text-black-500">
-                        <strong>{car.price} €</strong>
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row w-full">
-                    <div className="w-50 h-auto mr-4">
-                      <CarImage car={car} />
-                    </div>
-                    <div className="flex-1">
-                      <ul className="space-y-2">
-                        <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
-                          <strong>Ubicación:</strong> {car.city}
-                        </li>
-                        <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
-                          <strong>Condición:</strong> {formatCondition(car.CarCondition)}
-                        </li>
-                        <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
-                          <strong>Año:</strong> {car.manufacture_year}
-                        </li>
-                        <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
-                          <strong>Kilómetros:</strong> {car.mileage} km
-                        </li>
-                        <li className={`${isDarkMode ? "text-gray-300" : "text-black-500"}`}>
-                          <strong>Combustible:</strong> {car.fuelType}
-                        </li>
-                      </ul>
-
-                      {showEditDeleteButtons && (
-                        <div className="flex justify-between p-4">
-                          <button
-                            className="bg-[#43697a] text-white px-4 py-2 rounded-lg hover:bg-[#567C8D] focus:outline-none transition duration-300"
-                            onClick={(e) => handleEdit(e, car)}
-                          >
-                            Editar
-                          </button>
-                          <button
-                            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none transition duration-300"
-                            onClick={(e) => handleDelete(e, car.id)}
-                          >
-                            Eliminar
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {userId != null && (
-                  <div className="absolute bottom-2 right-2">
-                    <motion.button
-                      className="text-white cursor-pointer"
-                      onClick={(e) => handleFavoriteClick(e, car.id)}
-                      whileHover={{ scale: 1.2 }} // Agranda el ícono al pasar el mouse
-                      transition={{ duration: 0.3 }}
-                    >
-                      <img
-                        src={isFavorite(car.id) ? "/images/corazon-relleno.png" : "/images/corazon-vacio.png"}
-                        alt="Corazón"
-                        className="w-6 h-6 transition-transform duration-300 ease-in-out"
-                      />
-                    </motion.button>
-                  </div>
-                )}
-
-                {selectedCar && selectedCar.id === car.id && (
-                  <EditCarForm car={selectedCar} onClose={handleCloseEdit} />
-                )}
-              </motion.li>
-            ))}
-        </ul>
+                  {selectedCar && selectedCar.id === car.id && (
+                    <EditCarForm car={selectedCar} onClose={handleCloseEdit} />
+                  )}
+                </motion.li>
+              ))}
+          </ul>
+        </AnimatePresence>
       ) : (
         <p>No hay coches disponibles en este momento.</p>
       )}

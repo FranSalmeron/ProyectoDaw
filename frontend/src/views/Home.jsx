@@ -209,7 +209,10 @@ const Home = () => {
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      // Asegurarse de que el scroll ocurra después de la actualización del estado
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 100); // Retraso opcional de 100ms para asegurar el comportamiento
     }
   };
 
