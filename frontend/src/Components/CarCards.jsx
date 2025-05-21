@@ -146,16 +146,16 @@ const CarCards = ({
                   } p-4 shadow-md rounded-lg relative overflow-visible ${
                     car.CarSold === "baneado" ? "border-2 border-red-500" : ""
                   }`}
-                  initial={{ opacity: 0, scale: 0.9 }} 
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0, scale: 1 }} 
+                  animate={{ opacity: 1, scale: 1 }} 
+                  exit={{ opacity: 0, scale: 1 }} 
                   transition={{ duration: 0.5 }}
                   whileHover={{
-                    scale: 1, 
-                    borderColor: isDarkMode ? "#4CAF50" : "#008CBA",
+                    scale: 0.95, 
+                    borderColor: isDarkMode ? "#4CAF50" : "#008CBA", 
                     boxShadow: isDarkMode
                       ? "0 4px 12px rgba(30, 144, 255, 0.5)"
-                      : "0 4px 12px rgba(30, 144, 255, 0.1)",
+                      : "0 4px 12px rgba(30, 144, 255, 0.3)",
                   }}
                   style={{ cursor: "pointer" }}
                 >
