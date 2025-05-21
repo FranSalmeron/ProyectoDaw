@@ -47,10 +47,18 @@ const NavBar = () => {
           {/* Menú hamburguesa */}
           <button
             onClick={toggleMenu}
-            className={`text-3xl absolute left-10 z-50 ${
-              isDarkMode ? "" : "text-white"
+            className={`text-3xl absolute left-10 z-50 transition-all duration-300 ease-in-out ${
+              isDarkMode ? "text-white" : "text-black"
             }`}
-            style={isDarkMode ? { color: "#2462C6" } : {}}
+            style={isDarkMode ? { color: "#2462C6" } : { color: "#FFFFFF" }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = "scale(1.2)"; // Aumenta el tamaño al pasar el ratón
+              e.target.style.color = isDarkMode ? "#4CAF50" : "#FFA500"; // Cambia el color al pasar el ratón
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = "scale(1)"; // Vuelve al tamaño original
+              e.target.style.color = isDarkMode ? "#2462C6" : "#FFFFFF"; // Restaura el color original
+            }}
           >
             {isMenuOpen ? "✕" : "☰"}
           </button>
