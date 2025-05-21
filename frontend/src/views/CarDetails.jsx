@@ -144,9 +144,9 @@ const CarDetails = () => {
 
   return (
     <div className={`${bgMain} p-6 min-h-screen transition-colors duration-300`}>
-      <div className={`p-6 max-w-3xl mx-auto rounded-lg shadow-lg ${bgCard}`}>
+      <div className={`p-6 max-w-4xl mx-auto rounded-lg shadow-lg ${bgCard}`}>
         {/* Carrusel */}
-        <div className="mb-6">
+        <div className="mb-6 w-full max-w-[500px] mx-auto">
           <Slider ref={sliderRef} {...settings}>
             {car.images.map((image, index) => (
               <div key={index}>
