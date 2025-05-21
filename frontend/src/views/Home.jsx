@@ -588,7 +588,9 @@ const Home = () => {
                 className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
                   currentPage === 1
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400"
-                    : "bg-white text-gray-800 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                    : isDarkMode
+                    ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                    : "bg-white text-gray-800 hover:bg-gray-100"
                 }`}
               >
                 ⏮
@@ -625,7 +627,9 @@ const Home = () => {
                       className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
                         currentPage === item
                           ? "bg-blue-500 text-white dark:bg-blue-600"
-                          : "bg-white text-gray-800 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                          : isDarkMode
+                          ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                          : "bg-white text-gray-800 hover:bg-gray-100"
                       }`}
                     >
                       {item}
@@ -640,7 +644,9 @@ const Home = () => {
                 className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
                   currentPage === totalPages
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400"
-                    : "bg-white text-gray-800 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                    : isDarkMode
+                    ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                    : "bg-white text-gray-800 hover:bg-gray-100"
                 }`}
               >
                 ⏭
