@@ -139,9 +139,9 @@ const CarCards = ({
             .map((car, index) => (
               <li
                 key={index}
-                className={`transition-opacity opacity-0 animate-fadeIn transition-transform transform hover:scale-105 hover:shadow-xl duration-300 ease-in-out p-4 shadow-md rounded-lg relative ${
+                className={`animate-fadeIn transition-transform duration-500 transform hover:scale-105 hover:shadow-xl ${
                   isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-white text-black"
-                } ${
+                } p-4 shadow-md rounded-lg relative ${
                   car.CarSold === "baneado" ? "border-2 border-red-500" : ""
                 }`}
               >
