@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { Outlet, Navigate, useLocation } from "react-router-dom";
 import { Footer, NavBar } from "../components/indexComponents.jsx";
 import { isBanned } from "../helpers/decodeToken.jsx";

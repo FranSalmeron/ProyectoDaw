@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Navigate, useLocation, Outlet } from "react-router-dom";
 import { isBanned } from "../helpers/decodeToken";
 import { ROUTES } from "../routes/paths";
