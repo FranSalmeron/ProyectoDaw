@@ -21,6 +21,7 @@ const NavBar = () => {
   const handleLogout = () => {
     localStorage.clear();
     clearFavorites();
+    
     navigate(ROUTES.HOME);
   };
 
@@ -47,18 +48,10 @@ const NavBar = () => {
           {/* Menú hamburguesa */}
           <button
             onClick={toggleMenu}
-            className={`text-3xl absolute left-10 z-50 transition-all duration-300 ease-in-out ${
-              isDarkMode ? "text-white" : "text-black"
+            className={`text-3xl absolute left-10 z-50 ${
+              isDarkMode ? "" : "text-white"
             }`}
-            style={isDarkMode ? { color: "#2462C6" } : { color: "#FFFFFF" }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = "scale(1.2)"; // Aumenta el tamaño al pasar el ratón
-              e.target.style.color = isDarkMode ? "#4CAF50" : "#FFA500"; // Cambia el color al pasar el ratón
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = "scale(1)"; // Vuelve al tamaño original
-              e.target.style.color = isDarkMode ? "#2462C6" : "#FFFFFF"; // Restaura el color original
-            }}
+            style={isDarkMode ? { color: "#2462C6" } : {}}
           >
             {isMenuOpen ? "✕" : "☰"}
           </button>
@@ -125,7 +118,15 @@ const NavBar = () => {
       >
         <ul className="space-y-4">
           <li>
-            <NavLink to={ROUTES.ABOUT} onClick={closeMenu}>
+            <NavLink
+              to={ROUTES.ABOUT}
+              onClick={closeMenu}
+              className={`transition-all duration-300 ease-in-out ${
+                isDarkMode
+                  ? "hover:bg-[#4CAF50] hover:text-white"
+                  : "hover:bg-[#FFA500] hover:text-black"
+              } p-2 rounded-lg`}
+            >
               Sobre Nosotros
             </NavLink>
           </li>
@@ -133,12 +134,28 @@ const NavBar = () => {
           {!userName ? (
             <>
               <li>
-                <NavLink to={ROUTES.LOGIN} onClick={closeMenu}>
+                <NavLink
+                  to={ROUTES.LOGIN}
+                  onClick={closeMenu}
+                  className={`transition-all duration-300 ease-in-out ${
+                    isDarkMode
+                      ? "hover:bg-[#4CAF50] hover:text-white"
+                      : "hover:bg-[#FFA500] hover:text-black"
+                  } p-2 rounded-lg`}
+                >
                   Login
                 </NavLink>
               </li>
               <li>
-                <NavLink to={ROUTES.REGISTER} onClick={closeMenu}>
+                <NavLink
+                  to={ROUTES.REGISTER}
+                  onClick={closeMenu}
+                  className={`transition-all duration-300 ease-in-out ${
+                    isDarkMode
+                      ? "hover:bg-[#4CAF50] hover:text-white"
+                      : "hover:bg-[#FFA500] hover:text-black"
+                  } p-2 rounded-lg`}
+                >
                   Register
                 </NavLink>
               </li>
@@ -146,39 +163,95 @@ const NavBar = () => {
           ) : (
             <>
               <li>
-                <NavLink to={ROUTES.SUBMIT_CAR} onClick={closeMenu}>
+                <NavLink
+                  to={ROUTES.SUBMIT_CAR}
+                  onClick={closeMenu}
+                  className={`transition-all duration-300 ease-in-out ${
+                    isDarkMode
+                      ? "hover:bg-[#4CAF50] hover:text-white"
+                      : "hover:bg-[#FFA500] hover:text-black"
+                  } p-2 rounded-lg`}
+                >
                   Vender Coche
                 </NavLink>
               </li>
               <li>
-                <NavLink to={ROUTES.CHATS} onClick={closeMenu}>
+                <NavLink
+                  to={ROUTES.CHATS}
+                  onClick={closeMenu}
+                  className={`transition-all duration-300 ease-in-out ${
+                    isDarkMode
+                      ? "hover:bg-[#4CAF50] hover:text-white"
+                      : "hover:bg-[#FFA500] hover:text-black"
+                  } p-2 rounded-lg`}
+                >
                   Chats
                 </NavLink>
               </li>
               <li>
-                <NavLink to={ROUTES.CAR_FAVORITES} onClick={closeMenu}>
+                <NavLink
+                  to={ROUTES.CAR_FAVORITES}
+                  onClick={closeMenu}
+                  className={`transition-all duration-300 ease-in-out ${
+                    isDarkMode
+                      ? "hover:bg-[#4CAF50] hover:text-white"
+                      : "hover:bg-[#FFA500] hover:text-black"
+                  } p-2 rounded-lg`}
+                >
                   Favoritos
                 </NavLink>
               </li>
               <li>
-                <NavLink to={ROUTES.SEE_CARS} onClick={closeMenu}>
+                <NavLink
+                  to={ROUTES.SEE_CARS}
+                  onClick={closeMenu}
+                  className={`transition-all duration-300 ease-in-out ${
+                    isDarkMode
+                      ? "hover:bg-[#4CAF50] hover:text-white"
+                      : "hover:bg-[#FFA500] hover:text-black"
+                  } p-2 rounded-lg`}
+                >
                   Ver mis coches
                 </NavLink>
               </li>
               {isAdmin() && (
                 <>
                   <li>
-                    <NavLink to={ROUTES.USERS} onClick={closeMenu}>
+                    <NavLink
+                      to={ROUTES.USERS}
+                      onClick={closeMenu}
+                      className={`transition-all duration-300 ease-in-out ${
+                        isDarkMode
+                          ? "hover:bg-[#4CAF50] hover:text-white"
+                          : "hover:bg-[#FFA500] hover:text-black"
+                      } p-2 rounded-lg`}
+                    >
                       Gestión de Usuarios
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink to={ROUTES.CHATS_LIST} onClick={closeMenu}>
+                    <NavLink
+                      to={ROUTES.CHATS_LIST}
+                      onClick={closeMenu}
+                      className={`transition-all duration-300 ease-in-out ${
+                        isDarkMode
+                          ? "hover:bg-[#4CAF50] hover:text-white"
+                          : "hover:bg-[#FFA500] hover:text-black"
+                      } p-2 rounded-lg`}
+                    >
                       Lista de Chats
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink to={ROUTES.STATISTICS} onClick={closeMenu}>
+                    <NavLink
+                      to={ROUTES.STATISTICS}
+                      onClick={closeMenu}
+                      className={`transition-all duration-300 ease-in-out ${
+                        isDarkMode
+                          ? "hover:bg-[#4CAF50] hover:text-white"
+                          : "hover:bg-[#FFA500] hover:text-black"
+                      } p-2 rounded-lg`}
+                    >
                       Estadísticas
                     </NavLink>
                   </li>
@@ -190,6 +263,11 @@ const NavBar = () => {
                     handleLogout();
                     closeMenu();
                   }}
+                  className={`transition-all duration-300 ease-in-out ${
+                    isDarkMode
+                      ? "hover:bg-[#4CAF50] hover:text-white"
+                      : "hover:bg-[#FFA500] hover:text-black"
+                  } p-2 rounded-lg`}
                 >
                   Cerrar sesión
                 </button>
