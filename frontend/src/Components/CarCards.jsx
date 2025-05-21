@@ -139,9 +139,9 @@ const CarCards = ({
             .map((car, index) => (
               <li
                 key={index}
-                className={`${
+                className={`transition-opacity opacity-0 animate-fadeIn transition-transform transform hover:scale-105 hover:shadow-xl duration-300 ease-in-out p-4 shadow-md rounded-lg relative ${
                   isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-white text-black"
-                } p-4 shadow-md rounded-lg relative ${
+                } ${
                   car.CarSold === "baneado" ? "border-2 border-red-500" : ""
                 }`}
               >
@@ -217,16 +217,17 @@ const CarCards = ({
                           <strong>Combustible:</strong> {car.fuelType}
                         </li>
                       </ul>
+
                       {showEditDeleteButtons && (
                         <div className="flex justify-between p-4">
                           <button
-                            className="bg-[#43697a] text-white px-4 py-2 rounded-lg hover:bg-[#567C8D] focus:outline-none"
+                            className="bg-[#43697a] text-white px-4 py-2 rounded-lg hover:bg-[#567C8D] focus:outline-none transition duration-300"
                             onClick={(e) => handleEdit(e, car)}
                           >
                             Editar
                           </button>
                           <button
-                            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none"
+                            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none transition duration-300"
                             onClick={(e) => handleDelete(e, car.id)}
                           >
                             Eliminar
@@ -240,7 +241,7 @@ const CarCards = ({
                 {userId != null && (
                   <div className="absolute bottom-2 right-2">
                     <button
-                      className={`text-white cursor-pointer`}
+                      className="text-white cursor-pointer"
                       onClick={(e) => handleFavoriteClick(e, car.id)}
                     >
                       <img
@@ -250,7 +251,7 @@ const CarCards = ({
                             : "/images/corazon-vacio.png"
                         }
                         alt="Corazón"
-                        className="w-6 h-6"
+                        className="w-6 h-6 transition-transform duration-300 ease-in-out hover:scale-125"
                       />
                     </button>
                   </div>
