@@ -19,7 +19,7 @@ const CarImage = ({ car }) => {
       {car.images && car.images.length > 0 ? (
         <img
           src={
-            transformCloudinaryUrl(car.images[0]) || "/images/logo-oscuro.png"
+            transformCloudinaryUrl(car.images[0], "w_600,c_fit,f_auto,q_auto") || "/images/logo-oscuro.png"
           }
           alt={`${car.brand} ${car.model}`}
           className="w-full h-full object-contain"

@@ -151,7 +151,7 @@ const CarDetails = () => {
             {car.images.map((image, index) => (
               <div key={index}>
                 <img
-                  src={transformCloudinaryUrl(image, "w_900,h_900,c_fill,f_auto,q_auto")}
+                  src={transformCloudinaryUrl(image, "w_600,h_600,c_fill,f_auto,q_auto")}
                   alt={`Car image ${index + 1}`}
                   className="w-full object-contain rounded-lg shadow-md"
                 />
