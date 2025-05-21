@@ -146,14 +146,14 @@ const CarDetails = () => {
     <div className={`${bgMain} p-6 min-h-screen transition-colors duration-300`}>
       <div className={`p-6 max-w-4xl mx-auto rounded-lg shadow-lg ${bgCard}`}>
         {/* Carrusel */}
-        <div className="mb-6 w-full max-w-[600px] mx-auto">
+        <div className="mb-6 w-full max-w-[500px] mx-auto">
           <Slider ref={sliderRef} {...settings}>
             {car.images.map((image, index) => (
               <div key={index}>
                 <img
                   src={transformCloudinaryUrl(image)}
                   alt={`Car image ${index + 1}`}
-                  className="w-full object-contain rounded-lg shadow-md"
+                  className="w-full object-cover  rounded-lg shadow-md"
                 />
               </div>
             ))}
