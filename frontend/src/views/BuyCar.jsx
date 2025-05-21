@@ -85,7 +85,7 @@ const BuyCar = () => {
         {/* LOGO y encabezado */}
         <div className="flex justify-between items-center mb-6">
           <img
-            src={isDarkMode ? "images/logo-b.png" : "images/logo-blanco.png"}
+            src="images/logo-b.png"
             alt="Logo de la empresa"
             className="w-32 h-auto"
           />
@@ -100,7 +100,7 @@ const BuyCar = () => {
         <div className="mb-6">
           <h3 className="font-semibold text-lg mb-2">Datos del comprador:</h3>
           <p>
-            <strong>Nombre:</strong> {user?.username || "N/A"}
+            <strong>Nombre:</strong> {user?.name || "N/A"}
           </p>
           <p>
             <strong>Email:</strong> {user?.email || "N/A"}
@@ -150,24 +150,27 @@ const BuyCar = () => {
               Comprar
             </button>
           )}
+
           {paymentStatus === "processing" && (
             <div className="text-center">
               <LoadingSpinner />
               <p className="text-yellow-500 font-medium">Procesando pago...</p>
             </div>
           )}
-          {paymentStatus === "completed" && (
-            <p className="text-green-500 font-semibold">
-              ✅ Pago realizado con éxito
-            </p>
-          )}
 
-          <button
-            onClick={() => window.print()}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            Imprimir Factura
-          </button>
+          {paymentStatus === "completed" && (
+            <>
+              <p className="text-green-500 font-semibold">
+                ✅ Pago realizado con éxito
+              </p>
+              <button
+                onClick={() => window.print()}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              >
+                Imprimir Factura
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>
