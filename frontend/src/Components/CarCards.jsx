@@ -11,6 +11,7 @@ import { isAdmin } from "../helpers/decodeToken";
 import LoadingSpinner from "./LoadingSpinner/LoadingSpinner";
 import transformCloudinaryUrl from "../helpers/cloudinaryHelper";
 import { useDarkMode } from "../context/DarkModeContext";
+import { motion } from "framer-motion"; // Importando framer-motion
 
 const CarImage = ({ car }) => {
   return (
@@ -125,22 +126,18 @@ const CarCards = ({
               return car.CarSold == "subido";
             })
             .map((car, index) => (
-              <li
+              <motion.li
                 key={index}
-                className={`animate-fadeIn transition-all duration-700 ease-in-out ${
-                  isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-white text-black"
-                } p-4 shadow-md rounded-lg relative overflow-hidden ${
-                  car.CarSold === "baneado" ? "border-2 border-red-500" : ""
-                }`}
+                className={`transition-all duration-700 ease-in-out ${isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-white text-black"} p-4 shadow-md rounded-lg relative overflow-hidden ${car.CarSold === "baneado" ? "border-2 border-red-500" : ""}`}
+                initial={{ opacity: 0, scale: 0.95 }} // Estableciendo valores iniciales para la animación
+                animate={{ opacity: 1, scale: 1 }} // Valores cuando la animación termina
+                exit={{ opacity: 0, scale: 0.95 }} // Cómo desaparecerá el elemento
+                transition={{ duration: 0.5 }} // Duración de la animación
               >
                 <div className="cursor-pointer" onClick={() => navigate(`/car_details`, { state: { car } })}>
                   {car.CarSold === "baneado" && (
                     <div
-                      className={`border px-4 py-2 rounded mb-2 ${
-                        isDarkMode
-                          ? "bg-red-900 border-red-700 text-red-300"
-                          : "bg-red-100 border-red-400 text-red-700"
-                      }`}
+                      className={`border px-4 py-2 rounded mb-2 ${isDarkMode ? "bg-red-900 border-red-700 text-red-300" : "bg-red-100 border-red-400 text-red-700"}`}
                     >
                       🚫 Este coche ha sido baneado por un administrador.
                     </div>
@@ -204,27 +201,25 @@ const CarCards = ({
 
                 {userId != null && (
                   <div className="absolute bottom-2 right-2">
-                    <button
+                    <motion.button
                       className="text-white cursor-pointer"
                       onClick={(e) => handleFavoriteClick(e, car.id)}
+                      whileHover={{ scale: 1.2 }} // Agranda el ícono al pasar el mouse
+                      transition={{ duration: 0.3 }}
                     >
                       <img
-                        src={
-                          isFavorite(car.id)
-                            ? "/images/corazon-relleno.png"
-                            : "/images/corazon-vacio.png"
-                        }
+                        src={isFavorite(car.id) ? "/images/corazon-relleno.png" : "/images/corazon-vacio.png"}
                         alt="Corazón"
-                        className="w-6 h-6 transition-transform duration-300 ease-in-out hover:scale-125"
+                        className="w-6 h-6 transition-transform duration-300 ease-in-out"
                       />
-                    </button>
+                    </motion.button>
                   </div>
                 )}
 
                 {selectedCar && selectedCar.id === car.id && (
                   <EditCarForm car={selectedCar} onClose={handleCloseEdit} />
                 )}
-              </li>
+              </motion.li>
             ))}
         </ul>
       ) : (
