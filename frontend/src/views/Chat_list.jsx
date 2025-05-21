@@ -41,7 +41,44 @@ const Chat_list = () => {
             {chats.length === 0 ? (
               <p>No hay chats disponibles.</p>
             ) : (
-              <ChatCardList chats={chats} />
+              <ul className="space-y-4">
+                {chats.map((chat) => (
+                  <li
+                    key={chat.chatId}
+                    className={`flex items-center space-x-4 p-4 ${bgCard} border ${borderStyle} rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 cursor-pointer`}
+                  >
+                    <div className="w-16 h-16 flex-shrink-0">
+                      {/* Imagen del coche o nombre */}
+                      {chat.car?.images?.[0] ? (
+                        <img
+                          src={chat.car.images[0]}
+                          alt="Car"
+                          className="object-cover w-full h-full rounded-full"
+                        />
+                      ) : (
+                        <div className={`flex items-center justify-center rounded-full text-sm text-center text-muted bg-gray-200 dark:bg-gray-700`}>
+                          {chat.car?.brand} {chat.car?.model}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col justify-between flex-grow">
+                      <p className={`text-sm font-semibold text-primary`}>
+                        Vendedor: {chat.seller?.name || "Sin nombre"}
+                      </p>
+                      <p className={`text-sm text-muted`}>
+                        Comprador: {chat.buyer?.name || "Sin nombre"}
+                      </p>
+                      <p className={`text-sm text-primary`}>
+                        Marca/Modelo: {chat.car?.brand} {chat.car?.model}
+                      </p>
+                      <p className={`text-xs text-muted`}>
+                        Fecha de creación: {new Date(chat.createdDate).toLocaleString()}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             )}
           </>
         ) : (
