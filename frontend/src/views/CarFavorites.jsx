@@ -44,6 +44,7 @@ const CarFavorites = () => {
 
         // Obtener los favoritos del usuario
         if (userId) {
+          console.log("userId", userId);
           await getFavorites(userId, addFavorites); // Asocia los favoritos con el usuario
         }
 
