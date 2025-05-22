@@ -35,6 +35,7 @@ const Login = () => {
      
       toast.success('¡Login exitoso!');  
       setLoading(false); 
+      window.location.reload();
       navigate(`/`);
       
     } else {
