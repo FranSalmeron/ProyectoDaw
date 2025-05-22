@@ -58,7 +58,7 @@ services:
       - ./backend:/var/www/html
       - ./backend/apache:/etc/apache2/sites-available
     environment:
-      - APP_ENV=prod
+      - APP_ENV=dev
       - APP_DEBUG=0
       - DATABASE_URL=mysql://salmeron:salmeron@database:3306/Proyecto-FJSP
     command: apache2-foreground 

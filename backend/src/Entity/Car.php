@@ -96,6 +96,8 @@ class Car
     #[Groups('car_list')]
     private ?string $city = null;
 
+    
+
     public function getId(): ?int
     {
         return $this->id;

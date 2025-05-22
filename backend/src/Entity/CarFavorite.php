@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 use App\Repository\CarFavoriteRepository;
@@ -16,15 +17,14 @@ class CarFavorite
     #[Groups('car_favorite_list')]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Car::class, cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups('car_favorite_list')]
+    #[ORM\ManyToOne(targetEntity: Car::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Car $car = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups('car_favorite_list')]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
+
 
     public function getId(): ?int
     {

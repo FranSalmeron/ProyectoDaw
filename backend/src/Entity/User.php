@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -44,7 +43,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user_id'])]
     private ?string $phone = null;
 
-    #[ORM\OneToMany(targetEntity: Car::class, mappedBy: 'User', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Car::class)]
     #[Groups('user_id')]
     private Collection $cars;
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 use App\Repository\TransactionRepository;
@@ -20,7 +21,7 @@ class Transaction
 
     // Relación con el coche comprado
     #[ORM\ManyToOne(targetEntity: Car::class)]
-    #[ORM\JoinColumn(name: "car_id", referencedColumnName: "id")]  
+    #[ORM\JoinColumn(name: "car_id", referencedColumnName: "id")]
     private ?Car $car = null;
 
     #[ORM\Column(type: "decimal", precision: 10, scale: 2)]
@@ -82,12 +83,22 @@ class Transaction
         return $this->price;
     }
 
-    public function setPrice(float $price): static
+    public function setPrice(string $price): static
     {
         $this->price = $price;
-        $this->calculateCommission(); // Calcula la comisión automáticamente al setear el precio
+        $this->calculateCommission();
         return $this;
     }
+
+    public function calculateCommission(): void
+    {
+        if ($this->price !== null) {
+            $priceFloat = floatval($this->price);
+            $this->commission = (string) ($priceFloat * 0.20);
+            $this->totalIncome = $this->commission;
+        }
+    }
+
 
     public function getStatus(): ?string
     {
@@ -143,14 +154,5 @@ class Transaction
     {
         $this->isIncomeReported = $isIncomeReported;
         return $this;
-    }
-
-    // **Lógica para calcular la comisión (20% del precio de la venta)**
-    public function calculateCommission(): void
-    {
-        if ($this->price) {
-            $this->commission = $this->price * 0.20;  // Calcula el 20% de la venta
-            $this->totalIncome = $this->commission;  // El total que te corresponde es igual a la comisión
-        }
     }
 }

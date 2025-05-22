@@ -370,11 +370,9 @@ return [[
                 'cascade' => [
                     2 => [
                         'persist',
-                        'remove',
                     ],
                     4 => [
                         'persist',
-                        'remove',
                     ],
                 ],
                 'fetch' => [
@@ -420,6 +418,10 @@ return [[
                 'unique' => [
                     3 => false,
                     5 => false,
+                ],
+                'onDelete' => [
+                    3 => 'CASCADE',
+                    5 => 'CASCADE',
                 ],
                 'nullable' => [
                     3 => false,
@@ -1129,12 +1131,6 @@ return [[
                     6 => true,
                     true,
                 ],
-                'cascade' => [
-                    9 => [
-                        'persist',
-                        'remove',
-                    ],
-                ],
                 'fetch' => [
                     9 => 2,
                 ],
@@ -1142,7 +1138,7 @@ return [[
                     9 => 'App\\Entity\\User',
                 ],
                 'mappedBy' => [
-                    9 => 'User',
+                    9 => 'user',
                 ],
             ],
             'Doctrine\\ORM\\Mapping\\AssociationMapping' => [
