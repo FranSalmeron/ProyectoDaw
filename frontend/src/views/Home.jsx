@@ -53,7 +53,6 @@ const Home = () => {
     const getAllCars = async () => {
       setLoading(true);
       try {
-        console.log(userId);
         await getFavorites(userId, addFavorites);
     
         // Verificar si ya tenemos coches en el estado global (con caché válido)

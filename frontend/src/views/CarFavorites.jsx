@@ -44,11 +44,11 @@ const CarFavorites = () => {
 
         // Obtener los favoritos del usuario
         if (userId) {
-          console.log("userId", userId);
           await getFavorites(userId, addFavorites); // Asocia los favoritos con el usuario
         }
 
         // Filtrar los coches que están en los favoritos del usuario
+        console.log(favoriteCarsData);
         const favoriteCarsData = cars.filter(car =>
           favorites.some(fav => fav.car.id === car.id)
         );
