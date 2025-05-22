@@ -7,7 +7,6 @@ const ChatCards = ({ chats }) => {
   const { isDarkMode } = useDarkMode(); // Obtén el estado
 
   // Clases condicionales para modo oscuro
-  const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black";
   const bgCard = isDarkMode ? "bg-[#2C2C2E] border-gray-700" : "bg-white border-gray-200";
   const textPrimary = isDarkMode ? "text-white" : "text-gray-800";
   const textSecondary = isDarkMode ? "text-gray-400" : "text-gray-500";
@@ -26,7 +25,7 @@ const ChatCards = ({ chats }) => {
   };
 
   return (
-    <div className={`${bgMain} min-h-screen p-5`}>
+    <div className={`min-h-screen p-5`}>
       <div className="max-w-3xl mx-auto p-4">
         {chats.length === 0 ? (
           <p className={`${textSecondary} text-center`}>No existen chats.</p>

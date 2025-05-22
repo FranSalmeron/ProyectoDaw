@@ -20,7 +20,7 @@ const Chat_list = () => {
     fetchChats();
   }, []);
 
-  const bgMain = isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-white text-black";
+  const bgMain = isDarkMode ? "bg-[#2C2C2E] text-white" : "bg-[#1C1C1E] text-black";
 
   if (loading) {
     return (
