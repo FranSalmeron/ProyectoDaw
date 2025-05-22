@@ -48,9 +48,9 @@ const CarFavorites = () => {
         }
 
         // Filtrar los coches que están en los favoritos del usuario
-        console.log(favoriteCarsData);
+        console.log(favorites);
         const favoriteCarsData = cars.filter(car =>
-          favorites.some(fav => fav.car.id === car.user.id)
+          favorites.some(fav => fav.carId === car.id)
         );
 
         setFavoriteCars(favoriteCarsData);

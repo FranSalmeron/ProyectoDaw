@@ -54,6 +54,7 @@ const CarCards = ({
   const { isDarkMode } = useDarkMode();
 
   const isFavorite = (carId) => {
+    console.log(favorites);
     return favorites.some((fav) => fav.car && fav.car.id === carId);
   };
 
