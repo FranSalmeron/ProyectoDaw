@@ -17,13 +17,11 @@ export const getFavorites = async (userId, addFavoritesToContext) => {
     }
     // Si no están en localStorage, llamamos a la API
     const favorites = await fetchFavoritesFromApi(userId);
-    console.log(favorites);
     localStorage.setItem(`favorites_${userId}`, JSON.stringify(favorites)); // Guardamos en localStorage
     favorites.forEach(favorite => {
     addFavoritesToContext(favorite); // Añadimos al contexto
     });
   } catch (error) {
-    
     console.error('Error al obtener favoritos:', error);
     addFavoritesToContext([]); // En caso de error, pasamos un array vacío al contexto
   }
@@ -40,7 +38,7 @@ const fetchFavoritesFromApi = async (userId) => {
 
     const data = await response.json();
     if (data.status === 'ok') {
-      return data.data;  // ✅ Solo retornas la data
+      return data.data;  // Retorna los favoritos del usuario
     } else {
       throw new Error('No se pudieron obtener los favoritos');
     }
@@ -49,7 +47,6 @@ const fetchFavoritesFromApi = async (userId) => {
     return [];
   }
 };
-
 
 // Función para añadir un coche a los favoritos
 export const addFavorite = async (userId, favorite, addFavoritesToContext) => {

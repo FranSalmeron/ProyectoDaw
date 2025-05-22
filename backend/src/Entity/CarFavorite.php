@@ -19,6 +19,7 @@ class CarFavorite
 
     #[ORM\ManyToOne(targetEntity: Car::class, cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[Groups(['car_favorite_list'])]
     private ?Car $car = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
