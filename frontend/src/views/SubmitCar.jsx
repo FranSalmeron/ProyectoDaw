@@ -249,7 +249,6 @@ function SubmitCar() {
       }
     });
     try {
-      console.log(formData);
       const response = await fetch(`${symfonyUrl}/car/new`, {
         method: "POST",
         body: data,

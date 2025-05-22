@@ -25,10 +25,10 @@ function Register() {
     const phoneRegex =
       /^(?:\+?\d{1,3})?[\s\-]?\(?\d{2,3}\)?[\s\-]?\d{3}[\s\-]?\d{3}$/;
     if (phoneRegex.test(phoneNumber)) {
-      console.log("Número de teléfono válido");
+      toast.info("Número de teléfono válido");
       return true;
     } else {
-      console.log("Número de teléfono inválido");
+      toast.info("Número de teléfono inválido");
       return false;
     }
   };
