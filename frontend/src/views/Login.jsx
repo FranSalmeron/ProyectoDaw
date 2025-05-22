@@ -35,9 +35,7 @@ const Login = () => {
      
       toast.success('¡Login exitoso!');  
       setLoading(false); 
-      window.location.reload();
       navigate(`/`);
-      
     } else {
       const errorData = await response.json();
       setError(errorData.message || 'Error al iniciar sesión');

@@ -5,7 +5,6 @@ const symfonyUrl = import.meta.env.VITE_API_URL;
 // Obtener los favoritos de un usuario específico
 export const getFavorites = async (userId, addFavoritesToContext) => {
   try {
-    console.log(userId);
     // Revisar favoritos en localStorage, si no, obtenerlos desde la API
     const storedFavorites = JSON.parse(localStorage.getItem(`favorites_${userId}`)) || [];
     
@@ -18,11 +17,13 @@ export const getFavorites = async (userId, addFavoritesToContext) => {
     }
     // Si no están en localStorage, llamamos a la API
     const favorites = await fetchFavoritesFromApi(userId);
+    console.log(favorites);
     localStorage.setItem(`favorites_${userId}`, JSON.stringify(favorites)); // Guardamos en localStorage
     favorites.forEach(favorite => {
     addFavoritesToContext(favorite); // Añadimos al contexto
     });
   } catch (error) {
+    
     console.error('Error al obtener favoritos:', error);
     addFavoritesToContext([]); // En caso de error, pasamos un array vacío al contexto
   }
@@ -30,7 +31,7 @@ export const getFavorites = async (userId, addFavoritesToContext) => {
 
 
 // Función para obtener los favoritos desde la API de un usuario específico
-const fetchFavoritesFromApi = async (userId, addFavoritesToContext) => {
+const fetchFavoritesFromApi = async (userId) => {
   try {
     const response = await fetch(`${symfonyUrl}/favorite/${userId}/favorites`);
     if (!response.ok) {
@@ -39,9 +40,7 @@ const fetchFavoritesFromApi = async (userId, addFavoritesToContext) => {
 
     const data = await response.json();
     if (data.status === 'ok') {
-      localStorage.setItem(`favorites_${userId}`, JSON.stringify(data.data)); // Guardamos los favoritos en localStorage
-      addFavoritesToContext(data.data); // Añadimos los favoritos al contexto
-      return data.data;  // Retorna los favoritos del usuario
+      return data.data;  // ✅ Solo retornas la data
     } else {
       throw new Error('No se pudieron obtener los favoritos');
     }
@@ -50,6 +49,7 @@ const fetchFavoritesFromApi = async (userId, addFavoritesToContext) => {
     return [];
   }
 };
+
 
 // Función para añadir un coche a los favoritos
 export const addFavorite = async (userId, favorite, addFavoritesToContext) => {
