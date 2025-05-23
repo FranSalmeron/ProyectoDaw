@@ -220,11 +220,11 @@ const CarDetails = () => {
                   src={
                     isFavorite(car.id)
                       ? isDarkMode
-                        ? "/images/corazon-relleno.png"
-                        : "/images/corazon-relleno-w.png"
+                        ? "/images/corazon-relleno-w.png" 
+                        : "/images/corazon-relleno.png"
                       : isDarkMode
-                      ? "/images/corazon-vacio.png"
-                      : "/images/corazon-vacio-w.png"
+                      ?  "/images/corazon-vacio-w.png"
+                      :  "/images/corazon-vacio.png"
                   }
                   alt="Favorito"
                   className="w-10 h-10"

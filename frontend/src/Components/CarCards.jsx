@@ -268,11 +268,11 @@ const CarCards = ({
                           src={
                             isFavorite(car.id)
                               ? isDarkMode
-                                ? "/images/corazon-relleno.png"
-                                : "/images/corazon-relleno-w.png"
+                                ? "/images/corazon-relleno-w.png"
+                                : "/images/corazon-relleno.png"
                               : isDarkMode
-                              ? "/images/corazon-vacio.png"
-                              : "/images/corazon-vacio-w.png"
+                              ? "/images/corazon-vacio-w.png"
+                              : "/images/corazon-vacio.png"
                           }
                           alt="Corazón"
                           className="w-6 h-6 transition-transform duration-300 ease-in-out"
