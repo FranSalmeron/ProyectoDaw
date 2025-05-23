@@ -162,14 +162,14 @@ const CarDetails = () => {
     >
       <div className={`p-6 max-w-4xl mx-auto rounded-lg shadow-lg ${bgCard}`}>
         {/* Carrusel */}
-        <div className="mb-6 w-full max-w-[600px] aspect-square mx-auto">
+        <div className="mb-6 w-full max-w-[600px] mx-auto">
           <Slider ref={sliderRef} {...settings}>
             {car.images.map((image, index) => (
               <div key={index}>
                 <img
                   src={transformCloudinaryUrl(
                     image,
-                    "w_1000,h_800,c_fill,g_auto,f_auto,q_auto"
+                    "w_800,h_500,c_fill,g_auto,f_auto,q_auto"
                   )}
                   alt={`Car image ${index + 1}`}
                   className="w-full h-auto max-h-[400px] mx-auto object-contain rounded-lg shadow-md"
