@@ -19,7 +19,10 @@ const CarImage = ({ car }) => {
       {car.images && car.images.length > 0 ? (
         <img
           src={
-            transformCloudinaryUrl(car.images[0], "w_600,c_fit,f_auto,q_auto") || "/images/logo-oscuro.png"
+            transformCloudinaryUrl(
+              car.images[0],
+              "w_600,c_fit,f_auto,q_auto"
+            ) || "/images/logo-oscuro.png"
           }
           alt={`${car.brand} ${car.model}`}
           className="w-full h-full object-contain"
@@ -147,13 +150,13 @@ const CarCards = ({
                   } p-4 shadow-md rounded-lg relative overflow-visible ${
                     car.CarSold === "baneado" ? "border-2 border-red-500" : ""
                   }`}
-                  initial={{ opacity: 0, scale: 1 }} 
-                  animate={{ opacity: 1, scale: 1 }} 
-                  exit={{ opacity: 0, scale: 1 }} 
+                  initial={{ opacity: 0, scale: 1 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1 }}
                   transition={{ duration: 0.5 }}
                   whileHover={{
-                    scale: 0.95, 
-                    borderColor: isDarkMode ? "#4CAF50" : "#008CBA", 
+                    scale: 0.95,
+                    borderColor: isDarkMode ? "#4CAF50" : "#008CBA",
                     boxShadow: isDarkMode
                       ? "0 4px 12px rgba(30, 144, 255, 0.5)"
                       : "0 4px 12px rgba(30, 144, 255, 0.3)",
@@ -264,8 +267,12 @@ const CarCards = ({
                         <img
                           src={
                             isFavorite(car.id)
-                              ? "/images/corazon-relleno.png"
-                              : "/images/corazon-vacio.png"
+                              ? isDarkMode
+                                ? "/images/corazon-relleno.png"
+                                : "/images/corazon-relleno-w.png"
+                              : isDarkMode
+                              ? "/images/corazon-vacio.png"
+                              : "/images/corazon-vacio-w.png"
                           }
                           alt="Corazón"
                           className="w-6 h-6 transition-transform duration-300 ease-in-out"

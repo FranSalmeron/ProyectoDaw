@@ -21,7 +21,7 @@ const NavBar = () => {
   const handleLogout = () => {
     localStorage.clear();
     clearFavorites();
-    
+
     navigate(ROUTES.HOME);
   };
 
@@ -57,7 +57,7 @@ const NavBar = () => {
           </button>
 
           {/* Logo */}
-          <div className="flex-1 flex justify-center">
+          <div className="absolute left-1/2 transform -translate-x-1/2 sm:static sm:translate-x-0 sm:flex-1 sm:flex sm:justify-center">
             <NavLink to={ROUTES.HOME}>
               <img
                 src={
