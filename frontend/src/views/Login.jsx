@@ -154,32 +154,6 @@ const Login = () => {
               <p className="text-red-400 text-center text-sm">{error}</p>
             </div>
           )}
-
-          {/* Social login divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-600"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 text-gray-400 bg-[#2F4156]">O continuar con</span>
-            </div>
-          </div>
-
-          {/* Social login buttons */}
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              type="button"
-              className={`${socialBtnBg} p-3 rounded-lg flex items-center justify-center text-white transition-all duration-300`}
-            >
-              <FaGoogle className="mr-2" /> Google
-            </button>
-            <button
-              type="button"
-              className={`${socialBtnBg} p-3 rounded-lg flex items-center justify-center text-white transition-all duration-300`}
-            >
-              <FaGithub className="mr-2" /> GitHub
-            </button>
-          </div>
         </form>
       </div>
     </div>
