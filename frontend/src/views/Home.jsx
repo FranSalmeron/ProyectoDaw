@@ -54,7 +54,7 @@ const Home = () => {
       setLoading(true);
       try {
         await getFavorites(userId, addFavorites);
-    
+
         // Verificar si ya tenemos coches en el estado global (con caché válido)
         const cacheDuration = 1 * 60 * 1000; // 1 minuto
         const now = new Date();
@@ -591,16 +591,16 @@ const Home = () => {
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
                 className={`
-          px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200
-          ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}
-          ${
-            isDarkMode
-              ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-              : "bg-white text-gray-800 hover:bg-gray-100"
-          }
-        `}
+    px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200
+    ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}
+    ${
+      isDarkMode
+        ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+        : "bg-white text-gray-800 hover:bg-gray-100"
+    }
+  `}
               >
-                ⏮
+                &lt;
               </button>
 
               {/* Números de página con truncamiento */}
@@ -633,19 +633,19 @@ const Home = () => {
                       onClick={() => handlePageChange(item)}
                       disabled={currentPage === item}
                       className={`
-                        px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200
-                        ${
-                          currentPage === item
-                            ? isDarkMode
-                              ? "bg-blue-600 text-white"
-                              : "bg-blue-100 text-blue-800 border border-blue-400 shadow-sm"
-                            : isDarkMode
-                            ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                            : "bg-white text-gray-800 hover:bg-gray-100"
-                        }
-                      `}
+    px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200
+    ${
+      currentPage === item
+        ? isDarkMode
+          ? "bg-blue-600 text-white"
+          : "bg-blue-100 text-blue-800 border border-blue-400 shadow-sm"
+        : isDarkMode
+        ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+        : "bg-white text-gray-800 hover:bg-gray-100"
+    }
+  `}
                     >
-                      {item}
+                      &gt;
                     </button>
                   )
                 )}
