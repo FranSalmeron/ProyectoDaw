@@ -633,6 +633,29 @@ const Home = () => {
                       onClick={() => handlePageChange(item)}
                       disabled={currentPage === item}
                       className={`
+                        px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200
+                        ${
+                          currentPage === item
+                            ? isDarkMode
+                              ? "bg-blue-600 text-white"
+                              : "bg-blue-100 text-blue-800 border border-blue-400 shadow-sm"
+                            : isDarkMode
+                            ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                            : "bg-white text-gray-800 hover:bg-gray-100"
+                        }
+                      `}
+                    >
+                      {item}
+                    </button>
+                  )
+                )}
+
+              {/* Botón Siguiente */}
+              <button
+                key={item}
+                onClick={() => handlePageChange(item)}
+                disabled={currentPage === item}
+                className={`
     px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200
     ${
       currentPage === item
@@ -644,27 +667,8 @@ const Home = () => {
         : "bg-white text-gray-800 hover:bg-gray-100"
     }
   `}
-                    >
-                      &gt;
-                    </button>
-                  )
-                )}
-
-              {/* Botón Siguiente */}
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className={`
-          px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200
-          ${currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""}
-          ${
-            isDarkMode
-              ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-              : "bg-white text-gray-800 hover:bg-gray-100"
-          }
-        `}
               >
-                ⏭
+                &gt;
               </button>
             </div>
           </div>
