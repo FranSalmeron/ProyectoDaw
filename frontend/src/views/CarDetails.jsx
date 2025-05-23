@@ -167,9 +167,12 @@ const CarDetails = () => {
             {car.images.map((image, index) => (
               <div key={index}>
                 <img
-                  src={transformCloudinaryUrl(image)}
+                  src={transformCloudinaryUrl(
+                    image,
+                    "w_800,h_600,c_fit,f_auto,q_auto"
+                  )}
                   alt={`Car image ${index + 1}`}
-                  className="w-full object-cover  rounded-lg shadow-md"
+                  className="w-full h-auto max-h-[400px] mx-auto object-contain rounded-lg shadow-md"
                 />
               </div>
             ))}
@@ -187,10 +190,10 @@ const CarDetails = () => {
               <img
                 src={transformCloudinaryUrl(
                   image,
-                  "w_100,h_100,c_fill,f_auto,q_auto"
+                  "w_120,h_90,c_fit,f_auto,q_auto"
                 )}
                 alt={`Thumbnail ${index + 1}`}
-                className={`w-full h-full object-cover rounded-lg hover:opacity-80 ${
+                className={`w-full h-full object-contain rounded-lg hover:opacity-80 ${
                   selectedImageIndex === index ? "border-4 border-blue-500" : ""
                 }`}
               />
@@ -220,11 +223,11 @@ const CarDetails = () => {
                   src={
                     isFavorite(car.id)
                       ? isDarkMode
-                        ? "/images/corazon-relleno-w.png" 
+                        ? "/images/corazon-relleno-w.png"
                         : "/images/corazon-relleno.png"
                       : isDarkMode
-                      ?  "/images/corazon-vacio-w.png"
-                      :  "/images/corazon-vacio.png"
+                      ? "/images/corazon-vacio-w.png"
+                      : "/images/corazon-vacio.png"
                   }
                   alt="Favorito"
                   className="w-10 h-10"
