@@ -172,7 +172,7 @@ const CarDetails = () => {
                     "w_800,h_800,c_fill,g_auto,f_auto,q_auto"
                   )}
                   alt={`Car image ${index + 1}`}
-                  className="w-full h-auto max-h-[400px] mx-auto object-contain rounded-lg shadow-md"
+                  className="w-full h-full object-cover rounded-lg shadow-md"
                 />
               </div>
             ))}
