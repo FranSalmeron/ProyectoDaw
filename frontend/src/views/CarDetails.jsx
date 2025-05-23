@@ -169,7 +169,7 @@ const CarDetails = () => {
                 <img
                   src={transformCloudinaryUrl(
                     image,
-                    "w_800,h_600,c_fill,g_auto,f_auto,q_auto"
+                    "w_800,h_800,c_fill,g_auto,f_auto,q_auto"
                   )}
                   alt={`Car image ${index + 1}`}
                   className="w-full h-auto max-h-[400px] mx-auto object-contain rounded-lg shadow-md"
