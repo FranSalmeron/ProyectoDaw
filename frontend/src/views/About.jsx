@@ -24,8 +24,13 @@ const About = () => {
       <section className="mb-16">
         <h2 className={`text-3xl font-semibold ${textPrimary}`}>Quiénes Somos</h2>
         <p className={`mt-4 text-lg ${textSecondary}`}>
-          En <strong>RenovAuto</strong>, nos dedicamos a conectar compradores y
-          vendedores de coches de manera sencilla, segura y confiable...
+           En <strong>RenovAuto</strong>, nos dedicamos a conectar compradores y
+          vendedores de coches de manera sencilla, segura y confiable. Nuestra
+          misión es hacer que la compra y venta de vehículos sea una experiencia
+          libre de estrés, ofreciendo un espacio transparente y accesible para
+          todos. Nos apasiona el mundo automotriz y estamos aquí para hacer que
+          encontrar tu coche ideal o vender tu vehículo sea un proceso rápido y
+          seguro.
         </p>
       </section>
 
@@ -33,7 +38,13 @@ const About = () => {
       <section className="mb-16">
         <h2 className={`text-3xl font-semibold ${textPrimary}`}>Nuestra Historia</h2>
         <p className={`mt-4 text-lg ${textSecondary}`}>
-          <strong>RenovAuto</strong> nació en 2025 con el objetivo de transformar...
+          <strong>RenovAuto</strong> nació en 2025 con el objetivo de
+          transformar la manera en que las personas compran y venden coches.
+          Empezamos con la idea de crear una plataforma fácil de usar, sin las
+          complicaciones que suelen tener las compras tradicionales. Desde
+          entonces, hemos crecido y ayudado a miles de usuarios a encontrar su
+          coche perfecto o vender sus vehículos de forma sencilla, sin
+          intermediarios innecesarios.
         </p>
       </section>
 
@@ -41,7 +52,11 @@ const About = () => {
       <section className="mb-16">
         <h2 className={`text-3xl font-semibold ${textPrimary}`}>Nuestro Equipo</h2>
         <p className={`mt-4 text-lg ${textSecondary}`}>
-          Nuestro equipo está compuesto por expertos en el sector automotriz...
+          Nuestro equipo está compuesto por expertos en el sector automotriz,
+          tecnología y atención al cliente. Todos compartimos una visión común:
+          hacer que cada transacción sea segura y sin estrés. Ya sea que busques
+          un coche de segunda mano o quieras vender el tuyo, nuestro equipo está
+          aquí para ayudarte en cada paso del proceso.
         </p>
         <div className="flex justify-center gap-12 mt-8 flex-wrap">
           <div className="text-center">
