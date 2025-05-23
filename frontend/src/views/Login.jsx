@@ -114,21 +114,14 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Remember me & Forgot password */}
+{/*
+              Remember me & Forgot password 
           <div className="flex items-center justify-between text-sm">
-            <label className="flex items-center text-white">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="mr-2 rounded focus:ring-red-500 text-red-500"
-              />
-              Recordarme
-            </label>
             <Link to="/forgot-password" className="text-red-400 hover:text-red-300 transition-colors duration-300">
               ¿Olvidaste tu contraseña?
             </Link>
           </div>
+*/}
 
           {/* Botón de submit */}
           <button

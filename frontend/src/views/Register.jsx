@@ -67,7 +67,7 @@ function Register() {
   };
 
   // Clases modo oscuro
-  const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black";
+  const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-white";
   const formBg = isDarkMode ? "bg-[#2F4156]" : "bg-[#2F4156]";
   const inputBg = isDarkMode
     ? "bg-gray-800 text-white placeholder-gray-400"
