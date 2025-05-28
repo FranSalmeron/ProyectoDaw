@@ -17,7 +17,7 @@ services:
       - app-network
 
   database:
-    image: mysql:8.0
+    image: fransalmeron/proyectodaw-mysql:8.0
     container_name: database
     ports:
       - "3307:3306"  # Cambia el puerto si es necesario
@@ -33,7 +33,7 @@ services:
       - app-network
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: fransalmeron/proyectodaw-phpmyadmin:latest
     container_name: phpmyadmin
     ports:
       - "8082:80"
@@ -68,7 +68,7 @@ services:
       - app-network
 
   nginx:
-    image: nginx:alpine
+    image: fransalmeron/proyectodaw-nginx:alpine
     container_name: nginx
     build:
       context: ./nginx

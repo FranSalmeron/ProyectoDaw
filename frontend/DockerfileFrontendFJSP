@@ -1,5 +1,5 @@
 # Usa la imagen base de Node.js
-FROM node:18-alpine
+FROM fransalmeron/proyectodaw-frontend:latest
 
 # Crear y establecer el directorio de trabajo
 WORKDIR /app

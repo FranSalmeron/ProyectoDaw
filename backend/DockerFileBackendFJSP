@@ -1,4 +1,4 @@
-FROM php:8.1-apache
+FROM fransalmeron/proyectodaw-backend:latest
 
 # 1. Dependencias necesarias
 RUN apt-get update && apt-get install -y \

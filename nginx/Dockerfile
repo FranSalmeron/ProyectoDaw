@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM fransalmeron/proyectodaw-nginx:alpine
 
 # Copia config de Nginx
 COPY ./default.conf.template /default.conf.template
