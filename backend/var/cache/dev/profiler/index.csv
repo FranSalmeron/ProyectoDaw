@@ -2349,3 +2349,8 @@ b057b4,127.0.0.1,POST,https://192.168.70.60/favorite/new,1745576677,,201
 f9f4bd,127.0.0.1,POST,https://192.168.70.60/favorite/new,1745576724,,201
 806b87,127.0.0.1,DELETE,https://192.168.70.60/favorite/45/delete,1745576743,,200
 538a3b,127.0.0.1,DELETE,https://192.168.70.60/favorite/46/delete,1745576752,,200
+f608a7,172.18.0.1,GET,http://localhost:8001/,1748795818,,200
+0d1d35,172.18.0.1,GET,http://localhost:8001/transaction/,1748795820,0ea9f9,500
+0ea9f9,172.18.0.1,GET,http://localhost:8001/transaction/,1748795820,,500
+b22c0c,172.18.0.1,GET,http://localhost:8001/favicon.ico,1748795821,bbc3bd,404
+bbc3bd,172.18.0.1,GET,http://localhost:8001/favicon.ico,1748795821,,404
