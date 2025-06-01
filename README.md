@@ -2,6 +2,9 @@
 
 Bienvenido a **RenovAuto**, un proyecto personal que nace de mi pasión por el mundo automovilístico y el desarrollo web. Esta plataforma está pensada para ofrecer a los usuarios una experiencia clara y atractiva para explorar coches y venderlos, ya sea por interés, consulta o futura compra.
 
+# 🔗 Enlace Web del Proyecto (Producción):
+👉 https://renovauto.up.railway.app
+
 ## 🎯 ¿Por qué este proyecto?
 
 Desde hace tiempo me interesa el diseño de sitios web funcionales y visualmente agradables, y decidí unir ese interés con otra de mis pasiones: los coches. Así nació esta página, con el objetivo de:
@@ -28,6 +31,21 @@ Desde hace tiempo me interesa el diseño de sitios web funcionales y visualmente
 - Filtros por tipo, marca o rango de precios.
 - Página de detalles individuales para cada coche.
 - Diseño responsive adaptado a móviles y tablets.
+  
+## 🔐 Credenciales para pruebas
+Puedes probar la plataforma con los siguientes usuarios:
+
+👤 Usuario normal:
+
+Usuario: alvaro morata
+
+Contraseña: 1234
+
+🛡️ Administrador:
+
+Usuario: salmeron
+
+Contraseña: 1234
 
 ## 🚀 Despliegue
 
@@ -83,9 +101,37 @@ Railway expone cada servicio en rutas específicas (por ejemplo, `/backend`, `/n
 
 Para más información, visita [Railway Docs](https://docs.railway.app/).
 
-## Conclusiones y dificultades
+## 🖼️ Vistas principales de la aplicación
+A continuación, se presentan algunas de las vistas más representativas de la plataforma:
 
+🏠 Home (Página de inicio)
 
+![home](/ProyectoDaw/docs/docsImages/home.png)
+
+📊 Stadistics (Estadísticas del panel de administración)
+
+![Stadistics](/ProyectoDaw/docs/docsImages/stadistics1.png)
+![Stadistics](/ProyectoDaw/docs/docsImages/stadistics2.png)
+
+👥 Gestión de Usuarios (Administrador)
+
+![Admin_users](/ProyectoDaw/docs/docsImages/admin_users.png)
+
+🚗 Detalle de Coche (Car Details)
+
+![Car_details](/ProyectoDaw/docs/docsImages/car_details.png)
+
+📝 Registro (Register)
+
+![Register](/ProyectoDaw/docs/docsImages/Register.png)
+
+💬 Chats (Chats de los usuarios)
+
+![Chats](/ProyectoDaw/docs/docsImages/Chats.png)
+
+💬 Chat (Mensajería entre usuarios)
+
+![Chat](/ProyectoDaw/docs/docsImages/Chat.png)
 
 Gracias por visitar este repositorio. Si tienes sugerencias o quieres colaborar, ¡estaré encantado de escucharte!
 
