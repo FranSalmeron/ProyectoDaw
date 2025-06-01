@@ -6,6 +6,8 @@ import { ChatProvider } from "./context/ChatContext";
 import { RouterProvider } from "react-router-dom";
 import { FavoriteProvider } from "./context/FavoriteContext";
 import { UserProvider } from "./context/UserContext";
+import { DarkModeProvider } from "./context/DarkModeContext";
+import { ThemeProvider } from "./context/ThemeContext"; // De momento no se usa mañana se usará
 import { router } from "./routes/router";
 import { isTokenExpired } from "./helpers/decodeToken";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -24,7 +26,8 @@ function App() {
 
   return (
     <div className="bg-[#F5EFEB] min-h-screen flex flex-col">
-      <ToastContainer/>
+      <ToastContainer />
+      <DarkModeProvider> {/* Proveedor de modo oscuro */}
         <CarProvider>
           <ChatProvider>
             <FavoriteProvider>
@@ -35,6 +38,7 @@ function App() {
             </FavoriteProvider>
           </ChatProvider>
         </CarProvider>
+      </DarkModeProvider>
     </div>
   );
 }

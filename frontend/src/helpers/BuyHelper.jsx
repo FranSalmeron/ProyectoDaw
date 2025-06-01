@@ -19,10 +19,32 @@ export const buyCar = async (carId, userId, price) => {
         }
     
         const data = await response.json();
-        localStorage.removeItem('cachedCars'); // Limpiar caché de coches después de la compra
         return data;
     } catch (error) {
         console.error("Error en la compra:", error);
         throw error;
     }
 }
+
+export const fetchStatistics = async () => {
+  try {
+    const response = await fetch(`${symfonyUrl}/transaction/statistics`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("No se pudo obtener las estadísticas");
+    }
+
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    console.error("Error al cargar estadísticas:", error);
+    throw error;
+  }
+};

@@ -13,6 +13,8 @@ import "leaflet/dist/leaflet.css";
 import { useNavigate } from "react-router-dom";
 import { getUserIdFromToken } from "../helpers/decodeToken";
 import Select from "react-select";
+import { useCars } from "../context/CarContext";
+import { useDarkMode } from "../context/DarkModeContext";
 
 const symfonyUrl = import.meta.env.VITE_API_URL;
 
@@ -40,7 +42,7 @@ function SubmitCar() {
     lon: null,
     city: "",
   });
-
+  const { clearCars } = useCars();
   // Establecer automáticamente la fecha de publicación como la fecha actual
   useEffect(() => {
     if (formData.user == null) {
@@ -194,10 +196,27 @@ function SubmitCar() {
 
   // Manejar la carga del archivo de imagen
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
+    const newFiles = Array.from(e.target.files);
+    const totalImages = formData.images.length + newFiles.length;
+
+    if (totalImages > 3) {
+      toast.error("Solo puedes subir un máximo de 3 imágenes.");
+      return;
+    }
+
     setFormData((prevState) => ({
       ...prevState,
-      images: prevState.images ? [...prevState.images, ...files] : files, // Concatenamos las imágenes nuevas a las existentes
+      images: [...prevState.images, ...newFiles],
+    }));
+  };
+
+  const handleRemoveImage = (index) => {
+    const updatedImages = [...formData.images];
+    updatedImages.splice(index, 1);
+
+    setFormData((prevState) => ({
+      ...prevState,
+      images: updatedImages,
     }));
   };
 
@@ -230,29 +249,31 @@ function SubmitCar() {
       }
     });
     try {
-      console.log(formData);
       const response = await fetch(`${symfonyUrl}/car/new`, {
         method: "POST",
         body: data,
       });
 
       if (response.ok) {
-        toast.success("Coche creado con éxito");
+        toast.success("Coche añadido con éxito");
         localStorage.removeItem("cachedCars");
+        localStorage.removeItem("myCars");
+        clearCars(); // Limpiar el estado de coches
       } else {
         toast.error("Error al crear el coche");
-        toast.info("Tamaño de imagen demasiado grande. Pon menos imágenes. Recargando la página en 4 segundos...");
+        toast.info(
+          "Tamaño de imagen demasiado grande, pon imagenes menos pesadas. Recargando la página en 4 segundos..."
+        );
         setTimeout(() => {
-          window.location.reload(); // Recargar la página después de 4 segundos
+          window.location.reload(); // Recargar la página después de 4 xsegundos
         }, 4000);
       }
-      } catch (error) {
-        console.error("Hubo un error:", error);
-        toast.info("Tamaño de imagen demasiado grande. Pon menos imágenes. Recargando la página en 4 segundos...");
-        setTimeout(() => {
-          window.location.reload(); // Recargar la página después de 4 segundos
-        }, 4000);
-      }
+    } catch (error) {
+      console.error("Hubo un error:", error);
+      setTimeout(() => {
+        window.location.reload(); // Recargar la página después de 4 segundos
+      }, 4000);
+    }
   };
 
   const brands = [
@@ -266,7 +287,7 @@ function SubmitCar() {
     { label: "Buick", value: "buick" },
     { label: "Chevrolet", value: "chevrolet" },
     { label: "Chrysler", value: "chrysler" },
-    { label: "Citroën", value: "citroen" }, 
+    { label: "Citroën", value: "citroen" },
     { label: "Dodge", value: "dodge" },
     { label: "Fiat", value: "fiat" },
     { label: "Ford", value: "ford" },
@@ -314,10 +335,18 @@ function SubmitCar() {
     });
   };
 
+  const { isDarkMode } = useDarkMode();
+
+const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-white";
+const formBg = isDarkMode ? "bg-[#2C2C2E]" : "bg-[#2F4156]";
+const inputBg = isDarkMode ? "bg-[#3A3A3C] text-white placeholder-gray-400" : "bg-gray-800 text-white placeholder-gray-400";
+const mutedText = "text-white";
+const buttonBg = "bg-[#43697a] hover:bg-[#567C8D] text-white";
+
   return (
-    <div class="bg-[#F5EFEB] min-h-screen p-5">
-      <div className="w-9/10 max-w-2xl mx-auto bg-[#2F4156] text-white p-8 rounded-lg shadow-lg m-5">
-        <h2 className="text-3xl font-bold text-center text-white-300 mb-6">
+    <div className={`${bgMain} min-h-screen p-5`}>
+      <div className={`w-9/10 max-w-2xl mx-auto ${formBg} p-8 rounded-lg shadow-lg m-5`}>
+        <h2 className="text-3xl font-bold text-center mb-6">
           Introduce los detalles del coche
         </h2>
 
@@ -332,7 +361,7 @@ function SubmitCar() {
               name="brand"
               value={formData.brand}
               onChange={(e) => handleBrandChange(e.target)}
-              className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              className={`w-full p-3 rounded-lg  bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500`}
             >
               <option value="">Selecciona la marca</option>
               {brands.map((brand) => (
@@ -611,10 +640,10 @@ function SubmitCar() {
           </div>
 
           {/* Imagen */}
-          <div className="mb-4">
-            <label htmlFor="image" className="block text-lg font-medium mb-2">
-              Imagen del coche:
-            </label>
+          <div className="mb-2">
+            <p className="text-sm text-red-400 mb-2">
+              Puedes subir hasta 3 imágenes como máximo.
+            </p>
             <input
               id="image"
               type="file"
@@ -623,7 +652,31 @@ function SubmitCar() {
               multiple
               onChange={handleFileChange}
               className="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              disabled={formData.images.length >= 3}
             />
+            <p className="text-sm text-gray-300 mt-2">
+              Imágenes seleccionadas: {formData.images.length} / 3
+            </p>
+          </div>
+
+          {/* Vista previa de imágenes */}
+          <div className="flex flex-wrap gap-4 mt-3">
+            {formData.images.map((img, index) => (
+              <div key={index} className="relative w-24 h-24">
+                <img
+                  src={URL.createObjectURL(img)}
+                  alt={`Preview ${index}`}
+                  className="w-full h-full object-cover rounded-lg"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveImage(index)}
+                  className="absolute top-0 right-0 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-700"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
           </div>
 
           {/* Latitud y Longitud (autocompletado o manual) */}

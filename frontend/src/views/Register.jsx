@@ -1,148 +1,232 @@
-import React, { useState } from 'react'; 
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; 
-import { createUser } from '../helpers/UserHelper';
+import React, { useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { createUser } from "../helpers/UserHelper";
+import { useNavigate } from "react-router-dom";
+import { useDarkMode } from "../context/DarkModeContext";
+import { FaUser, FaEnvelope, FaMapMarkerAlt, FaPhone, FaLock, FaSpinner } from "react-icons/fa";
 
 function Register() {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [address, setAddress] = useState('');
-    const [phone, setPhone] = useState('');
-    const [password, setPassword] = useState('');
-    const roles =(['ROLE_USER']); 
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [validations, setValidations] = useState({
+    email: true,
+    phone: true
+  });
+  const roles = ["ROLE_USER"];
+  const navigate = useNavigate();
+  const { isDarkMode } = useDarkMode();
 
-    // Función para manejar el envío del formulario
+  const validateEmail = (email) => {
+    const emailRegex = /\S+@\S+\.\S+/;
+    const isValid = emailRegex.test(email);
+    setValidations(prev => ({ ...prev, email: isValid }));
+    return isValid;
+  };
 
-    // Función para validar el formato del email
-    const validateEmail = (email) => {
-        const emailRegex = /\S+@\S+\.\S+/;
-        return emailRegex.test(email);
-    };
+  const validatePhone = (phoneNumber) => {
+    const phoneRegex = /^(?:\+?\d{1,3})?[\s\-]?\(?\d{2,3}\)?[\s\-]?\d{3}[\s\-]?\d{3}$/;
+    const isValid = phoneRegex.test(phoneNumber);
+    setValidations(prev => ({ ...prev, phone: isValid }));
+    return isValid;
+  };
 
-    const validatePhone = (phoneNumber) => {
-        const phoneRegex = /^(?:\+?\d{1,3})?[\s\-]?\(?\d{2,3}\)?[\s\-]?\d{3}[\s\-]?\d{3}$/;
-        if (phoneRegex.test(phoneNumber)) {
-            console.log("Número de teléfono válido");
-            return true;
-        } else {
-            console.log("Número de teléfono inválido");
-            return false;
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-    
-        // Validar el correo electrónico y el teléfono
-        if (validateEmail(email) && validatePhone(phone)) {
-            const userData = {
-                name,
-                email,
-                address,
-                phone,
-                password,
-                roles,
-            };
-    
-            try {
-                const result = await createUser(userData); 
-    
-                // Mostrar el mensaje de éxito
-                toast.success(result.message); 
-    
-            } catch (error) {
-                // Si hay un error en la creación, mostrarlo
-                toast.error(error.message || 'Error al crear el usuario'); 
-            }
-        } else {
-            toast.error('El correo electrónico no es válido o el número de teléfono no es válido.');
-        }
-    };
+    if (validateEmail(email) && validatePhone(phone)) {
+      const userData = {
+        name,
+        email,
+        address,
+        phone,
+        password,
+        roles,
+      };
 
-    return (
-        <div class="bg-[#F5EFEB] min-h-screen p-5">
-        <div class="w-9/10 max-w-md mx-auto bg-[#2F4156] text-white p-8 rounded-lg shadow-lg m-5">
-        <h2 class="text-3xl font-bold text-center text-white-300 mb-6">Introduce tus datos</h2>
-        
-        <form onSubmit={handleSubmit}>
-            {/* Nombre completo */}
-            <div class="mb-4">
-                <label htmlFor="name" class="block text-lg font-medium mb-2">Nombre completo:</label>
-                <input
-                    id="name"
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                    placeholder="Escribe tu nombre completo"
-                />
+      try {
+        const result = await createUser(userData);
+        toast.success(result.message);
+        setTimeout(() => {
+          navigate("/login");
+        }, 4000);
+      } catch (error) {
+        toast.error(error.message || "Error al crear el usuario");
+      }
+    } else {
+      toast.error(
+        "Por favor, verifica el formato del correo electrónico y el número de teléfono."
+      );
+    }
+    setLoading(false);
+  };
+
+  // Clases modo oscuro
+  const bgMain = isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-white";
+  const formBg = isDarkMode ? "bg-[#2F4156]" : "bg-[#2F4156]";
+  const inputBg = isDarkMode
+    ? "bg-gray-800 text-white placeholder-gray-400"
+    : "bg-gray-800 text-white placeholder-gray-400";
+  const btnBg = isDarkMode
+    ? "bg-red-600 hover:bg-red-700"
+    : "bg-red-500 hover:bg-red-600";
+  const btnFocusRing = "focus:ring-2 focus:ring-red-500";
+  const inputIconClass = "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400";
+  const validationClass = (field) => 
+    validations[field] === false ? "border-2 border-red-500" : "";
+
+  return (
+    <div
+      className={`${bgMain} min-h-screen p-5 flex items-center justify-center transition-all duration-300`}
+    >
+      <div
+        className={`w-11/12 max-w-md mx-auto ${formBg} p-8 rounded-lg shadow-xl transform transition-all duration-300 hover:shadow-2xl`}
+      >
+        {/* Logo */}
+        <div className="flex justify-center mb-8">
+          <div className="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center transform transition-all duration-300 hover:scale-105">
+            <FaUser className="text-white text-3xl" />
+          </div>
+        </div>
+
+        <h2 className="text-3xl font-bold text-center mb-8">
+          Crear cuenta
+        </h2>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Nombre */}
+          <div className="relative">
+            <label htmlFor="name" className="block text-lg font-medium mb-2">
+              Nombre completo:
+            </label>
+            <div className="relative">
+              <FaUser className={inputIconClass} />
+              <input
+                id="name"
+                type="text"
+                value={name}
+                required
+                onChange={(e) => setName(e.target.value)}
+                className={`w-full p-3 pl-10 rounded-lg ${inputBg} focus:outline-none ${btnFocusRing} transition-all duration-300`}
+                placeholder="Escribe tu nombre completo"
+              />
             </div>
-            
-            {/* Email */}
-            <div class="mb-4">
-                <label htmlFor="email" class="block text-lg font-medium mb-2">Email:</label>
-                <input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                    placeholder="Escribe tu email"
-                />
+          </div>
+
+          {/* Email */}
+          <div className="relative">
+            <label htmlFor="email" className="block text-lg font-medium mb-2">
+              Email:
+            </label>
+            <div className="relative">
+              <FaEnvelope className={inputIconClass} />
+              <input
+                id="email"
+                type="email"
+                value={email}
+                required
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  validateEmail(e.target.value);
+                }}
+                className={`w-full p-3 pl-10 rounded-lg ${inputBg} focus:outline-none ${btnFocusRing} transition-all duration-300 ${validationClass('email')}`}
+                placeholder="Escribe tu email"
+              />
             </div>
-    
-            {/* Dirección */}
-            <div class="mb-4">
-                <label htmlFor="address" class="block text-lg font-medium mb-2">Dirección:</label>
-                <input
-                    id="address"
-                    type="text"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                    placeholder="Escribe tu dirección"
-                />
+            {!validations.email && (
+              <p className="text-red-500 text-sm mt-1">Por favor, ingresa un email válido</p>
+            )}
+          </div>
+
+          {/* Dirección */}
+          <div className="relative">
+            <label htmlFor="address" className="block text-lg font-medium mb-2">
+              Dirección:
+            </label>
+            <div className="relative">
+              <FaMapMarkerAlt className={inputIconClass} />
+              <input
+                id="address"
+                type="text"
+                value={address}
+                required
+                onChange={(e) => setAddress(e.target.value)}
+                className={`w-full p-3 pl-10 rounded-lg ${inputBg} focus:outline-none ${btnFocusRing} transition-all duration-300`}
+                placeholder="Escribe tu dirección"
+              />
             </div>
-    
-            {/* Teléfono */}
-            <div class="mb-4">
-                <label htmlFor="phone" class="block text-lg font-medium mb-2">Teléfono:</label>
-                <input
-                    id="phone"
-                    type="text"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                    placeholder="Escribe tu teléfono"
-                />
+          </div>
+
+          {/* Teléfono */}
+          <div className="relative">
+            <label htmlFor="phone" className="block text-lg font-medium mb-2">
+              Teléfono:
+            </label>
+            <div className="relative">
+              <FaPhone className={inputIconClass} />
+              <input
+                id="phone"
+                type="text"
+                value={phone}
+                required
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                  validatePhone(e.target.value);
+                }}
+                className={`w-full p-3 pl-10 rounded-lg ${inputBg} focus:outline-none ${btnFocusRing} transition-all duration-300 ${validationClass('phone')}`}
+                placeholder="Escribe tu teléfono"
+              />
             </div>
-    
-            {/* Contraseña */}
-            <div class="mb-6">
-                <label htmlFor="password" class="block text-lg font-medium mb-2">Contraseña:</label>
-                <input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    class="w-full p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                    placeholder="Crea tu contraseña"
-                />
+            {!validations.phone && (
+              <p className="text-red-500 text-sm mt-1">Por favor, ingresa un número de teléfono válido</p>
+            )}
+          </div>
+
+          {/* Contraseña */}
+          <div className="relative">
+            <label htmlFor="password" className="block text-lg font-medium mb-2">
+              Contraseña:
+            </label>
+            <div className="relative">
+              <FaLock className={inputIconClass} />
+              <input
+                id="password"
+                type="password"
+                value={password}
+                required
+                onChange={(e) => setPassword(e.target.value)}
+                className={`w-full p-3 pl-10 rounded-lg ${inputBg} focus:outline-none ${btnFocusRing} transition-all duration-300`}
+                placeholder="Crea tu contraseña"
+              />
             </div>
-    
-            {/* Botón */}
-            <div class="flex justify-center">
-                <button
-                    type="submit"
-                    class="w-full py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-500"
-                >
-                    Registrar
-                </button>
-            </div>
+          </div>
+
+          {/* Botón de submit */}
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-3 rounded-lg text-white transition-all duration-300 transform hover:scale-[1.02] focus:outline-none ${btnBg} ${btnFocusRing} ${
+              loading ? "cursor-not-allowed opacity-70" : ""
+            }`}
+          >
+            {loading ? (
+              <span className="flex items-center justify-center">
+                <FaSpinner className="animate-spin mr-2" />
+                Procesando...
+              </span>
+            ) : (
+              "Crear cuenta"
+            )}
+          </button>
         </form>
+      </div>
     </div>
-    </div>
-    )    
+  );
 }
 
 export default Register;

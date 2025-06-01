@@ -22,16 +22,16 @@ class Chat extends \App\Entity\Chat implements \Doctrine\ORM\Proxy\InternalProxy
     
 
     private const LAZY_OBJECT_PROPERTY_SCOPES = [
-        "\0".parent::class."\0".'buyer' => [parent::class, 'buyer', null],
-        "\0".parent::class."\0".'car' => [parent::class, 'car', null],
-        "\0".parent::class."\0".'createdDate' => [parent::class, 'createdDate', null],
-        "\0".parent::class."\0".'id' => [parent::class, 'id', null],
-        "\0".parent::class."\0".'seller' => [parent::class, 'seller', null],
-        'buyer' => [parent::class, 'buyer', null],
-        'car' => [parent::class, 'car', null],
-        'createdDate' => [parent::class, 'createdDate', null],
-        'id' => [parent::class, 'id', null],
-        'seller' => [parent::class, 'seller', null],
+        "\0".parent::class."\0".'buyer' => [parent::class, 'buyer', null, 16],
+        "\0".parent::class."\0".'car' => [parent::class, 'car', null, 16],
+        "\0".parent::class."\0".'createdDate' => [parent::class, 'createdDate', null, 16],
+        "\0".parent::class."\0".'id' => [parent::class, 'id', null, 16],
+        "\0".parent::class."\0".'seller' => [parent::class, 'seller', null, 16],
+        'buyer' => [parent::class, 'buyer', null, 16],
+        'car' => [parent::class, 'car', null, 16],
+        'createdDate' => [parent::class, 'createdDate', null, 16],
+        'id' => [parent::class, 'id', null, 16],
+        'seller' => [parent::class, 'seller', null, 16],
     ];
 
     public function __isInitialized(): bool

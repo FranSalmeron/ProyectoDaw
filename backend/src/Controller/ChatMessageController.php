@@ -11,26 +11,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Message\LoadMessagesMessage;
-use App\Entity\Chat;
 use App\Repository\ChatMessageRepository;
-use Doctrine\DBAL\Types\GuidType;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Ramsey\Uuid\Guid\Guid;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
 #[Route('/ChatMessage')]
 class ChatMessageController extends AbstractController
 {
-    private MessageBusInterface $bus;
     private CacheInterface $cache;
     private LoggerInterface $logger;
 
-    public function __construct(MessageBusInterface $bus, CacheInterface $cache,  LoggerInterface $logger)
+    public function __construct( CacheInterface $cache,  LoggerInterface $logger)
     {
-        $this->bus = $bus;  // Inyectamos el bus de mensajes
         $this->cache = $cache; // Inyectamos el servicio de cache
         $this->logger = $logger;
     }
@@ -135,27 +129,37 @@ class ChatMessageController extends AbstractController
 
 
     // Iniciar carga de mensajes en background (asíncrono)
-    #[Route('/{chatId}/messages', name: 'app_ChatMessage_load_messages', methods: ['POST','GET'])]
-    public function loadMessages(int $chatId, Request $request): JsonResponse
+    #[Route('/{chatId}/messages', name: 'app_ChatMessage_load_messages', methods: ['GET'])]
+    public function loadMessages(int $chatId, ChatRepository $chatRepository, ChatMessageRepository $chatMessageRepository): JsonResponse
     {
-        // Obtener el taskId del parámetro de la solicitud
-        $taskId = json_decode($request->getContent(), true);
-        $this->logger->info('taskId recibido en la solicitud: ' . $taskId);
-
-        if (!$taskId) {
-            // Generar un nuevo taskId si no se proporciona uno
-            $taskId = Guid::uuid4()->toString();
-            $this->logger->info('Generado nuevo taskId: ' . $taskId);
+        // Verificar si el chat existe
+        $chat = $chatRepository->find($chatId);
+        if (!$chat) {
+            return $this->json([
+                'success' => false,
+                'message' => 'El chat no existe.',
+            ], Response::HTTP_NOT_FOUND);
         }
-
-        // Enviar mensaje para procesar la carga de mensajes de manera asíncrona
-        $message = new LoadMessagesMessage($chatId, $taskId);
-        $this->bus->dispatch($message);
-
-        // Responder con el taskId utilizado
-        return new JsonResponse([
-            'status' => 'Message dispatched',
-            'taskId' => $taskId
+    
+        // Obtener todos los mensajes del chat, ordenados por fecha
+        $messages = $chatMessageRepository->findBy(
+            ['chat' => $chat],
+            ['messageDate' => 'ASC']
+        );
+    
+        // Formatear los mensajes para la respuesta JSON
+        $formattedMessages = array_map(function (ChatMessage $message) {
+            return [
+                'messageId' => $message->getIdMessage(),
+                'content' => $message->getContent(),
+                'userId' => $message->getUser()->getId(),
+                'messageDate' => $message->getMessageDate()->format('Y-m-d H:i:s'),
+            ];
+        }, $messages);
+    
+        return $this->json([
+            'success' => true,
+            'messages' => $formattedMessages,
         ]);
     }
 }

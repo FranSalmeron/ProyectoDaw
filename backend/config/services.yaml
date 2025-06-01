@@ -2,7 +2,7 @@ services:
     _defaults:
         autowire: true  # Habilita la inyección automática
         autoconfigure: true  # Configura automáticamente los servicios para ser utilizados por el contenedor
-
+        
     App\:
         resource: '../src/'
         exclude:
@@ -10,8 +10,12 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # Definición de MessageHandler
-    App\Message\MessageHandler:
+    App\Service\CloudinaryService:
         arguments:
-            $chatMessageRepository: '@App\Repository\ChatMessageRepository'
-            $entityManager: '@doctrine.orm.entity_manager'
+            $cloudinaryCloudName: '%env(CLOUDINARY_CLOUD_NAME)%'
+            $cloudinaryApiKey: '%env(CLOUDINARY_API_KEY)%'
+            $cloudinaryApiSecret: '%env(CLOUDINARY_API_SECRET)%'
+
+    App\Repository\UserRepository:
+        public: true
+            

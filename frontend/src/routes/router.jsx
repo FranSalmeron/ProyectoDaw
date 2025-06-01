@@ -2,7 +2,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import RootLayout from '../layouts/RootLayout';
 import ProtectedLayout from '../layouts/ProtectedLayout'; // Layout de protección para rutas privadas
-import { Home, BuyCar, CarDetails, Chat, Chats, Login, Register, SubmitCar, ErrorPage, CarFavorites, Profile, SeeCars, About, Users, Chat_list, Banned } from '../views/indexViews';
+import { Home, BuyCar, Statistics, CarDetails, Chat, Chats, Login, Register, SubmitCar, ErrorPage, CarFavorites, Profile, SeeCars, About, Users, Chat_list, Banned } from '../views/indexViews';
 import { ROUTES } from './paths';
 
 export const router = createBrowserRouter([
@@ -67,12 +67,16 @@ export const router = createBrowserRouter([
         element: <Chat_list />,
       },
       {
-        path: ROUTES.CHATS, // "/chats::userId"
+        path: ROUTES.CHATS, // "/chats"
         element: <Chats />,
       },
       {
         path: ROUTES.CHAT, // "/chat"
         element: <Chat />,
+      },
+      {
+        path: ROUTES.STATISTICS, // "/statistics"
+        element: <Statistics />,
       },
       {
         path: ROUTES.BANNED, // "/banned"

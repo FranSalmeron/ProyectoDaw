@@ -3,75 +3,77 @@ import { toast } from "react-toastify";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { getUserIdFromToken } from "../helpers/decodeToken";
+import { getUserIdFromToken, isAdmin } from "../helpers/decodeToken";
 import { useNavigate, useLocation } from "react-router-dom";
 import { addFavorite, removeFavorite } from "../helpers/favoriteHelper";
 import { useFavorites } from "../context/FavoriteContext";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { isAdmin } from "../helpers/decodeToken";
 import { editCar } from "../helpers/carHelper";
+import { useCars } from "../context/CarContext";
+import { useDarkMode } from "../context/DarkModeContext";
+import transformCloudinaryUrl from "../helpers/cloudinaryHelper";
 
 const CarDetails = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const sliderRef = useRef(null);
-  const [toastShown, setToastShown] = useState(false); // Estado para controlar el toast
+  const [toastShown, setToastShown] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation(); // Usamos useLocation para obtener el estado de la navegación
+  const location = useLocation();
   const { favorites, addFavorites, removeFromData } = useFavorites();
-  const userId = getUserIdFromToken() ? getUserIdFromToken() : null;
-
+  const { clearCars } = useCars();
+  const userId = getUserIdFromToken() || null;
   const [car, setCar] = useState(location.state?.car);
+  const { isDarkMode } = useDarkMode();
 
-  // Mostrar el toast solo si el coche no está disponible y asegurarse de que solo se muestre una vez
+  // Estilos condicionales
+  const bgMain = isDarkMode
+    ? "bg-[#1C1C1E] text-white"
+    : "bg-[#F5EFEB] text-black";
+  const bgCard = isDarkMode ? "bg-[#2C2C2E]" : "bg-white";
+  const textWarning = isDarkMode ? "text-red-400" : "text-red-600";
+
   useEffect(() => {
     if (!car && !toastShown) {
-      setToastShown(true); // Aseguramos que el toast solo se muestre una vez
+      setToastShown(true);
       toast.error("No se ha proporcionado un coche para mostrar");
-      navigate("/"); // Redirigir a la página de inicio si no se proporciona un coche
+      navigate("/");
     }
   }, [car, toastShown, navigate]);
 
-  // Comprobar si el coche está en la lista de favoritos
-  const isFavorite = (carId) => {
-    return favorites.some((fav) => fav.car && fav.car.id === carId);
-  };
+  const isFavorite = (carId) =>
+    favorites.some((fav) => fav.car && fav.car.id === carId);
 
-  // Función para manejar el clic en favoritos
   const handleFavoriteClick = async (e, carId) => {
-    e.stopPropagation(); // Prevenir que el clic del corazón dispare el clic de la tarjeta
-
+    e.stopPropagation();
     try {
       if (isFavorite(carId)) {
         const currentFavorite = favorites.find(
           (fav) => fav.car && fav.car.id === carId
         );
-        const remove = await removeFavorite(
+        const removed = await removeFavorite(
           userId,
           currentFavorite.id,
           removeFromData
         );
-        if (remove) {
-          toast.success("Coche eliminado de favoritos.");
-          return;
-        }
-        toast.error("Error al eliminar el coche de favoritos.");
-        return;
+        toast[removed ? "success" : "error"](
+          removed
+            ? "Coche eliminado de favoritos."
+            : "Error al eliminar el coche."
+        );
       } else {
-        const add = await addFavorite(userId, carId, addFavorites);
-        if (!add) {
-          toast.error("Error al añadir el coche a favoritos.");
-        }
-        toast.success("Coche añadido a favoritos.");
+        const added = await addFavorite(userId, carId, addFavorites);
+        toast[added ? "success" : "error"](
+          added ? "Coche añadido a favoritos." : "Error al añadir el coche."
+        );
       }
     } catch (error) {
-      console.error("Error al manejar el clic en favoritos:", error);
+      console.error("Error al manejar favoritos:", error);
       toast.error("Error al manejar el clic en favoritos.");
     }
   };
 
-  // Configuración del carrusel
   const settings = {
     dots: true,
     infinite: false,
@@ -83,7 +85,6 @@ const CarDetails = () => {
     prevArrow: <div className="slick-prev">←</div>,
   };
 
-  // Función para cambiar la imagen principal
   const handleImageClick = (index) => {
     setSelectedImageIndex(index);
     sliderRef.current.slickGoTo(index);
@@ -91,45 +92,51 @@ const CarDetails = () => {
 
   const handleBanClick = async () => {
     try {
-      const newCarData = {
-        carSold: car.CarSold == "baneado" ? "subido" : "baneado", // Cambia entre "baneado" y "subido"
-      };
+      const newStatus = car.CarSold === "baneado" ? "subido" : "baneado";
+      setCar((prev) => ({ ...prev, CarSold: newStatus }));
 
-      // Actualizar el estado local del coche de inmediato
-      setCar((prevCar) => ({
-        ...prevCar,
-        CarSold: newCarData.carSold,
-      }));
-
-      // Simular la llamada a la API para actualizar el coche
-      const result = await editCar(car.id, newCarData);
+      const result = await editCar(car.id, { carSold: newStatus });
       if (result) {
-        const message =
-          newCarData.carSold == "baneado"
+        toast.success(
+          newStatus === "baneado"
             ? "Coche baneado correctamente."
-            : "Coche desbaneado correctamente.";
-        toast.success(message);
+            : "Coche desbaneado correctamente."
+        );
+        localStorage.removeItem("cachedCars");
+        localStorage.removeItem("myCars");
+        clearCars();
       }
     } catch (error) {
-      console.error("Error al banear el coche: ", error);
+      console.error("Error al banear coche:", error);
       toast.error("Error al banear el coche.");
     }
   };
 
-  // Verificar si el usuario está autenticado
-  const isAuthenticated = () => {
-    const token = localStorage.getItem("jwt");
-    return token ? true : false;
-  };
+  const isAuthenticated = () => !!localStorage.getItem("jwt");
 
-  // Función para manejar el clic en "Comprar"
   const handleBuyClick = () => {
     if (!isAuthenticated()) {
       toast.error("Debes estar registrado para comprar.");
-      navigate("/login"); // Redirigir al login si no está autenticado
+      navigate("/login");
     } else {
       toast.success("Redirigiendo a la página de compra.");
-      navigate("/buy_car", { state: { car } }); // Redirige a la página de compra
+      navigate("/buy_car", { state: { car } });
+    }
+  };
+
+  const handleChatClick = () => {
+    if (!isAuthenticated()) {
+      toast.error("Debes estar registrado para chatear.");
+      navigate("/login");
+    } else {
+      const currentUserId = getUserIdFromToken();
+      navigate("/chat", {
+        state: {
+          buyerId: currentUserId,
+          carId: car?.id,
+          sellerId: car?.user.id,
+        },
+      });
     }
   };
 
@@ -140,164 +147,153 @@ const CarDetails = () => {
     popupAnchor: [0, -32],
   });
 
-  // Función para manejar el clic en "Chatear"
-  const handleChatClick = () => {
-    if (!isAuthenticated()) {
-      toast.error("Debes estar registrado para chatear.");
-      navigate("/login"); // Redirige al login si no está autenticado
-    } else {
-      const currentUserId = getUserIdFromToken();
-      navigate("/chat", {
-        state: {
-          userId: currentUserId,
-          carId: car?.id,
-          buyerId: car?.user.id,
-        },
-      });
-    }
-    // Redirige a la página de chat
-  };
+  const formatCondition = (condition) =>
+    condition
+      ?.split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ") || "";
 
-  // Si no se pasa el coche como estado, mostramos un mensaje de error.
-  if (!car) {
-    return <div>No se ha encontrado el coche</div>;
-  }
+  if (!car)
+    return <div className={`${bgMain} p-6`}>No se ha encontrado el coche</div>;
 
   return (
-    <div className="bg-[#F5EFEB] p-6">
-      <div className="car-details p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-lg mt-6 mb-6">
-        {/* Carrusel de imágenes */}
-        <div className="car-images mb-6">
+    <div
+      className={`${bgMain} p-6 min-h-screen transition-colors duration-300`}
+    >
+      <div className={`p-6 max-w-4xl mx-auto rounded-lg shadow-lg ${bgCard}`}>
+        {/* Carrusel */}
+        <div className="mb-6 w-full max-w-[600px] mx-auto">
           <Slider ref={sliderRef} {...settings}>
             {car.images.map((image, index) => (
               <div key={index}>
                 <img
-                  src={image}
+                  src={transformCloudinaryUrl(
+                    image,
+                    "w_800,h_500,c_fill,g_auto,f_auto,q_auto"
+                  )}
                   alt={`Car image ${index + 1}`}
-                  className="w-full h-100 object-cover rounded-lg shadow-md"
+                  className="w-full h-auto max-h-[400px] mx-auto object-contain rounded-lg shadow-md"
                 />
               </div>
             ))}
           </Slider>
         </div>
 
-        {/* Fila de miniaturas de imágenes */}
-        <div className="image-thumbnails flex space-x-4 overflow-x-auto mb-6">
+        {/* Miniaturas */}
+        <div className="flex space-x-4 overflow-x-auto mb-6">
           {car.images.map((image, index) => (
             <div
               key={index}
               className="w-20 h-20 cursor-pointer"
-              onClick={() => handleImageClick(index)} // Actualiza la imagen seleccionada
+              onClick={() => handleImageClick(index)}
             >
               <img
-                src={image}
+                src={transformCloudinaryUrl(
+                  image,
+                  "w_120,h_90,c_fill,g_auto,f_auto,q_auto"
+                )}
                 alt={`Thumbnail ${index + 1}`}
-                className={`w-full h-full object-cover rounded-lg hover:opacity-80 ${
+                className={`w-full h-full object-contain rounded-lg hover:opacity-80 ${
                   selectedImageIndex === index ? "border-4 border-blue-500" : ""
-                }`} // Resalta la miniatura seleccionada
+                }`}
               />
             </div>
           ))}
         </div>
+
+        {/* Alerta de baneo */}
         {car.user.roles.includes("ROLE_BANNED") && (
-          <div className="text-red-600 font-semibold">
+          <div className={`${textWarning} font-semibold`}>
             ⚠ Este vendedor ha sido baneado y podría no responder.
           </div>
         )}
-        <div className="car-info mt-6">
-          {/* Fila con Marca, Modelo y el Icono de Favoritos */}
+
+        {/* Info del coche */}
+        <div className="mt-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-semibold text-gray-800 mb-2">
+              <h1 className="text-3xl font-semibold mb-2">
                 {car.brand} {car.model}
               </h1>
-              <h2 className="text-lg text-gray-500 mb-4">
-                Vendedor: {car.user.name}
-              </h2>
+              <h2 className="text-lg mb-4">Vendedor: {car.user.name}</h2>
             </div>
-
-            {/* Icono de favoritos */}
             {userId && (
-              <div>
-                <button
-                  className="text-white cursor-pointer"
-                  onClick={(e) => handleFavoriteClick(e, car.id)}
-                >
-                  <img
-                    src={
-                      isFavorite(car.id)
-                        ? "/images/corazon-relleno.png"
-                        : "/images/corazon-vacio.png"
-                    }
-                    alt="Corazón"
-                    className="w-10 h-10"
-                  />
-                </button>
-              </div>
+              <button onClick={(e) => handleFavoriteClick(e, car.id)}>
+                <img
+                  src={
+                    isFavorite(car.id)
+                      ? isDarkMode
+                        ? "/images/corazon-relleno-w.png"
+                        : "/images/corazon-relleno.png"
+                      : isDarkMode
+                      ? "/images/corazon-vacio-w.png"
+                      : "/images/corazon-vacio.png"
+                  }
+                  alt="Favorito"
+                  className="w-10 h-10"
+                />
+              </button>
             )}
           </div>
 
-          {/* Información del coche */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Ubicacion:</p>
-              <p className="text-gray-500">{car.city}</p>
+            <div>
+              <p className="font-semibold">Ubicación:</p>
+              <p>{car.city}</p>
             </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Precio:</p>
-              <p className="text-gray-500">{car.price} €</p>
+            <div>
+              <p className="font-semibold">Precio:</p>
+              <p>{car.price} €</p>
             </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Año:</p>
-              <p className="text-gray-500">{car.manufacture_year}</p>
+            <div>
+              <p className="font-semibold">Año:</p>
+              <p>{car.manufacture_year}</p>
             </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Kilómetros:</p>
-              <p className="text-gray-500">{car.mileage} km</p>
+            <div>
+              <p className="font-semibold">Kilómetros:</p>
+              <p>{car.mileage} km</p>
             </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Combustible:</p>
-              <p className="text-gray-500">{car.fuelType}</p>
+            <div>
+              <p className="font-semibold">Combustible:</p>
+              <p>{car.fuelType}</p>
             </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Condición:</p>
-              <p className="text-gray-500">{car.CarCondition}</p>
+            <div>
+              <p className="font-semibold">Condición:</p>
+              <p>{formatCondition(car.CarCondition)}</p>
             </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Tracción:</p>
-              <p className="text-gray-500">{car.traction}</p>
+            <div>
+              <p className="font-semibold">Tracción:</p>
+              <p>{car.traction}</p>
             </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Puertas:</p>
-              <p className="text-gray-500">{car.doors}</p>
+            <div>
+              <p className="font-semibold">Puertas:</p>
+              <p>{car.doors}</p>
             </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Asientos:</p>
-              <p className="text-gray-500">{car.seats}</p>
+            <div>
+              <p className="font-semibold">Asientos:</p>
+              <p>{car.seats}</p>
             </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Transmisión:</p>
-              <p className="text-gray-500">{car.transmission}</p>
+            <div>
+              <p className="font-semibold">Transmisión:</p>
+              <p>{car.transmission}</p>
             </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Color:</p>
-              <p className="text-gray-500">{car.color}</p>
+            <div>
+              <p className="font-semibold">Color:</p>
+              <p>{car.color}</p>
             </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Fecha Publicación:</p>
-              <p className="text-gray-500">
-                {new Date(car.publication_date).toLocaleDateString()}
-              </p>
+            <div>
+              <p className="font-semibold">Fecha Publicación:</p>
+              <p>{new Date(car.publication_date).toLocaleDateString()}</p>
             </div>
-            <div className="car-detail-item">
-              <p className="text-gray-700 font-semibold">Descripcion:</p>
-              <p className="text-gray-500">{car.description}</p>
+            <div className="sm:col-span-2">
+              <p className="font-semibold">Descripción:</p>
+              <p>{car.description}</p>
             </div>
           </div>
         </div>
 
-        {/* Mapa para seleccionar ubicación */}
-        <div className="mb-4 mt-4" style={{ height: "300px" }}>
+        {/* Mapa */}
+        <div className="my-6" style={{ height: "300px" }}>
           <MapContainer
             center={[car.lat, car.lon]}
             zoom={13}
@@ -309,25 +305,25 @@ const CarDetails = () => {
           </MapContainer>
         </div>
 
-        {/* Botones de acción */}
-        <div className="car-actions mt-6 flex justify-between">
+        {/* Botones */}
+        <div className="mt-6 flex flex-col sm:flex-row justify-between">
           <button
             onClick={handleBuyClick}
-            className="btn bg-[#43697a] text-white p-3 rounded-md w-1/3 hover:bg-[#567C8D] m-2"
+            className="bg-[#43697a] text-white p-3 rounded-md hover:bg-[#567C8D] m-2"
           >
             Comprar
           </button>
           {isAdmin() && (
-              <button
-                onClick={handleBanClick}
-                className="btn bg-red-600 text-white p-3 rounded-md w-1/3 hover:bg-red-700 m-2"
-              >
-                {car.CarSold == "baneado" ? "Desbanear Coche" : "Banear Coche"}
-              </button>
+            <button
+              onClick={handleBanClick}
+              className="bg-red-600 text-white p-3 rounded-md hover:bg-red-700 m-2"
+            >
+              {car.CarSold === "baneado" ? "Desbanear Coche" : "Banear Coche"}
+            </button>
           )}
           <button
             onClick={handleChatClick}
-            className="btn bg-[#0E566A] text-white p-3 rounded-md w-1/3 hover:bg-[#42AEB5] m-2"
+            className="bg-[#0E566A] text-white p-3 rounded-md hover:bg-[#42AEB5] m-2"
           >
             Chatear
           </button>

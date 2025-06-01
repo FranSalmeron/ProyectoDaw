@@ -8,23 +8,22 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ChatRepository::class)]
 class Chat
 {
-   
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
-    private ?int $id = null;  
+    private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['remove'])]
     #[ORM\JoinColumn(name: "buyer_id", referencedColumnName: "id")]
     private ?User $buyer = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['remove'])]
     #[ORM\JoinColumn(name: "seller_id", referencedColumnName: "id")]
     private ?User $seller = null;
 
-    #[ORM\ManyToOne(targetEntity: Car::class)]
+    #[ORM\ManyToOne(targetEntity: Car::class, cascade: ['remove'])]
     #[ORM\JoinColumn(name: "car_id", referencedColumnName: "id")]
-    private ?Car $car = null;  
+    private ?Car $car = null;
 
     #[ORM\Column(type: "datetime")]
     private \DateTimeInterface $createdDate;
@@ -38,24 +37,24 @@ class Chat
     {
         return $this->id;
     }
-  
-    public function getbuyer(): ?User
+
+    public function getBuyer(): ?User
     {
         return $this->buyer;
     }
 
-    public function setbuyer(User $buyer): self
+    public function setBuyer(User $buyer): self
     {
         $this->buyer = $buyer;
         return $this;
     }
 
-    public function getseller(): ?User
+    public function getSeller(): ?User
     {
         return $this->seller;
     }
 
-    public function setseller(User $seller): self
+    public function setSeller(User $seller): self
     {
         $this->seller = $seller;
         return $this;

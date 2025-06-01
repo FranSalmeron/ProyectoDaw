@@ -17,13 +17,6 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/transaction')]
 class TransactionController extends AbstractController
 {
-    #[Route('/', name: 'app_transaction_index', methods: ['GET'])]
-    public function index(TransactionRepository $transactionRepository): Response
-    {
-        return $this->render('transaction/index.html.twig', [
-            'transactions' => $transactionRepository->findAll(),
-        ]);
-    }
 
     #[Route('/new', name: 'app_transaction_new', methods: ['POST'])]
     public function new(
@@ -52,7 +45,6 @@ class TransactionController extends AbstractController
         if ($car->getCarSold() !== 'subido') {
             return new JsonResponse(['error' => 'Este coche no está disponible para la compra'], Response::HTTP_CONFLICT);
         }
-        
 
         // Crear la transacción
         $transaction = new Transaction();
@@ -62,16 +54,78 @@ class TransactionController extends AbstractController
         $transaction->setStatus('comprado');
         $transaction->setTransactionDate(new \DateTime());
 
-        // Marcar el coche como vendido
+        // **Calcular comisión (20% del precio de venta)**
+        $commission = $price * 0.20;
+        $transaction->setCommission($commission);
+        $transaction->setTotalIncome($commission);  // El total de ingresos es igual a la comisión
+
+        // **Actualizar el estado del coche a "comprado"**
         $car->setCarSold('comprado');
 
-
+        // Persistir la transacción y actualizar el coche
         $entityManager->persist($transaction);
+        $entityManager->persist($car);  // Asegúrate de actualizar el estado del coche
         $entityManager->flush();
 
-        return new JsonResponse(['message' => 'Transacción creada y coche marcado como vendido'], Response::HTTP_CREATED);
+        return new JsonResponse(['message' => 'Transacción creada, comisión calculada y coche marcado como vendido'], Response::HTTP_CREATED);
     }
 
+    #[Route('/statistics', name: 'app_transaction_stats', methods: ['GET'])]
+    public function statistics(
+        TransactionRepository $transactionRepository,
+        UserRepository $userRepository,
+        CarRepository $carRepository
+    ): JsonResponse {
+        $transactions = $transactionRepository->findAll();
+
+        // Total de ingresos
+        $totalIncome = array_sum(array_map(fn($t) => $t->getTotalIncome(), $transactions));
+
+        // Total de transacciones
+        $totalTransactions = count($transactions);
+
+        // Ganancias mensuales (agrupadas por mes y año)
+        $monthlyEarnings = [];
+        foreach ($transactions as $transaction) {
+            $month = $transaction->getTransactionDate()->format('Y-m'); // ejemplo: 2024-05
+            if (!isset($monthlyEarnings[$month])) {
+                $monthlyEarnings[$month] = 0;
+            }
+            $monthlyEarnings[$month] += $transaction->getTotalIncome();
+        }
+
+        // Formatear para frontend
+        $monthlyEarningsFormatted = [];
+        foreach ($monthlyEarnings as $month => $income) {
+            $monthlyEarningsFormatted[] = [
+                'month' => $month,
+                'income' => $income,
+            ];
+        }
+
+        // Usuarios con más compras
+        $topUsers = $userRepository->findTopBuyers();
+
+        // Coches más vendidos
+        $topCars = $carRepository->findTopSellingCars();
+
+        // Añadir esto antes de return $this->json(...)
+        $carStatusCount = [
+            'subido' => count($carRepository->findBy(['CarSold' => 'subido'])),
+            'comprado' => count($carRepository->findBy(['CarSold' => 'comprado'])),
+            'baneado' => count($carRepository->findBy(['CarSold' => 'baneado'])),
+        ];
+
+
+        return $this->json([
+            'totalIncome' => $totalIncome,
+            'totalTransactions' => $totalTransactions,
+            'monthlyEarnings' => $monthlyEarningsFormatted,
+            'topBuyers' => $topUsers,
+            'topCars' => $topCars,
+            'carStatusCount' => $carStatusCount,
+        ]);
+    }
 
     #[Route('/{id}', name: 'app_transaction_show', methods: ['GET'])]
     public function show(Transaction $transaction): Response

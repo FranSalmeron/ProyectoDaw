@@ -28,8 +28,10 @@ export function CarProvider({ children }) {
     });
   };
 
+  const clearCars = () => setCars([]);
+
   return (
-    <CarContext.Provider value={{ cars, addCars, removeFromData }}>
+    <CarContext.Provider value={{ cars, addCars, removeFromData, clearCars }}>
       {children}
     </CarContext.Provider>
   );

@@ -1,0 +1,44 @@
+FROM fransalmeron/proyectodaw-backend:latest
+
+# 1. Dependencias necesarias
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    unzip \
+    git \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    libicu-dev \
+    libpq-dev \
+    redis-server \
+    && docker-php-ext-configure zip \
+    && docker-php-ext-install pdo pdo_mysql zip intl gd
+
+# 2. Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Instalamos Symfony CLI
+RUN curl -sS https://get.symfony.com/cli/installer | bash
+RUN mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
+
+# 4. Opcache (para rendimiento)
+RUN docker-php-ext-install opcache
+
+# 5. Apache rewrite
+RUN a2enmod rewrite
+
+RUN a2enmod headers
+
+RUN a2ensite 000-default.conf
+
+# 6. Configuración PHP.ini para producción
+COPY ./php.ini /usr/local/etc/php/conf.d/custom.ini
+
+# 7. Establece directorio
+WORKDIR /var/www/html
+
+ENV DATABASE_URL=mysql://salmeron:salmeron@database:3306/Proyecto-FJSP
+
+COPY . /var/www/html
+
+EXPOSE 80

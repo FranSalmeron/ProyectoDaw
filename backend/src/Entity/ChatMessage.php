@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Entity;
 
 use App\Repository\ChatMessageRepository;
 use Doctrine\ORM\Mapping as ORM;
+
 #[ORM\Entity(repositoryClass: ChatMessageRepository::class)]
 class ChatMessage
 {
@@ -11,11 +13,11 @@ class ChatMessage
     #[ORM\Column(type: "integer")]
     private ?int $idMessage = null;
 
-    #[ORM\ManyToOne(targetEntity: Chat::class)]
+    #[ORM\ManyToOne(targetEntity: Chat::class, cascade: ['remove'])]
     #[ORM\JoinColumn(name: "chat_id", referencedColumnName: "id")]
     private ?Chat $chat = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['remove'])]
     #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id")]
     private ?User $user = null;
 

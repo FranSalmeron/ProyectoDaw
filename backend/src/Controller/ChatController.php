@@ -28,20 +28,18 @@ class ChatController extends AbstractController
     public function show(ChatRepository $chatRepository): Response
     {
         $chats = $chatRepository->findAll();
-    
+
         $chatsData = [];
         foreach ($chats as $chat) {
             $car = $chat->getCar();
-    
-            // Construir URLs de las imágenes del coche
-            $imageBaseUrl = '/uploads/images/';
+
+            // Verificar si el coche tiene imágenes
             $carImages = [];
             if ($car && $car->getImages()) {
-                foreach ($car->getImages() as $image) {
-                    $carImages[] = $imageBaseUrl . $image;
-                }
+                
+                $carImages = $car->getImages();
             }
-    
+
             $chatsData[] = [
                 'chatId' => $chat->getId(),
                 'buyer' => [
@@ -54,20 +52,20 @@ class ChatController extends AbstractController
                 ],
                 'car' => [
                     'id' => $car->getId(),
-                    'images' => $carImages,
+                    'images' => $carImages, // Usamos las URLs directamente
                     'brand' => $car->getBrand(),
                     'model' => $car->getModel(),
                 ],
                 'createdDate' => $chat->getCreatedDate()->format('Y-m-d H:i:s'),
             ];
         }
-    
+
         return $this->json([
             'success' => true,
             'chats' => $chatsData,
         ]);
     }
-    
+
 
     #[Route('/create', name: 'app_chat_car_create', methods: ['POST'])]
     public function createChat(Request $request, EntityManagerInterface $entityManager, ChatRepository $chatRepository): Response
@@ -204,14 +202,11 @@ class ChatController extends AbstractController
             // Obtener el coche asociado al chat
             $car = $chat->getCar();
 
-            // Verificar si el coche tiene imágenes
-            $imageBaseUrl = '/uploads/images/';
-            $carImages = [];
-            if ($car && $car->getImages()) {
-                foreach ($car->getImages() as $image) {
-                    $carImages[] = $imageBaseUrl . $image;
-                }
-            }
+           // Verificar si el coche tiene imágenes
+           $carImages = [];
+           if ($car && $car->getImages()) {
+               $carImages = $car->getImages(); 
+           }
 
             // Añadir el chat con sus datos a la estructura
             $chatsData[] = [

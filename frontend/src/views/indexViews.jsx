@@ -14,3 +14,4 @@ export { default as About} from './About';
 export { default as Users} from './Users';
 export { default as Chat_list} from './Chat_list';
 export { default as Banned} from './Banned';
+export { default as Statistics} from './Statistics';

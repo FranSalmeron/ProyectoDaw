@@ -31,7 +31,10 @@ security:
             pattern: ^/user/index  # El patrón para la ruta específica
             jwt: ~
             stateless: true  # Desactiva el estado para esta ruta
-
+        transactionsStatistics:
+            pattern: ^/transactions/statistics  # El patrón para la ruta específica
+            jwt: ~
+            stateless: true  # Desactiva el estado para esta ruta
         ChatList:
             pattern: ^/chat/index  # El patrón para la ruta específica
             jwt: ~  
@@ -58,4 +61,5 @@ security:
         - { path: ^/chat, roles: ROLE_USER }  # Las rutas /chat requieren autenticación JWT
         - { path: ^/message, roles: ROLE_USER }  # Las rutas /message también requieren autenticación JWT
         - { path: ^/user/.*/change-password, roles: ROLE_USER }
+        - { path: ^/transactions/statistics, roles: ROLE_ADMIN }
         - { path: ^/user/index, roles: ROLE_ADMIN }

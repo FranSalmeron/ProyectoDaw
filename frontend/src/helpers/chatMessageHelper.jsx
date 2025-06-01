@@ -4,86 +4,39 @@ const symfonyUrl = import.meta.env.VITE_API_URL;
 const token = localStorage.getItem('jwt');
 
 /**
- * Función para cargar los mensajes de un chat de manera asíncrona
- * @param {string} chatId - ID del chat
- * @returns {Array} Lista de mensajes
+ * Función para cargar los mensajes de un chat.
+ *
  */
-export const loadMessages = async (chatId, setLoading, taskId = null) => {
-  console.log("Cargando mensajes...");
-
+export const loadMessages = async (chatId, setMessages, setLoading) => {
   try {
     const response = await fetch(`${symfonyUrl}/ChatMessage/${chatId}/messages`, {
-      method: 'Post',
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(taskId),
     });
-    
+
     if (!response.ok) {
       toast.error("Error al cargar mensajes.");
       setLoading(false);
-      return null;
+      return;
     }
 
     const data = await response.json();
 
-    if (data.status === 'Message dispatched') {
-      return data.taskId; // Retornar el taskId para el polling
+    if (data.success && Array.isArray(data.messages)) {
+      setMessages(data.messages);
     } else {
-      toast.error("Error desconocido al cargar mensajes.");
-      setLoading(false);
-      return null;
+      toast.error("Respuesta inesperada del servidor.");
     }
   } catch (error) {
-    console.error('Error al cargar mensajes', error);
+    console.error('Error al cargar mensajes:', error);
     toast.error("Error al cargar mensajes.");
+  } finally {
     setLoading(false);
-    return null;
   }
 };
-
-
-/**
- * Función para hacer polling y verificar el estado de la tarea
- * @param {string} taskId - ID de la tarea
- */
-export const pollTaskStatus = async (taskId, setMessages, setLoading, existingMessages) => {
-
-  try {
-    const response = await fetch(`${symfonyUrl}/ChatMessage/task/${taskId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const data = await response.json();
-
-    if (data.status === 'completed') {
-      if (Array.isArray(data.data)) {
-        const newMessages = data.data;
-
-        // Comparar mensajes para ver si hay nuevos
-        const hasNewMessages = newMessages.length !== existingMessages.length ||
-          newMessages.some((message, index) => message.messageId !== existingMessages[index]?.messageId);
-
-        if (hasNewMessages) {
-          // Si hay nuevos mensajes, actualizar el estado
-          setMessages(newMessages);
-        }
-      } else {
-        toast.error("Error al cargar los mensajes: formato incorrecto.");
-      }
-      setLoading(false);
-    }
-  } catch (error) {
-    console.error('Error al verificar estado de la tarea', error);
-    toast.error("Error al verificar el estado de la tarea.");
-  }
-};
-
 
 /**
  * Función para enviar un mensaje en un chat

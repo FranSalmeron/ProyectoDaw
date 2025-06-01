@@ -84,7 +84,6 @@ export const addFavorite = async (userId, favorite, addFavoritesToContext) => {
   }
 };
 
-
 // Función para eliminar un favorito desde el localStorage y la API
 export const removeFavorite = async (userId, favoriteId, removeFromData) => {
   try {

@@ -1,9 +1,9 @@
 import { toast } from "react-toastify";
 
 const symfonyUrl = import.meta.env.VITE_API_URL;
-const token = localStorage.getItem("jwt");
 
 export const createChat = async (sellerId, buyerId, carId) => {
+  const token = localStorage.getItem("jwt");
   const body = JSON.stringify({
     buyerId: buyerId,
     sellerId: sellerId,
@@ -33,6 +33,7 @@ export const createChat = async (sellerId, buyerId, carId) => {
 
     const data = await response.json();
     if (data.chatId) {
+      localStorage.removeItem("cachedChats"); // Limpiar la caché de chats
       return data.chatId;
     } else {
       toast.error("No se pudo entrar al chat, intentalo de nuevo.");
@@ -46,6 +47,7 @@ export const createChat = async (sellerId, buyerId, carId) => {
 };
 
 export const deleteChat = async (chatId) => {
+  const token = localStorage.getItem("jwt");
   try {
     // Verificar que el token esté presente
     if (!token) {
@@ -75,6 +77,7 @@ export const deleteChat = async (chatId) => {
 };
 
 export const listChats = async (userId, addChats) => {
+  const token = localStorage.getItem("jwt");
   console.log("Cargando chats...");
   try {
     // Primero, revisamos si hay datos en el localStorage
@@ -105,6 +108,7 @@ export const listChats = async (userId, addChats) => {
 
 // Función para hacer la petición y almacenar los chats junto con el timestamp
 const fetchAndStoreChats = async (userId, addChats) => {
+  const token = localStorage.getItem("jwt");
   try {
     const response = await fetch(`${symfonyUrl}/chat/${userId}/chats`, {
       method: "GET",
@@ -138,6 +142,7 @@ const fetchAndStoreChats = async (userId, addChats) => {
 };
 
 export const getChats = async () => {
+  const token = localStorage.getItem("jwt");
   try {
     const response = await fetch(`${symfonyUrl}/chat/index`, {
       method: "GET",

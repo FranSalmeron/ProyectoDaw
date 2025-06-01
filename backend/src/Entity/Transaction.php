@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 use App\Repository\TransactionRepository;
@@ -20,7 +21,7 @@ class Transaction
 
     // Relación con el coche comprado
     #[ORM\ManyToOne(targetEntity: Car::class)]
-    #[ORM\JoinColumn(name: "car_id", referencedColumnName: "id")]  
+    #[ORM\JoinColumn(name: "car_id", referencedColumnName: "id")]
     private ?Car $car = null;
 
     #[ORM\Column(type: "decimal", precision: 10, scale: 2)]
@@ -33,12 +34,23 @@ class Transaction
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $transactionDate = null;
 
+    // **Campos añadidos**
+    #[ORM\Column(type: "decimal", precision: 10, scale: 2)]
+    private ?float $commission = null;
+
+    #[ORM\Column(type: "decimal", precision: 10, scale: 2)]
+    private ?float $totalIncome = null;
+
+    #[ORM\Column(type: "boolean")]
+    private bool $isIncomeReported = false;
+
+    // **Constructor**
     public function __construct()
     {
         $this->transactionDate = new \DateTime();
     }
 
-
+    // **Métodos existentes** (sin cambios)
     public function getId(): ?int
     {
         return $this->id;
@@ -71,11 +83,22 @@ class Transaction
         return $this->price;
     }
 
-    public function setPrice(float $price): static
+    public function setPrice(string $price): static
     {
         $this->price = $price;
+        $this->calculateCommission();
         return $this;
     }
+
+    public function calculateCommission(): void
+    {
+        if ($this->price !== null) {
+            $priceFloat = floatval($this->price);
+            $this->commission = (string) ($priceFloat * 0.20);
+            $this->totalIncome = $this->commission;
+        }
+    }
+
 
     public function getStatus(): ?string
     {
@@ -96,6 +119,40 @@ class Transaction
     public function setTransactionDate(\DateTimeInterface $transactionDate): static
     {
         $this->transactionDate = $transactionDate;
+        return $this;
+    }
+
+    // **Métodos añadidos**
+    public function getCommission(): ?float
+    {
+        return $this->commission;
+    }
+
+    public function setCommission(float $commission): static
+    {
+        $this->commission = $commission;
+        return $this;
+    }
+
+    public function getTotalIncome(): ?float
+    {
+        return $this->totalIncome;
+    }
+
+    public function setTotalIncome(float $totalIncome): static
+    {
+        $this->totalIncome = $totalIncome;
+        return $this;
+    }
+
+    public function getIsIncomeReported(): bool
+    {
+        return $this->isIncomeReported;
+    }
+
+    public function setIsIncomeReported(bool $isIncomeReported): static
+    {
+        $this->isIncomeReported = $isIncomeReported;
         return $this;
     }
 }

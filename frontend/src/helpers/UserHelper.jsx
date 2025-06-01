@@ -120,10 +120,7 @@ export const deleteUser = async (userId) => {
     const data = await response.json();
 
     if (response.ok) {
-      localStorage.removeItem("jwt");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("username");
-      localStorage.removeItem("cachedChats");
+      localStorage.clear();
       return data;
     } else {
       throw new Error(data.error || "Error al eliminar el usuario");

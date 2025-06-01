@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Car;
 use App\Entity\User;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: CarFavoriteRepository::class)]
 class CarFavorite
@@ -18,14 +17,13 @@ class CarFavorite
     #[Groups('car_favorite_list')]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Car::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups('car_favorite_list')]
+    #[ORM\ManyToOne(targetEntity: Car::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[Groups(['car_favorite_list'])]
     private ?Car $car = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups('car_favorite_list')]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
 

@@ -4,17 +4,23 @@ import { useUser } from "../context/UserContext";
 import { getUserInfo } from "../helpers/UserHelper";
 import { getUserIdFromToken } from "../helpers/decodeToken";
 import { buyCar } from "../helpers/BuyHelper";
+import { useCars } from "../context/CarContext";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
+import { useDarkMode } from "../context/DarkModeContext";
 
 const BuyCar = () => {
   const location = useLocation();
   const { car } = location.state || {};
   const { user, addUser } = useUser();
-  const userId = getUserIdFromToken ? getUserIdFromToken() : null;
+  const { clearCars } = useCars();
+  const { isDarkMode } = useDarkMode();
+
+  const userId = getUserIdFromToken();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [paymentStatus, setPaymentStatus] = useState("idle"); // idle | processing | completed
+  const [paymentStatus, setPaymentStatus] = useState("idle");
+  const [invoiceNumber] = useState(() => `INV-${Date.now()}`);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -36,20 +42,27 @@ const BuyCar = () => {
   }, [userId]);
 
   const handlePurchase = async () => {
-    if (paymentStatus !== "idle") return; // prevenir múltiples clics
-    setPaymentStatus("processing");
-    if(userId == car.user.id) {
+    if (paymentStatus !== "idle") return;
+
+    if (userId === car.user.id) {
       toast.error("No puedes comprar tu propio coche");
       return;
     }
+
+    setPaymentStatus("processing");
+
     await buyCar(car.id, userId, car.price);
+
     setTimeout(() => {
       setPaymentStatus("completed");
-    }, 2000); // simula 2 segundos de "proceso de pago"
+      localStorage.removeItem("cachedCars");
+      localStorage.removeItem("myCars");
+      clearCars();
+    }, 2000);
   };
 
   if (isLoading) {
-    return <LoadingSpinner />; // Usamos el spinner de carga aquí
+    return <LoadingSpinner />;
   }
 
   if (error) {
@@ -57,36 +70,78 @@ const BuyCar = () => {
   }
 
   return (
-    <div className="bg-[#F5EFEB] p-6">
-      <div className="p-8 max-w-md mx-auto border border-gray-300 rounded-lg shadow-md bg-white">
-        <h2 className="text-xl font-semibold text-center mb-6">
-          Recibo de Compra
-        </h2>
+    <div
+      className={`min-h-screen p-6 transition-colors ${
+        isDarkMode ? "bg-[#1C1C1E] text-white" : "bg-[#F5EFEB] text-black"
+      }`}
+    >
+      <div
+        className={`p-8 max-w-2xl mx-auto border rounded-lg shadow-md ${
+          isDarkMode
+            ? "bg-[#2C2C2E] border-gray-600"
+            : "bg-white border-gray-300"
+        }`}
+      >
+        {/* LOGO y encabezado */}
+        <div className="flex justify-between items-center mb-6">
+          <img
+            src="images/logo-b.png"
+            alt="Logo de la empresa"
+            className="w-32 h-auto"
+          />
+          <div className="text-right">
+            <h2 className="text-xl font-bold">Factura de Compra</h2>
+            <p className="text-sm">N°: {invoiceNumber}</p>
+            <p className="text-sm">Fecha: {new Date().toLocaleDateString()}</p>
+          </div>
+        </div>
 
-        <div className="mb-4">
-          <strong>Marca:</strong> <span>{car?.brand || "N/A"}</span>
-        </div>
-        <div className="mb-4">
-          <strong>Modelo:</strong> <span>{car?.model || "N/A"}</span>
-        </div>
-        <div className="mb-4">
-          <strong>Precio:</strong> <span>{car?.price}€</span>
-        </div>
-        <div className="mb-4">
-          <strong>Dirección:</strong> <span>{user?.address || "N/A"}</span>
-        </div>
-        <div className="mb-4">
-          <strong>Correo:</strong> <span>{user?.email || "N/A"}</span>
+        {/* Datos del comprador */}
+        <div className="mb-6">
+          <h3 className="font-semibold text-lg mb-2">Datos del comprador:</h3>
+          <p>
+            <strong>Nombre:</strong> {user?.name || "N/A"}
+          </p>
+          <p>
+            <strong>Email:</strong> {user?.email || "N/A"}
+          </p>
+          <p>
+            <strong>Dirección:</strong> {user?.address || "N/A"}
+          </p>
         </div>
 
+        {/* Datos del coche */}
+        <div className="mb-6">
+          <h3 className="font-semibold text-lg mb-2">Detalles del vehículo:</h3>
+          <p>
+            <strong>Marca:</strong> {car?.brand}
+          </p>
+          <p>
+            <strong>Modelo:</strong> {car?.model}
+          </p>
+          <p>
+            <strong>Año:</strong> {car?.manufacture_year}
+          </p>
+          <p>
+            <strong>Kilometraje:</strong> {car?.mileage} km
+          </p>
+          <p>
+            <strong>Precio:</strong> {car?.price} €
+          </p>
+        </div>
+
+        {/* Total */}
+        <div className="mb-6 text-right">
+          <h3 className="text-lg font-bold">Total a pagar: {car?.price} €</h3>
+        </div>
+
+        {/* Firma */}
         <div className="mt-8 text-right">
-          <em>Firma: _____________________</em>
-        </div>
-        <div className="mt-2 text-right">
-          <em>Fecha: {new Date().toLocaleDateString()}</em>
+          <em>Firma del comprador: _____________________</em>
         </div>
 
-        <div className="mt-6 flex flex-col items-center gap-4">
+        {/* Botones */}
+        <div className="mt-8 flex flex-col items-center gap-4">
           {paymentStatus === "idle" && (
             <button
               onClick={handlePurchase}
@@ -95,25 +150,27 @@ const BuyCar = () => {
               Comprar
             </button>
           )}
+
           {paymentStatus === "processing" && (
             <div className="text-center">
-              <LoadingSpinner /> {/* Spinner mientras se procesa el pago */}
-              <p className="text-yellow-600 font-medium">Procesando pago...</p>
+              <LoadingSpinner />
+              <p className="text-yellow-500 font-medium">Procesando pago...</p>
             </div>
           )}
-          {paymentStatus === "completed" && (
-            <p className="text-green-600 font-semibold">
-              ✅ Pago realizado con éxito
-            </p>
-          )}
 
-          {/* Botón de imprimir sigue estando disponible después del pago */}
-          <button
-            onClick={() => window.print()}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            Imprimir Recibo
-          </button>
+          {paymentStatus === "completed" && (
+            <>
+              <p className="text-green-500 font-semibold">
+                ✅ Pago realizado con éxito
+              </p>
+              <button
+                onClick={() => window.print()}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              >
+                Imprimir Factura
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

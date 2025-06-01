@@ -28,6 +28,8 @@ export function ChatProvider({ children }) {
     });
   };
 
+  const clearChats = () => setchats([]);
+
   return (
     <chatContext.Provider value={{ chats, addChats, removeFromData }}>
       {children}
