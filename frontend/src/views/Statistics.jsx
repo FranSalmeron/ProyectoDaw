@@ -39,13 +39,12 @@ const Statistics = () => {
     const months = [];
 
     for (let i = 0; i < 6; i++) {
-      const month = now.add(i, "month").format("YYYY-MM");
+      const month = now.subtract(5 - i, "month").format("YYYY-MM");
       months.push({
         month,
         income: earningsMap.get(month) || 0,
       });
     }
-
     return months;
   };
 
@@ -72,7 +71,7 @@ const Statistics = () => {
       },
     ],
   };
-  
+
   const generateColors = (count) => {
     const colors = [
       "#FF6384",
