@@ -1,4 +1,4 @@
-#! /bin/webSocket.php
+#! no en uso ni funcional
 <?php
 
 require dirname(__DIR__).'/vendor/autoload.php';

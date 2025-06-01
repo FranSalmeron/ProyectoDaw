@@ -12,13 +12,15 @@ Desde hace tiempo me interesa el diseño de sitios web funcionales y visualmente
 
 ## 🧰 Tecnologías utilizadas
 
-- **JavaScript / Tailwind** - Para la estructura, interaccion y el diseño visual.
-- **Symfony** - Para gestionar las peticiones del fronted.
-- **Nginx** - Para la visualizacion de la pagina e interacion y funcionalidad de la misma.
-- **MySQL** - Para el alamacenamiento de datos
-- **PhpMyAdmin** - Para la gestion y visualizacion de los datos, la base de datos y relaciones.
-- **RailWay** - Para el despliegue en produccion de la pagina web
-- **DockerDesktop** - Para el despliegue local y dockerizacion del proyecto.
+- **JavaScript / Tailwind** - Para la estructura, interacción y diseño visual (Frontend).
+- **React.js** - Framework de SPA para el frontend.
+- **Symfony** - Para gestionar las peticiones y lógica del backend.
+- **Apache** - Para servir la aplicación Symfony y manejar rutas vía `.htaccess`.
+- **Nginx** - Para servir el frontend de React, optimizado para contenido estático.
+- **MySQL** - Para el almacenamiento de datos.
+- **PhpMyAdmin** - Para la gestión y visualización de datos.
+- **RailWay** - Para el despliegue en producción de los servicios dockerizados.
+- **DockerDesktop** - Para la ejecución local de contenedores del proyecto.
 
 ## 💡 Funcionalidades principales
 
@@ -26,10 +28,6 @@ Desde hace tiempo me interesa el diseño de sitios web funcionales y visualmente
 - Filtros por tipo, marca o rango de precios.
 - Página de detalles individuales para cada coche.
 - Diseño responsive adaptado a móviles y tablets.
-
-## Diagrama E/R
-
-![Diagrama de entidad-relación](docs/diagrama-ER.png)
 
 ## 🚀 Despliegue
 
