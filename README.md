@@ -106,32 +106,32 @@ A continuación, se presentan algunas de las vistas más representativas de la p
 
 🏠 Home (Página de inicio)
 
-![home](/ProyectoDaw/docs%20(documentacion)/docsImages/home.png)
+![home](/ProyectoDaw/docs-(documentacion)/docsImages/home.png)
 
 📊 Stadistics (Estadísticas del panel de administración)
 
-![Stadistics](/ProyectoDaw/docs%20(documentacion)/docsImages/stadistics1.png)
-![Stadistics](/ProyectoDaw/docs%20(documentacion)/docsImages/stadistics2.png)
+![Stadistics](/ProyectoDaw/docs-(documentacion)/docsImages/stadistics1.png)
+![Stadistics](/ProyectoDaw/docs-(documentacion)/docsImages/stadistics2.png)
 
 👥 Gestión de Usuarios (Administrador)
 
-![Admin_users](/ProyectoDaw/docs%20(documentacion)/docsImages/admin_users.png)
+![Admin_users](/ProyectoDaw/docs-(documentacion)/docsImages/admin_users.png)
 
 🚗 Detalle de Coche (Car Details)
 
-![Car_details](/ProyectoDaw/docs%20(documentacion)/docsImages/car_details.png)
+![Car_details](/ProyectoDaw/docs-(documentacion)/docsImages/car_details.png)
 
 📝 Registro (Register)
 
-![Register](/ProyectoDaw/docs%20(documentacion)/docsImages/Register.png)
+![Register](/ProyectoDaw/docs-(documentacion)/docsImages/Register.png)
 
 💬 Chats (Chats de los usuarios)
 
-![Chats](/ProyectoDaw/docs%20(documentacion)/docsImages/Chats.png)
+![Chats](/ProyectoDaw/docs-(documentacion)/docsImages/Chats.png)
 
 💬 Chat (Mensajería entre usuarios)
 
-![Chat](/ProyectoDaw/docs%20(documentacion)/docsImages/Chat.png)
+![Chat](/ProyectoDaw/docs-(documentacion)/docsImages/Chat.png)
 
 Gracias por visitar este repositorio. Si tienes sugerencias o quieres colaborar, ¡estaré encantado de escucharte!
 
